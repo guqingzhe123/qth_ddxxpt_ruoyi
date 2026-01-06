@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.RawCoalToDailyReportMapper">
+    
+    <resultMap type="com.ruoyi.system.domain.RawCoalToDailyReport" id="RawCoalToDailyReportResult">
+        <result property="id"    column="id"    />
+        <result property="unitName"    column="unit_name"    />
+        <result property="monthlyPlan"    column="monthly_plan"    />
+        <result property="coalWashingPlant"    column="coal_washing_plant"    />
+        <result property="gasCompany"    column="gas_company"    />
+        <result property="cannotWashedIn"    column="cannot_washed_in"    />
+        <result property="coalStorageCapacity"    column="coal_storage_capacity"    />
+        <result property="exportDate"    column="export_date"    />
+    </resultMap>
+
+    <sql id="selectRawCoalToDailyReportVo">
+        select id, unit_name, monthly_plan, coal_washing_plant, gas_company, cannot_washed_in, coal_storage_capacity,
+               export_date from raw_coal_to_daily_report
+    </sql>
+
+    <select id="selectRawCoalToDailyReportList" parameterType="com.ruoyi.system.domain.RawCoalToDailyReport" resultMap="RawCoalToDailyReportResult">
+        <include refid="selectRawCoalToDailyReportVo"/>
+        <where>  
+            <if test="unitName != null  and unitName != ''"> and unit_name like concat('%', #{unitName}, '%')</if>
+            <if test="monthlyPlan != null "> and monthly_plan = #{monthlyPlan}</if>
+            <if test="coalWashingPlant != null "> and coal_washing_plant = #{coalWashingPlant}</if>
+            <if test="gasCompany != null "> and gas_company = #{gasCompany}</if>
+            <if test="cannotWashedIn != null "> and cannot_washed_in = #{cannotWashedIn}</if>
+            <if test="coalStorageCapacity != null  and coalStorageCapacity != ''"> and coal_storage_capacity = #{coalStorageCapacity}</if>
+            <if test="exportDate != null  and exportDate != ''"> and export_date = #{exportDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectRawCoalToDailyReportById" parameterType="java.lang.Long" resultMap="RawCoalToDailyReportResult">
+        <include refid="selectRawCoalToDailyReportVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertRawCoalToDailyReport" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        insert into raw_coal_to_daily_report
+        <!-- 字段部分：基于集合中第一个元素判断非空字段（确保批量插入字段一致） -->
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="list != null and list.size() > 0">
+                <if test="list[0].unitName != null">unit_name,</if>
+                <if test="list[0].monthlyPlan != null">monthly_plan,</if>
+                <if test="list[0].coalWashingPlant != null">coal_washing_plant,</if>
+                <if test="list[0].gasCompany != null">gas_company,</if>
+                <if test="list[0].cannotWashedIn != null">cannot_washed_in,</if>
+                <if test="list[0].coalStorageCapacity != null">coal_storage_capacity,</if>
+                <if test="list[0].exportDate != null">export_date,</if>
+            </if>
+        </trim>
+        <!-- 值部分：通过foreach遍历集合中每个元素，生成对应的值列表 -->
+        values
+        <foreach collection="list" item="item" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="item.unitName != null">#{item.unitName},</if>
+                <if test="item.monthlyPlan != null">#{item.monthlyPlan},</if>
+                <if test="item.coalWashingPlant != null">#{item.coalWashingPlant},</if>
+                <if test="item.gasCompany != null">#{item.gasCompany},</if>
+                <if test="item.cannotWashedIn != null">#{item.cannotWashedIn},</if>
+                <if test="item.coalStorageCapacity != null">#{item.coalStorageCapacity},</if>
+                <if test="item.exportDate != null">#{item.exportDate},</if>
+            </trim>
+        </foreach>
+    </insert>
+
+    <update id="updateRawCoalToDailyReport" parameterType="com.ruoyi.system.domain.RawCoalToDailyReport">
+        update raw_coal_to_daily_report
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="unitName != null">unit_name = #{unitName},</if>
+            <if test="monthlyPlan != null">monthly_plan = #{monthlyPlan},</if>
+            <if test="coalWashingPlant != null">coal_washing_plant = #{coalWashingPlant},</if>
+            <if test="gasCompany != null">gas_company = #{gasCompany},</if>
+            <if test="cannotWashedIn != null">cannot_washed_in = #{cannotWashedIn},</if>
+            <if test="coalStorageCapacity != null">coal_storage_capacity = #{coalStorageCapacity},</if>
+            <if test="exportDate != null">export_date = #{exportDate},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRawCoalToDailyReportById" parameterType="java.lang.Long">
+        delete from raw_coal_to_daily_report where id = #{id}
+    </delete>
+
+    <delete id="deleteRawCoalToDailyReportByIds" parameterType="java.lang.String">
+        delete from raw_coal_to_daily_report where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectRawAll"  resultMap="RawCoalToDailyReportResult">
+        select sum(monthly_plan) as monthly_plan, sum(coal_washing_plant) as coal_washing_plant, sum(gas_company) as gas_company, sum(cannot_washed_in) as cannot_washed_in,
+               sum(coal_storage_capacity) as coal_storage_capacity from raw_coal_to_daily_report
+        where export_date = #{statsDate} and unit_name = #{unitName}
+    </select>
+</mapper>

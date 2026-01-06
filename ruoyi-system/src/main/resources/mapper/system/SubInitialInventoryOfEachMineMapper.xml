@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SubInitialInventoryOfEachMineMapper">
+    
+    <resultMap type="com.ruoyi.system.domain.SubInitialInventoryOfEachMine" id="SubInitialInventoryOfEachMineResult">
+        <result property="id"    column="id"    />
+        <result property="initialInventoryId"    column="initial_inventory_id"    />
+        <result property="unitName"    column="unit_name"    />
+        <result property="initialInventoryOfThisMonth"    column="initial_inventory_of_this_month"    />
+        <result property="isReject"    column="is_reject"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSubInitialInventoryOfEachMineVo">
+        select id, initial_inventory_id, unit_name, initial_inventory_of_this_month, create_time, update_time,is_reject from sub_initial_inventory_of_each_mine
+    </sql>
+
+    <select id="selectSubInitialInventoryOfEachMineList" parameterType="com.ruoyi.system.domain.SubInitialInventoryOfEachMine" resultMap="SubInitialInventoryOfEachMineResult">
+        <include refid="selectSubInitialInventoryOfEachMineVo"/>
+        <where>  
+            <if test="initialInventoryId != null "> and initial_inventory_id = #{initialInventoryId}</if>
+            <if test="unitName != null  and unitName != ''"> and unit_name like concat('%', #{unitName}, '%')</if>
+            <if test="initialInventoryOfThisMonth != null "> and initial_inventory_of_this_month = #{initialInventoryOfThisMonth}</if>
+        </where>
+    </select>
+    
+    <select id="selectSubInitialInventoryOfEachMineById" parameterType="java.lang.Long" resultMap="SubInitialInventoryOfEachMineResult">
+        <include refid="selectSubInitialInventoryOfEachMineVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSubInitialInventoryOfEachMine" parameterType="com.ruoyi.system.domain.SubInitialInventoryOfEachMine" useGeneratedKeys="true" keyProperty="id">
+        insert into sub_initial_inventory_of_each_mine
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="initialInventoryId != null">initial_inventory_id,</if>
+            <if test="unitName != null and unitName != ''">unit_name,</if>
+            <if test="initialInventoryOfThisMonth != null">initial_inventory_of_this_month,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="isReject != null">is_reject,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="initialInventoryId != null">#{initialInventoryId},</if>
+            <if test="unitName != null and unitName != ''">#{unitName},</if>
+            <if test="initialInventoryOfThisMonth != null">#{initialInventoryOfThisMonth},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="isReject != null">#{isReject},</if>
+         </trim>
+    </insert>
+    <insert id="insertSubInitialInventoryOfEachMineBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        insert into sub_initial_inventory_of_each_mine
+        <!-- 字段列表：根据集合中元素的非空字段动态生成（取第一个元素判断，避免字段重复） -->
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="list != null and list.size() > 0">
+                <if test="list[0].initialInventoryId != null">initial_inventory_id,</if>
+                <if test="list[0].unitName != null and list[0].unitName != ''">unit_name,</if>
+                <if test="list[0].initialInventoryOfThisMonth != null">initial_inventory_of_this_month,</if>
+                <if test="list[0].createTime != null">create_time,</if>
+                <if test="list[0].updateTime != null">update_time,</if>
+                <if test="list[0].isReject != null">is_reject,</if>
+            </if>
+        </trim>
+        <!-- 值列表：遍历集合中每个元素，生成对应的值 -->
+        values
+        <foreach collection="list" item="item" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="item.initialInventoryId != null">#{item.initialInventoryId},</if>
+                <if test="item.unitName != null and item.unitName != ''">#{item.unitName},</if>
+                <if test="item.initialInventoryOfThisMonth != null">#{item.initialInventoryOfThisMonth},</if>
+                <if test="item.createTime != null">#{item.createTime},</if>
+                <if test="item.updateTime != null">#{item.updateTime},</if>
+                <if test="item.isReject != null">#{item.isReject},</if>
+            </trim>
+        </foreach>
+    </insert>
+    <update id="updateSubInitialInventoryOfEachMine" parameterType="com.ruoyi.system.domain.SubInitialInventoryOfEachMine">
+        update sub_initial_inventory_of_each_mine
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="initialInventoryId != null">initial_inventory_id = #{initialInventoryId},</if>
+            <if test="unitName != null and unitName != ''">unit_name = #{unitName},</if>
+            <if test="initialInventoryOfThisMonth != null">initial_inventory_of_this_month = #{initialInventoryOfThisMonth},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="isReject != null">is_reject = #{isReject},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSubInitialInventoryOfEachMineById" parameterType="java.lang.Long">
+        delete from sub_initial_inventory_of_each_mine where id = #{id}
+    </delete>
+
+    <delete id="deleteSubInitialInventoryOfEachMineByIds" parameterType="java.lang.String">
+        delete from sub_initial_inventory_of_each_mine where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectSubInitialInventoryOfEachList" parameterType="java.util.List" resultMap="SubInitialInventoryOfEachMineResult">
+        select t1.id, t1.initial_inventory_id, t1.unit_name, t1.initial_inventory_of_this_month, t1.create_time, t1.update_time from sub_initial_inventory_of_each_mine t1
+            left join initial_inventory_of_each_mine t2 on t1.initial_inventory_id =t2.id
+        where t2.unit_type=#{unitType} and t2.record_date=#{statsDate}
+    </select>
+
+    <select id="selectSubInitialInventoryOfEachMonthList" parameterType="java.util.List" resultMap="SubInitialInventoryOfEachMineResult">
+        select t1.unit_name, sum(t1.initial_inventory_of_this_month) as initial_inventory_of_this_month from sub_initial_inventory_of_each_mine t1
+        left join initial_inventory_of_each_mine t2 on t1.initial_inventory_id =t2.id
+        where t2.unit_type=#{unitType} and YEAR(t2.record_date)=YEAR(#{statsDate}) AND MONTH(t2.record_date)=MONTH(#{statsDate})  GROUP BY t1.unit_name
+    </select>
+
+</mapper>

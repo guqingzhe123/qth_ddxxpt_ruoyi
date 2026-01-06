@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.work.WorkInstallationFaceMapper">
+    
+    <resultMap type="com.ruoyi.system.domain.work.WorkInstallationFace" id="WorkInstallationFaceResult">
+        <result property="id"    column="id"    />
+        <result property="unit"    column="unit"    />
+        <result property="unitCode"    column="unit_code"    />
+        <result property="teamNo"    column="team_no"    />
+        <result property="miningTechnology"    column="mining_technology"    />
+        <result property="installationLocation"    column="installation_location"    />
+        <result property="faceYard"    column="face_yard"    />
+        <result property="plannedSupportQty"    column="planned_support_qty"    />
+        <result property="plannedChuteQty"    column="planned_chute_qty"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectWorkInstallationFaceVo">
+        select id, unit, unit_code, team_no, mining_technology, installation_location, face_yard, planned_support_qty, planned_chute_qty, status, create_time from work_installation_face
+    </sql>
+
+    <select id="selectWorkInstallationFaceList" parameterType="com.ruoyi.system.domain.work.WorkInstallationFace" resultMap="WorkInstallationFaceResult">
+        <include refid="selectWorkInstallationFaceVo"/>
+        <where>  
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="unitCode != null  and unitCode != ''"> and unit_code = #{unitCode}</if>
+            <if test="teamNo != null  and teamNo != ''"> and team_no = #{teamNo}</if>
+            <if test="miningTechnology != null  and miningTechnology != ''"> and mining_technology = #{miningTechnology}</if>
+            <if test="installationLocation != null  and installationLocation != ''"> and installation_location = #{installationLocation}</if>
+            <if test="faceYard != null  and faceYard != ''"> and face_yard = #{faceYard}</if>
+            <if test="plannedSupportQty != null  and plannedSupportQty != ''"> and planned_support_qty = #{plannedSupportQty}</if>
+            <if test="plannedChuteQty != null  and plannedChuteQty != ''"> and planned_chute_qty = #{plannedChuteQty}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectWorkInstallationFaceById" parameterType="java.lang.String" resultMap="WorkInstallationFaceResult">
+        <include refid="selectWorkInstallationFaceVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWorkInstallationFace" parameterType="com.ruoyi.system.domain.work.WorkInstallationFace" useGeneratedKeys="true" keyProperty="id">
+        insert into work_installation_face
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="unit != null and unit != ''">unit,</if>
+            <if test="unitCode != null and unitCode != ''">unit_code,</if>
+            <if test="teamNo != null and teamNo != ''">team_no,</if>
+            <if test="miningTechnology != null and miningTechnology != ''">mining_technology,</if>
+            <if test="installationLocation != null and installationLocation != ''">installation_location,</if>
+            <if test="faceYard != null and faceYard != ''">face_yard,</if>
+            <if test="plannedSupportQty != null and plannedSupportQty != ''">planned_support_qty,</if>
+            <if test="plannedChuteQty != null and plannedChuteQty != ''">planned_chute_qty,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="unit != null and unit != ''">#{unit},</if>
+            <if test="unitCode != null and unitCode != ''">#{unitCode},</if>
+            <if test="teamNo != null and teamNo != ''">#{teamNo},</if>
+            <if test="miningTechnology != null and miningTechnology != ''">#{miningTechnology},</if>
+            <if test="installationLocation != null and installationLocation != ''">#{installationLocation},</if>
+            <if test="faceYard != null and faceYard != ''">#{faceYard},</if>
+            <if test="plannedSupportQty != null and plannedSupportQty != ''">#{plannedSupportQty},</if>
+            <if test="plannedChuteQty != null and plannedChuteQty != ''">#{plannedChuteQty},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWorkInstallationFace" parameterType="com.ruoyi.system.domain.work.WorkInstallationFace">
+        update work_installation_face
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="unit != null and unit != ''">unit = #{unit},</if>
+            <if test="unitCode != null and unitCode != ''">unit_code = #{unitCode},</if>
+            <if test="teamNo != null and teamNo != ''">team_no = #{teamNo},</if>
+            <if test="miningTechnology != null and miningTechnology != ''">mining_technology = #{miningTechnology},</if>
+            <if test="installationLocation != null and installationLocation != ''">installation_location = #{installationLocation},</if>
+            <if test="faceYard != null and faceYard != ''">face_yard = #{faceYard},</if>
+            <if test="plannedSupportQty != null and plannedSupportQty != ''">planned_support_qty = #{plannedSupportQty},</if>
+            <if test="plannedChuteQty != null and plannedChuteQty != ''">planned_chute_qty = #{plannedChuteQty},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWorkInstallationFaceById" parameterType="java.lang.String">
+        delete from work_installation_face where id = #{id}
+    </delete>
+
+    <delete id="deleteWorkInstallationFaceByIds" parameterType="java.lang.String">
+        delete from work_installation_face where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

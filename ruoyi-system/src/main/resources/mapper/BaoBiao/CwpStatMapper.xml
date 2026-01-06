@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.CwpStatMapper">
+
+    <resultMap id="CwpDailySumRowMap" type="com.ruoyi.system.domain.CwpDailySumRow">
+        <result column="sumDropIn"     property="sumDropIn"/>
+        <result column="sumWashIn"     property="sumWashIn"/>
+        <result column="sumCleanCoal"  property="sumCleanCoal"/>
+    </resultMap>
+
+    <!-- 按天聚合；仅用等值日期过滤，不对列做函数，利于索引；过滤 is_deleted=0 -->
+    <select id="selectDailySums" resultMap="CwpDailySumRowMap">
+        SELECT
+            COALESCE(SUM(drop_in),      0) AS sumDropIn,
+            COALESCE(SUM(wash_in),      0) AS sumWashIn,
+            COALESCE(SUM(clean_coal),   0) AS sumCleanCoal
+        FROM coal_washing_production
+        WHERE is_deleted = 0
+          AND production_date = #{theDate}
+    </select>
+
+</mapper>

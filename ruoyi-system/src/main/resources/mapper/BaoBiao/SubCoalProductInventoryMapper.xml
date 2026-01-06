@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BaoBiao.SubCoalProductInventoryMapper">
+
+
+    <resultMap type="SubCoalProductInventory" id="SubCoalProductInventoryResult">
+        <result property="id"    column="id"    />
+        <result property="recordDate"    column="record_date"    />
+        <result property="unitCode"    column="unit_code"    />
+        <result property="unitName"    column="unit_name"    />
+        <result property="cleanCoalPrevStock"    column="clean_coal_prev_stock"    />
+        <result property="cleanCoalCurrentStock"    column="clean_coal_current_stock"    />
+        <result property="slackLumpPrevStock"    column="slack_lump_prev_stock"    />
+        <result property="slackLumpCurrentStock"    column="slack_lump_current_stock"    />
+        <result property="totalPrevStock"    column="total_prev_stock"    />
+        <result property="totalCurrentStock"    column="total_current_stock"    />
+        <result property="dailyPlantSelfUse"    column="daily_plant_self_use"    />
+        <result property="dailyOutsideSelfUse"    column="daily_outside_self_use"    />
+        <result property="dailyTotalSelfUse"    column="daily_total_self_use"    />
+        <result property="monthlyTotalSelfUse"    column="monthly_total_self_use"    />
+        <result property="yearlyTotalSelfUse"    column="yearly_total_self_use"    />
+        <result property="userId"    column="user_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSubCoalProductInventoryVo">
+        select id, record_date, unit_code, unit_name, clean_coal_prev_stock, clean_coal_current_stock, slack_lump_prev_stock, slack_lump_current_stock, total_prev_stock, total_current_stock, daily_plant_self_use, daily_outside_self_use, daily_total_self_use, monthly_total_self_use, yearly_total_self_use, user_id, create_time, update_time from sub_coal_product_inventory
+    </sql>
+
+    <select id="selectSubCoalProductInventoryList" parameterType="com.ruoyi.system.domain.BaoBiao.dto.cpi.SubCoalProductInventory" resultMap="SubCoalProductInventoryResult">
+        <include refid="selectSubCoalProductInventoryVo"/>
+        <where>
+            <if test="recordDate != null "> and record_date = #{recordDate}</if>
+            <if test="unitCode != null  and unitCode != ''"> and unit_code = #{unitCode}</if>
+            <if test="unitName != null  and unitName != ''"> and unit_name like concat('%', #{unitName}, '%')</if>
+            <if test="cleanCoalPrevStock != null "> and clean_coal_prev_stock = #{cleanCoalPrevStock}</if>
+            <if test="cleanCoalCurrentStock != null "> and clean_coal_current_stock = #{cleanCoalCurrentStock}</if>
+            <if test="slackLumpPrevStock != null "> and slack_lump_prev_stock = #{slackLumpPrevStock}</if>
+            <if test="slackLumpCurrentStock != null "> and slack_lump_current_stock = #{slackLumpCurrentStock}</if>
+            <if test="totalPrevStock != null "> and total_prev_stock = #{totalPrevStock}</if>
+            <if test="totalCurrentStock != null "> and total_current_stock = #{totalCurrentStock}</if>
+            <if test="dailyPlantSelfUse != null "> and daily_plant_self_use = #{dailyPlantSelfUse}</if>
+            <if test="dailyOutsideSelfUse != null "> and daily_outside_self_use = #{dailyOutsideSelfUse}</if>
+            <if test="dailyTotalSelfUse != null "> and daily_total_self_use = #{dailyTotalSelfUse}</if>
+            <if test="monthlyTotalSelfUse != null "> and monthly_total_self_use = #{monthlyTotalSelfUse}</if>
+            <if test="yearlyTotalSelfUse != null "> and yearly_total_self_use = #{yearlyTotalSelfUse}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+        </where>
+    </select>
+
+    <select id="selectSubCoalProductInventoryById" parameterType="Long" resultMap="SubCoalProductInventoryResult">
+        <include refid="selectSubCoalProductInventoryVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSubCoalProductInventory" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        insert into sub_coal_product_inventory
+        <!-- 列名部分：仅当list非空时才生成列名，且基于第一个元素判断字段 -->
+        <if test="list != null and list.size() > 0">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="list[0].recordDate != null">record_date,</if>
+                <if test="list[0].unitCode != null and list[0].unitCode != ''">unit_code,</if>
+                <if test="list[0].unitName != null and list[0].unitName != ''">unit_name,</if>
+                <if test="list[0].cleanCoalPrevStock != null">clean_coal_prev_stock,</if>
+                <if test="list[0].cleanCoalCurrentStock != null">clean_coal_current_stock,</if>
+                <if test="list[0].slackLumpPrevStock != null">slack_lump_prev_stock,</if>
+                <if test="list[0].slackLumpCurrentStock != null">slack_lump_current_stock,</if>
+                <if test="list[0].totalPrevStock != null">total_prev_stock,</if>
+                <if test="list[0].totalCurrentStock != null">total_current_stock,</if>
+                <if test="list[0].dailyPlantSelfUse != null">daily_plant_self_use,</if>
+                <if test="list[0].dailyOutsideSelfUse != null">daily_outside_self_use,</if>
+                <if test="list[0].dailyTotalSelfUse != null">daily_total_self_use,</if>
+                <if test="list[0].monthlyTotalSelfUse != null">monthly_total_self_use,</if>
+                <if test="list[0].yearlyTotalSelfUse != null">yearly_total_self_use,</if>
+                <if test="list[0].userId != null">user_id,</if>
+                <if test="list[0].createTime != null">create_time,</if>
+                <if test="list[0].updateTime != null">update_time,</if>
+            </trim>
+            <!-- 值部分：遍历list生成多条记录，确保每个记录的括号正确闭合 -->
+            values
+            <foreach collection="list" item="item" separator=",">
+                <trim prefix="(" suffix=")" suffixOverrides=",">
+                    <if test="item.recordDate != null">#{item.recordDate},</if>
+                    <if test="item.unitCode != null and item.unitCode != ''">#{item.unitCode},</if>
+                    <if test="item.unitName != null and item.unitName != ''">#{item.unitName},</if>
+                    <if test="item.cleanCoalPrevStock != null">#{item.cleanCoalPrevStock},</if>
+                    <if test="item.cleanCoalCurrentStock != null">#{item.cleanCoalCurrentStock},</if>
+                    <if test="item.slackLumpPrevStock != null">#{item.slackLumpPrevStock},</if>
+                    <if test="item.slackLumpCurrentStock != null">#{item.slackLumpCurrentStock},</if>
+                    <if test="item.totalPrevStock != null">#{item.totalPrevStock},</if>
+                    <if test="item.totalCurrentStock != null">#{item.totalCurrentStock},</if>
+                    <if test="item.dailyPlantSelfUse != null">#{item.dailyPlantSelfUse},</if>
+                    <if test="item.dailyOutsideSelfUse != null">#{item.dailyOutsideSelfUse},</if>
+                    <if test="item.dailyTotalSelfUse != null">#{item.dailyTotalSelfUse},</if>
+                    <if test="item.monthlyTotalSelfUse != null">#{item.monthlyTotalSelfUse},</if>
+                    <if test="item.yearlyTotalSelfUse != null">#{item.yearlyTotalSelfUse},</if>
+                    <if test="item.userId != null">#{item.userId},</if>
+                    <if test="item.createTime != null">#{item.createTime},</if>
+                    <if test="item.updateTime != null">#{item.updateTime},</if>
+                </trim>
+            </foreach>
+        </if>
+    </insert>
+
+    <update id="updateSubCoalProductInventory" parameterType="com.ruoyi.system.domain.BaoBiao.dto.cpi.SubCoalProductInventory">
+        update sub_coal_product_inventory
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="recordDate != null">record_date = #{recordDate},</if>
+            <if test="unitCode != null and unitCode != ''">unit_code = #{unitCode},</if>
+            <if test="unitName != null and unitName != ''">unit_name = #{unitName},</if>
+            <if test="cleanCoalPrevStock != null">clean_coal_prev_stock = #{cleanCoalPrevStock},</if>
+            <if test="cleanCoalCurrentStock != null">clean_coal_current_stock = #{cleanCoalCurrentStock},</if>
+            <if test="slackLumpPrevStock != null">slack_lump_prev_stock = #{slackLumpPrevStock},</if>
+            <if test="slackLumpCurrentStock != null">slack_lump_current_stock = #{slackLumpCurrentStock},</if>
+            <if test="totalPrevStock != null">total_prev_stock = #{totalPrevStock},</if>
+            <if test="totalCurrentStock != null">total_current_stock = #{totalCurrentStock},</if>
+            <if test="dailyPlantSelfUse != null">daily_plant_self_use = #{dailyPlantSelfUse},</if>
+            <if test="dailyOutsideSelfUse != null">daily_outside_self_use = #{dailyOutsideSelfUse},</if>
+            <if test="dailyTotalSelfUse != null">daily_total_self_use = #{dailyTotalSelfUse},</if>
+            <if test="monthlyTotalSelfUse != null">monthly_total_self_use = #{monthlyTotalSelfUse},</if>
+            <if test="yearlyTotalSelfUse != null">yearly_total_self_use = #{yearlyTotalSelfUse},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSubCoalProductInventoryById" parameterType="Long">
+        delete from sub_coal_product_inventory where id = #{id}
+    </delete>
+
+    <delete id="deleteSubCoalProductInventoryByIds" parameterType="String">
+        delete from sub_coal_product_inventory where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="selectcProductInventoryById" parameterType="Long" resultMap="SubCoalProductInventoryResult">
+        <include refid="selectSubCoalProductInventoryVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectProductMonth" parameterType="Date" resultMap="SubCoalProductInventoryResult">
+        SELECT unit_code,unit_name,YEAR(t1.record_date) as year1,MONTH(t1.record_date) as month1,Sum(t1.daily_total_self_use)  as monthly_total_self_use,
+               (SELECT Sum(t2.daily_total_self_use) from  sub_coal_product_inventory t2 where YEAR(t2.record_date)=year1) as yearly_total_self_use
+        from sub_coal_product_inventory t1 WHERE t1.record_date >=#{date} GROUP BY YEAR(t1.record_date) ,MONTH(t1.record_date),unit_code,unit_name
+    </select>
+
+    <select id="selectProductInventoryDay" parameterType="Date" resultMap="SubCoalProductInventoryResult">
+        SELECT unit_code,unit_name,sum(clean_coal_prev_stock) as clean_coal_prev_stock,
+               sum(clean_coal_current_stock) as clean_coal_current_stock, sum(slack_lump_prev_stock) as slack_lump_prev_stock,
+               sum(slack_lump_current_stock) as slack_lump_current_stock, sum(total_prev_stock) as total_prev_stock, sum(total_current_stock) as total_current_stock,
+               sum(daily_plant_self_use) as daily_plant_self_use, sum(daily_outside_self_use) as daily_outside_self_use
+        from sub_coal_product_inventory t1 WHERE t1.record_date =#{date} GROUP BY t1.record_date,unit_code,unit_name
+    </select>
+    <select id="selectProductInventoryMonth" parameterType="Date" resultMap="SubCoalProductInventoryResult">
+        SELECT unit_code,unit_name,sum(clean_coal_prev_stock) as clean_coal_prev_stock,
+               sum(clean_coal_current_stock) as clean_coal_current_stock, sum(slack_lump_prev_stock) as slack_lump_prev_stock,
+               sum(slack_lump_current_stock) as slack_lump_current_stock, sum(total_prev_stock) as total_prev_stock, sum(total_current_stock) as total_current_stock,
+               sum(daily_plant_self_use) as daily_plant_self_use, sum(daily_outside_self_use) as daily_outside_self_use
+        from sub_coal_product_inventory t1 WHERE YEAR(t1.record_date)  =Year(#{date}) and MONTH(t1.record_date)  =MONTH(#{date}) GROUP BY Year(#{date}),MONTH(#{date}),unit_code,unit_name
+
+    </select>
+    <select id="selectProductInventoryYear" parameterType="Date" resultMap="SubCoalProductInventoryResult">
+        SELECT unit_code,unit_name,sum(clean_coal_prev_stock) as clean_coal_prev_stock,
+               sum(clean_coal_current_stock) as clean_coal_current_stock, sum(slack_lump_prev_stock) as slack_lump_prev_stock,
+               sum(slack_lump_current_stock) as slack_lump_current_stock, sum(total_prev_stock) as total_prev_stock, sum(total_current_stock) as total_current_stock,
+               sum(daily_plant_self_use) as daily_plant_self_use, sum(daily_outside_self_use) as daily_outside_self_use
+        from sub_coal_product_inventory t1 WHERE YEAR(t1.record_date)  =Year(#{date}) GROUP BY Year(#{date}),unit_code,unit_name
+
+    </select>
+</mapper>

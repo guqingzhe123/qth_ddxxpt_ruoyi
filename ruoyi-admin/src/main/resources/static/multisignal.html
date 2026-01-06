@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>多人视频通话（带权限与状态同步）</title>
+    <style>
+        :root{
+            --bg:#0f1115;
+            --panel:#151923;
+            --muted:#8892a6;
+            --text:#e6edf3;
+            --accent:#7aa2f7;
+            --ok:#2ea043;
+            --warn:#f0a020;
+            --err:#ff6b6b;
+            --border:#283040
+        }
+        *{box-sizing:border-box}
+        body{
+            margin:0;
+            background:var(--bg);
+            color:var(--text);
+            font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif
+        }
+        header{
+            padding:12px;
+            border-bottom:1px solid var(--border);
+            background:#111623
+        }
+        .controls{
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+            margin-bottom:10px
+        }
+        .pill{
+            display:flex;
+            gap:6px;
+            align-items:center;
+            background:#0e1420;
+            border:1px solid var(--border);
+            padding:8px 10px;
+            border-radius:12px
+        }
+        .pill input{
+            background:transparent;
+            border:none;
+            outline:none;
+            color:var(--text);
+            width:120px
+        }
+        .btn{
+            cursor:pointer;
+            border:1px solid var(--border);
+            background:#0e1420;
+            color:var(--text);
+            padding:8px 12px;
+            border-radius:10px
+        }
+        .btn:hover{border-color:#3a445a}
+        .btn-primary{
+            background:var(--accent);
+            border-color:transparent;
+            color:#0b1220
+        }
+        .videos{
+            display:grid;
+            grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
+            gap:10px;
+            padding:10px
+        }
+        .video-container{position:relative}
+        video{
+            width:100%;
+            background:#000;
+            border-radius:8px;
+            border:1px solid var(--border);
+            aspect-ratio:4/3
+        }
+        .video-label{
+            position:absolute;
+            bottom:5px;
+            left:5px;
+            background:rgba(0,0,0,0.5);
+            padding:3px 8px;
+            border-radius:4px;
+            font-size:12px
+        }
+        .status-bar{
+            font-size:12px;
+            color:var(--muted);
+            margin:5px 10px;
+            display:flex;
+            gap:20px
+        }
+        #log{
+            height:150px;
+            overflow:auto;
+            margin:10px;
+            padding:10px;
+            background:var(--panel);
+            border-radius:8px;
+            font-size:12px;
+            font-family:monospace
+        }
+        .permission-denied {
+            color: var(--err);
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+
+<header>
+    <div class="controls">
+        <div class="pill">
+            <label>房间号</label>
+            <input id="roomId" value="meeting123">
+        </div>
+        <div class="pill">
+            <label>用户名</label>
+            <input id="username" value="user_">
+        </div>
+        <button id="join" class="btn btn-primary">加入房间</button>
+        <button id="leave" class="btn" disabled>离开房间</button>
+        <button id="toggleAudio" class="btn" disabled>关闭音频</button>
+        <button id="toggleVideo" class="btn" disabled>关闭视频</button>
+    </div>
+    <div class="status-bar">
+        连接状态: <span id="connState" class="warn">未连接</span> |
+        房间人数: <span id="peerCount">0</span> |
+        权限状态: <span id="permState">未验证</span>
+    </div>
+</header>
+
+<div class="videos" id="videosContainer">
+    <!-- 视频元素动态添加 -->
+</div>
+
+<div id="log"></div>
+
+<script>
+    // 全局状态管理
+    const state = {
+        roomId: '',
+        username: '',
+        localStream: null,
+        peers: new Map(), // peerId -> { pc, videoElement }
+        joined: false,
+        pollTimer: null,
+        lastSignalId: 0,
+        hasPermission: false, // 权限状态
+        userCount: 0 // 房间人数
+    };
+
+    // DOM元素
+    const els = {
+        roomId: document.getElementById('roomId'),
+        username: document.getElementById('username'),
+        join: document.getElementById('join'),
+        leave: document.getElementById('leave'),
+        toggleAudio: document.getElementById('toggleAudio'),
+        toggleVideo: document.getElementById('toggleVideo'),
+        videosContainer: document.getElementById('videosContainer'),
+        connState: document.getElementById('connState'),
+        peerCount: document.getElementById('peerCount'),
+        permState: document.getElementById('permState'),
+        log: document.getElementById('log'),
+    };
+
+    // 配置
+    const API = {
+        JOIN: '/dev-api/system/rtc/multi/join',
+        LEAVE: '/dev-api/system/rtc/multi/leave',
+        SIGNAL: '/dev-api/system/rtc/multi/signal',
+        POLL: '/dev-api/system/rtc/multi/poll'
+    };
+    const ICE_SERVERS = [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' }
+    ];
+    const POLL_INTERVAL = 1000;
+
+    // 工具函数
+    function log(...args) {
+        const time = new Date().toLocaleTimeString();
+        els.log.innerHTML += `[${time}] ${args.join(' ')}\n`;
+        els.log.scrollTop = els.log.scrollHeight;
+    }
+
+    function setConnState(text, cls) {
+        els.connState.textContent = text;
+        els.connState.className = cls || '';
+    }
+
+    function setUserCount(count) {
+        state.userCount = count;
+        els.peerCount.textContent = count;
+    }
+
+
+
+    async function post(url, data) {
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify(data)
+            });
+            return await response.json();
+        } catch (e) {
+            log('请求错误:', e.message);
+            return { success: false, message: e.message };
+        }
+    }
+
+    async function get(url, params) {
+        const query = new URLSearchParams(params).toString();
+        try {
+            const response = await fetch(`${url}?${query}`, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            });
+            return await response.json();
+        } catch (e) {
+            log('请求错误:', e.message);
+            return { data: [] };
+        }
+    }
+
+    // 媒体处理
+    async function initLocalStream() {
+        if (state.localStream) return state.localStream;
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: true,
+                video: { width: 1280, height: 720 }
+            });
+            state.localStream = stream;
+            addVideoElement('local', state.username, stream);
+            return stream;
+        } catch (e) {
+            log('获取媒体失败:', e.message);
+            alert('无法访问摄像头/麦克风，请检查设备权限');
+            throw e;
+        }
+    }
+
+    function addVideoElement(id, name, stream) {
+        let container = document.getElementById(`video-${id}`);
+        if (container) {
+            container.querySelector('video').srcObject = stream;
+            return;
+        }
+
+        container = document.createElement('div');
+        container.id = `video-${id}`;
+        container.className = 'video-container';
+
+        const video = document.createElement('video');
+        video.autoplay = true;
+        video.playsInline = true;
+        video.srcObject = stream;
+        if (id === 'local') video.muted = true; // 本地视频静音
+
+        const label = document.createElement('div');
+        label.className = 'video-label';
+        label.textContent = name;
+
+        container.appendChild(video);
+        container.appendChild(label);
+        els.videosContainer.appendChild(container);
+    }
+
+    function removeVideoElement(id) {
+        const container = document.getElementById(`video-${id}`);
+        if (container) container.remove();
+    }
+
+    // PeerConnection管理
+    function createPeerConnection(peerId, peerName) {
+        const pc = new RTCPeerConnection({ iceServers: ICE_SERVERS });
+        state.peers.set(peerId, { pc, name: peerName });
+
+        // 添加本地流轨道
+        if (state.localStream) {
+            state.localStream.getTracks().forEach(track => {
+                pc.addTrack(track, state.localStream);
+            });
+        }
+
+        // 处理远程流
+        pc.ontrack = (event) => {
+            if (event.streams && event.streams[0]) {
+                addVideoElement(peerId, peerName, event.streams[0]);
+            }
+        };
+
+        // 处理ICE候选
+        pc.onicecandidate = (event) => {
+            if (event.candidate) {
+                post(API.SIGNAL, {
+                    roomId: state.roomId,
+                    from: state.username,
+                    to: peerId,
+                    type: 'ice',
+                    candidate: event.candidate
+                }).catch(e => log('发送ICE失败:', e.message));
+            }
+        };
+
+        pc.onconnectionstatechange = () => {
+            log(`与${peerName}的连接状态: ${pc.connectionState}`);
+            if (pc.connectionState === 'failed' || pc.connectionState === 'disconnected') {
+                removePeer(peerId);
+                // 连接断开时更新人数
+                setUserCount(state.peers.size);
+            }
+        };
+
+        return pc;
+    }
+
+    async function createOffer(peerId, peerName) {
+        const pc = createPeerConnection(peerId, peerName);
+        try {
+            const offer = await pc.createOffer();
+            await pc.setLocalDescription(offer);
+            await post(API.SIGNAL, {
+                roomId: state.roomId,
+                from: state.username,
+                to: peerId,
+                type: 'offer',
+                sdp: offer.sdp
+            });
+        } catch (e) {
+            log('创建offer失败:', e.message);
+        }
+    }
+
+    async function handleSignal(signal) {
+        const { from: peerId, fromName: peerName, type, sdp, candidate } = signal;
+
+        if (!state.peers.has(peerId) && type !== 'offer') {
+            log(`收到未知peer ${peerId}的信号，忽略`);
+            return;
+        }
+
+        switch (type) {
+            case 'offer':
+                const pc = createPeerConnection(peerId, peerName);
+                await pc.setRemoteDescription(new RTCSessionDescription({ type, sdp }));
+                const answer = await pc.createAnswer();
+                await pc.setLocalDescription(answer);
+                await post(API.SIGNAL, {
+                    roomId: state.roomId,
+                    from: state.username,
+                    to: peerId,
+                    type: 'answer',
+                    sdp: answer.sdp
+                });
+                break;
+
+            case 'answer':
+                const peer = state.peers.get(peerId);
+                if (peer) {
+                    await peer.pc.setRemoteDescription(new RTCSessionDescription({ type, sdp }));
+                }
+                break;
+
+            case 'ice':
+                const icePeer = state.peers.get(peerId);
+                if (icePeer) {
+                    await icePeer.pc.addIceCandidate(new RTCIceCandidate(candidate));
+                }
+                break;
+
+            case 'leave':
+                removePeer(peerId);
+                setUserCount(state.peers.size);
+                break;
+
+            case 'roomUpdate':
+                // 处理房间人数更新
+                setUserCount(signal.data.userCount);
+                log(`房间人数更新为: ${signal.data.userCount}`);
+                break;
+        }
+    }
+
+    function removePeer(peerId) {
+        const peer = state.peers.get(peerId);
+        if (peer) {
+            peer.pc.close();
+            removeVideoElement(peerId);
+            state.peers.delete(peerId);
+        }
+    }
+
+    // 房间管理
+    async function joinRoom() {
+
+
+        if (state.joined) return;
+
+        state.roomId = els.roomId.value.trim() || 'default-room';
+        // 生成随机用户名（如果未输入）
+        state.username = els.username.value.trim() || 'user_' + Math.random().toString(36).substr(2, 4);
+
+        try {
+            // 初始化本地媒体流
+            await initLocalStream();
+
+            // 调用加入房间接口
+            const result = await post(API.JOIN, {
+                roomId: state.roomId,
+                username: state.username
+            });
+            log(`加入房间失败1: ${result}`);
+            if (result && result.code==200) {
+                state.joined = true;
+                // 更新连接状态为"已连接"
+                setConnState('已连接', 'ok');
+                // 更新房间人数（从接口返回中获取）
+                setUserCount(result.data.userCount || 1);
+                // 启用/禁用按钮
+                els.join.disabled = true;
+                els.leave.disabled = false;
+                els.toggleAudio.disabled = false;
+                els.toggleVideo.disabled = false;
+
+                log(`成功加入房间 ${state.roomId}，当前用户: ${state.username}`);
+
+                // 开始轮询信号
+                startPolling();
+
+                // 对已在房间的用户发起呼叫
+                if (result.data && result.data.peers) {
+                    result.data.peers.forEach(peer => {
+                        log(`发现房间内已有用户: ${peer.username}`);
+                        createOffer(peer.username, peer.username);
+                    });
+                }
+            } else {
+                log(`加入房间失败: ${result.message || '未知错误'}`);
+            }
+        } catch (e) {
+            log('加入房间异常:', e.message);
+        }
+    }
+
+    async function leaveRoom() {
+        if (!state.joined) return;
+
+        // 发送离开信号
+        await post(API.LEAVE, {
+            roomId: state.roomId,
+            username: state.username
+        });
+
+        // 清理资源
+        stopPolling();
+        state.peers.forEach((_, peerId) => removePeer(peerId));
+        if (state.localStream) {
+            state.localStream.getTracks().forEach(track => track.stop());
+            state.localStream = null;
+        }
+        removeVideoElement('local');
+
+        // 重置状态
+        state.joined = false;
+        setConnState('未连接', 'warn');
+        setUserCount(0);
+        // 重置按钮状态
+        els.join.disabled = false;
+        els.leave.disabled = true;
+        els.toggleAudio.disabled = true;
+        els.toggleVideo.disabled = true;
+
+        log(`已离开房间 ${state.roomId}`);
+    }
+
+    function startPolling() {
+        stopPolling();
+        state.pollTimer = setInterval(async () => {
+            if (!state.joined) return;
+
+            const signals = await get(API.POLL, {
+                roomId: state.roomId,
+                username: state.username,
+                lastId: state.lastSignalId
+            });
+
+            if (signals && signals.data) {
+                signals.data.forEach(signal => {
+                    state.lastSignalId = Math.max(state.lastSignalId, signal.id);
+                    handleSignal(signal);
+                });
+            }
+        }, POLL_INTERVAL);
+        log('开始轮询信令...');
+    }
+
+    function stopPolling() {
+        if (state.pollTimer) {
+            clearInterval(state.pollTimer);
+            state.pollTimer = null;
+            log('停止轮询信令');
+        }
+    }
+
+    // 事件监听
+    els.join.addEventListener('click', joinRoom);
+    els.leave.addEventListener('click', leaveRoom);
+
+    els.toggleAudio.addEventListener('click', () => {
+        if (state.localStream) {
+            const audioTrack = state.localStream.getAudioTracks()[0];
+            audioTrack.enabled = !audioTrack.enabled;
+            els.toggleAudio.textContent = audioTrack.enabled ? '关闭音频' : '开启音频';
+        }
+    });
+
+    els.toggleVideo.addEventListener('click', () => {
+        if (state.localStream) {
+            const videoTrack = state.localStream.getVideoTracks()[0];
+            videoTrack.enabled = !videoTrack.enabled;
+            els.toggleVideo.textContent = videoTrack.enabled ? '关闭视频' : '开启视频';
+        }
+    });
+
+    // 页面加载时检查权限
+    window.addEventListener('load', () => {
+        // 从本地存储获取用户名（如果有）
+        const savedUser = localStorage.getItem('video_username');
+        if (savedUser) els.username.value = savedUser;
+
+
+        log('页面已加载，点击"加入房间"开始视频通话');
+    });
+
+    // 页面关闭时清理
+    window.addEventListener('beforeunload', () => {
+        if (state.joined) {
+            leaveRoom();
+            // 保存用户名到本地存储
+            localStorage.setItem('video_username', state.username);
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.work.WorkCompanyCoalStockMapper">
+
+    <resultMap type="com.ruoyi.system.domain.work.WorkCompanyCoalStock" id="WorkCompanyCoalStockResult">
+        <result property="id"    column="id"    />
+        <result property="recordDate"    column="record_date"    />
+        <result property="coalGrade"    column="coal_grade"    />
+        <result property="leanCoalPreviousStock"    column="lean_coal_previous_stock"    />
+        <result property="leanCoalDailyIn"    column="lean_coal_daily_in"    />
+        <result property="leanCoalDailyOut"    column="lean_coal_daily_out"    />
+        <result property="leanCoalCurrentStock"    column="lean_coal_current_stock"    />
+        <result property="mainCokePreviousStock"    column="main_coke_previous_stock"    />
+        <result property="mainCokeDailyIn"    column="main_coke_daily_in"    />
+        <result property="mainCokeDailyOut"    column="main_coke_daily_out"    />
+        <result property="mainCokeCurrentStock"    column="main_coke_current_stock"    />
+        <result property="fatCoalPreviousStock"    column="fat_coal_previous_stock"    />
+        <result property="fatCoalDailyIn"    column="fat_coal_daily_in"    />
+        <result property="fatCoalDailyOut"    column="fat_coal_daily_out"    />
+        <result property="fatCoalCurrentStock"    column="fat_coal_current_stock"    />
+        <result property="totalPreviousStock"    column="total_previous_stock"    />
+        <result property="totalDailyIn"    column="total_daily_in"    />
+        <result property="totalDailyOut"    column="total_daily_out"    />
+        <result property="totalCurrentStock"    column="total_current_stock"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectWorkCompanyCoalStockVo">
+        select id, record_date, coal_grade, lean_coal_previous_stock, lean_coal_daily_in, lean_coal_daily_out, lean_coal_current_stock, main_coke_previous_stock,
+               main_coke_daily_in, main_coke_daily_out, main_coke_current_stock, fat_coal_previous_stock, fat_coal_daily_in, fat_coal_daily_out, fat_coal_current_stock,
+               total_previous_stock, total_daily_in, total_daily_out, total_current_stock, create_time from work_company_coal_stock
+    </sql>
+
+    <select id="selectWorkCompanyCoalStockList" parameterType="com.ruoyi.system.domain.work.WorkCompanyCoalStock" resultMap="WorkCompanyCoalStockResult">
+        <include refid="selectWorkCompanyCoalStockVo"/>
+        <where>
+            <if test="recordDate != null "> and record_date = #{recordDate}</if>
+            <if test="coalGrade != null  and coalGrade != ''"> and coal_grade = #{coalGrade}</if>
+            <if test="leanCoalPreviousStock != null "> and lean_coal_previous_stock = #{leanCoalPreviousStock}</if>
+            <if test="leanCoalDailyIn != null "> and lean_coal_daily_in = #{leanCoalDailyIn}</if>
+            <if test="leanCoalDailyOut != null "> and lean_coal_daily_out = #{leanCoalDailyOut}</if>
+            <if test="leanCoalCurrentStock != null "> and lean_coal_current_stock = #{leanCoalCurrentStock}</if>
+            <if test="mainCokePreviousStock != null "> and main_coke_previous_stock = #{mainCokePreviousStock}</if>
+            <if test="mainCokeDailyIn != null "> and main_coke_daily_in = #{mainCokeDailyIn}</if>
+            <if test="mainCokeDailyOut != null "> and main_coke_daily_out = #{mainCokeDailyOut}</if>
+            <if test="mainCokeCurrentStock != null "> and main_coke_current_stock = #{mainCokeCurrentStock}</if>
+            <if test="fatCoalPreviousStock != null "> and fat_coal_previous_stock = #{fatCoalPreviousStock}</if>
+            <if test="fatCoalDailyIn != null "> and fat_coal_daily_in = #{fatCoalDailyIn}</if>
+            <if test="fatCoalDailyOut != null "> and fat_coal_daily_out = #{fatCoalDailyOut}</if>
+            <if test="fatCoalCurrentStock != null "> and fat_coal_current_stock = #{fatCoalCurrentStock}</if>
+            <if test="totalPreviousStock != null "> and total_previous_stock = #{totalPreviousStock}</if>
+            <if test="totalDailyIn != null "> and total_daily_in = #{totalDailyIn}</if>
+            <if test="totalDailyOut != null "> and total_daily_out = #{totalDailyOut}</if>
+            <if test="totalCurrentStock != null "> and total_current_stock = #{totalCurrentStock}</if>
+        </where>
+    </select>
+
+    <select id="selectWorkCompanyCoalStockById" parameterType="java.lang.String" resultMap="WorkCompanyCoalStockResult">
+        <include refid="selectWorkCompanyCoalStockVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWorkCompanyCoalStock" parameterType="com.ruoyi.system.domain.work.WorkCompanyCoalStock" useGeneratedKeys="true" keyProperty="id">
+        insert into work_company_coal_stock
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="recordDate != null">record_date,</if>
+            <if test="coalGrade != null and coalGrade != ''">coal_grade,</if>
+            <if test="leanCoalPreviousStock != null">lean_coal_previous_stock,</if>
+            <if test="leanCoalDailyIn != null">lean_coal_daily_in,</if>
+            <if test="leanCoalDailyOut != null">lean_coal_daily_out,</if>
+            <if test="leanCoalCurrentStock != null">lean_coal_current_stock,</if>
+            <if test="mainCokePreviousStock != null">main_coke_previous_stock,</if>
+            <if test="mainCokeDailyIn != null">main_coke_daily_in,</if>
+            <if test="mainCokeDailyOut != null">main_coke_daily_out,</if>
+            <if test="mainCokeCurrentStock != null">main_coke_current_stock,</if>
+            <if test="fatCoalPreviousStock != null">fat_coal_previous_stock,</if>
+            <if test="fatCoalDailyIn != null">fat_coal_daily_in,</if>
+            <if test="fatCoalDailyOut != null">fat_coal_daily_out,</if>
+            <if test="fatCoalCurrentStock != null">fat_coal_current_stock,</if>
+            <if test="totalPreviousStock != null">total_previous_stock,</if>
+            <if test="totalDailyIn != null">total_daily_in,</if>
+            <if test="totalDailyOut != null">total_daily_out,</if>
+            <if test="totalCurrentStock != null">total_current_stock,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="recordDate != null">#{recordDate},</if>
+            <if test="coalGrade != null and coalGrade != ''">#{coalGrade},</if>
+            <if test="leanCoalPreviousStock != null">#{leanCoalPreviousStock},</if>
+            <if test="leanCoalDailyIn != null">#{leanCoalDailyIn},</if>
+            <if test="leanCoalDailyOut != null">#{leanCoalDailyOut},</if>
+            <if test="leanCoalCurrentStock != null">#{leanCoalCurrentStock},</if>
+            <if test="mainCokePreviousStock != null">#{mainCokePreviousStock},</if>
+            <if test="mainCokeDailyIn != null">#{mainCokeDailyIn},</if>
+            <if test="mainCokeDailyOut != null">#{mainCokeDailyOut},</if>
+            <if test="mainCokeCurrentStock != null">#{mainCokeCurrentStock},</if>
+            <if test="fatCoalPreviousStock != null">#{fatCoalPreviousStock},</if>
+            <if test="fatCoalDailyIn != null">#{fatCoalDailyIn},</if>
+            <if test="fatCoalDailyOut != null">#{fatCoalDailyOut},</if>
+            <if test="fatCoalCurrentStock != null">#{fatCoalCurrentStock},</if>
+            <if test="totalPreviousStock != null">#{totalPreviousStock},</if>
+            <if test="totalDailyIn != null">#{totalDailyIn},</if>
+            <if test="totalDailyOut != null">#{totalDailyOut},</if>
+            <if test="totalCurrentStock != null">#{totalCurrentStock},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateWorkCompanyCoalStock" parameterType="com.ruoyi.system.domain.work.WorkCompanyCoalStock">
+        update work_company_coal_stock
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="recordDate != null">record_date = #{recordDate},</if>
+            <if test="coalGrade != null and coalGrade != ''">coal_grade = #{coalGrade},</if>
+            <if test="leanCoalPreviousStock != null">lean_coal_previous_stock = #{leanCoalPreviousStock},</if>
+            <if test="leanCoalDailyIn != null">lean_coal_daily_in = #{leanCoalDailyIn},</if>
+            <if test="leanCoalDailyOut != null">lean_coal_daily_out = #{leanCoalDailyOut},</if>
+            <if test="leanCoalCurrentStock != null">lean_coal_current_stock = #{leanCoalCurrentStock},</if>
+            <if test="mainCokePreviousStock != null">main_coke_previous_stock = #{mainCokePreviousStock},</if>
+            <if test="mainCokeDailyIn != null">main_coke_daily_in = #{mainCokeDailyIn},</if>
+            <if test="mainCokeDailyOut != null">main_coke_daily_out = #{mainCokeDailyOut},</if>
+            <if test="mainCokeCurrentStock != null">main_coke_current_stock = #{mainCokeCurrentStock},</if>
+            <if test="fatCoalPreviousStock != null">fat_coal_previous_stock = #{fatCoalPreviousStock},</if>
+            <if test="fatCoalDailyIn != null">fat_coal_daily_in = #{fatCoalDailyIn},</if>
+            <if test="fatCoalDailyOut != null">fat_coal_daily_out = #{fatCoalDailyOut},</if>
+            <if test="fatCoalCurrentStock != null">fat_coal_current_stock = #{fatCoalCurrentStock},</if>
+            <if test="totalPreviousStock != null">total_previous_stock = #{totalPreviousStock},</if>
+            <if test="totalDailyIn != null">total_daily_in = #{totalDailyIn},</if>
+            <if test="totalDailyOut != null">total_daily_out = #{totalDailyOut},</if>
+            <if test="totalCurrentStock != null">total_current_stock = #{totalCurrentStock},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWorkCompanyCoalStockById" parameterType="java.lang.String">
+        delete from work_company_coal_stock where id = #{id}
+    </delete>
+
+    <delete id="deleteWorkCompanyCoalStockByIds" parameterType="java.lang.String">
+        delete from work_company_coal_stock where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

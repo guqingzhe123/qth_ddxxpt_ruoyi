@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.work.WorkFullyMechanizedStatsMapper">
+    
+    <resultMap type="com.ruoyi.system.domain.work.WorkFullyMechanizedStats" id="WorkFullyMechanizedStatsResult">
+        <result property="id"    column="id"    />
+        <result property="statsType"    column="stats_type"    />
+        <result property="unitName"    column="unit_name"    />
+        <result property="teamName"    column="team_name"    />
+        <result property="unitCode"    column="unit_code"    />
+        <result property="dutyDate"    column="duty_date"    />
+        <result property="outputShift1"    column="output_shift1"    />
+        <result property="outputShift2"    column="output_shift2"    />
+        <result property="outputShift3"    column="output_shift3"    />
+        <result property="originalOutput"    column="original_output"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectWorkFullyMechanizedStatsVo">
+        select id, stats_type, unit_name,unit_code, duty_date,team_name,
+               output_shift1, output_shift2, output_shift3, original_output, remarks, status, create_time from work_fully_mechanized_stats
+    </sql>
+
+
+    <select id="selectWorkFullyMechanizedStatsList" parameterType="com.ruoyi.system.domain.work.WorkFullyMechanizedStats" resultMap="WorkFullyMechanizedStatsResult">
+        <include refid="selectWorkFullyMechanizedStatsVo"/>
+        <where>
+            <if test="statsType != null  and statsType != ''"> and stats_type = #{statsType}</if>
+            <if test="unitName != null  and unitName != ''"> and unit_name = #{unitName}</if>
+            <if test="teamName != null  and teamName != ''"> and team_name = #{teamName}</if>
+            <if test="unitCode != null  and unitCode != ''"> and unit_code = #{unitCode}</if>
+            <if test="dutyDate != null "> and duty_date = #{dutyDate}</if>
+            <if test="outputShift1 != null  and outputShift1 != ''"> and output_shift1 = #{outputShift1}</if>
+            <if test="outputShift2 != null  and outputShift2 != ''"> and output_shift2 = #{outputShift2}</if>
+            <if test="outputShift3 != null  and outputShift3 != ''"> and output_shift3 = #{outputShift3}</if>
+            <if test="originalOutput != null  and originalOutput != ''"> and original_output = #{originalOutput}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    <select id="selectWorkFullyMechanizedStatsListAll" parameterType="com.ruoyi.system.domain.work.WorkFullyMechanizedStats" resultMap="WorkFullyMechanizedStatsResult">
+        select  stats_type, unit_name,team_name, unit_code,  SUM(output_shift1) AS output_shift1, SUM(output_shift2) AS output_shift2, SUM(output_shift3) AS output_shift3,
+        SUM(original_output) AS original_output from work_fully_mechanized_stats
+        <where>
+            <if test="statsType != null  and statsType != ''"> and stats_type = #{statsType}</if>
+            <if test="unitName != null  and unitName != ''"> and unit_name = #{unitName}</if>
+            <if test="teamName != null  and teamName != ''"> and team_name = #{teamName}</if>
+            <if test="unitCode != null  and unitCode != ''"> and unit_code = #{unitCode}</if>
+            <if test="dutyDate != null "> and duty_date &lt;=  #{dutyDate} and YEAR(duty_date) = YEAR(#{dutyDate}) and MONTH(duty_date) = MONTH(#{dutyDate})</if>
+            <if test="outputShift1 != null  and outputShift1 != ''"> and output_shift1 = #{outputShift1}</if>
+            <if test="outputShift2 != null  and outputShift2 != ''"> and output_shift2 = #{outputShift2}</if>
+            <if test="outputShift3 != null  and outputShift3 != ''"> and output_shift3 = #{outputShift3}</if>
+            <if test="originalOutput != null  and originalOutput != ''"> and original_output = #{originalOutput}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+        group by stats_type,team_name, unit_name, unit_code
+    </select>
+    <select id="selectWorkFullyMechanizedStatsById" parameterType="java.lang.String" resultMap="WorkFullyMechanizedStatsResult">
+        <include refid="selectWorkFullyMechanizedStatsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWorkFullyMechanizedStats" parameterType="com.ruoyi.system.domain.work.WorkFullyMechanizedStats" useGeneratedKeys="true" keyProperty="id">
+        insert into work_fully_mechanized_stats
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="statsType != null and statsType != ''">stats_type,</if>
+            <if test="unitName != null and unitName != ''">unit_name,</if>
+            <if test="teamName != null  and teamName != ''"> team_name,</if>
+            <if test="unitCode != null and unitCode != ''">unit_code,</if>
+            <if test="dutyDate != null">duty_date,</if>
+            <if test="outputShift1 != null">output_shift1,</if>
+            <if test="outputShift2 != null and outputShift2 != ''">output_shift2,</if>
+            <if test="outputShift3 != null and outputShift3 != ''">output_shift3,</if>
+            <if test="originalOutput != null and originalOutput != ''">original_output,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="statsType != null and statsType != ''">#{statsType},</if>
+            <if test="unitName != null and unitName != ''">#{unitName},</if>
+            <if test="teamName != null  and teamName != ''"> #{teamName},</if>
+            <if test="unitCode != null and unitCode != ''">#{unitCode},</if>
+            <if test="dutyDate != null">#{dutyDate},</if>
+            <if test="outputShift1 != null">#{outputShift1},</if>
+            <if test="outputShift2 != null and outputShift2 != ''">#{outputShift2},</if>
+            <if test="outputShift3 != null and outputShift3 != ''">#{outputShift3},</if>
+            <if test="originalOutput != null and originalOutput != ''">#{originalOutput},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWorkFullyMechanizedStats" parameterType="com.ruoyi.system.domain.work.WorkFullyMechanizedStats">
+        update work_fully_mechanized_stats
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="statsType != null and statsType != ''">stats_type = #{statsType},</if>
+            <if test="unitName != null and unitName != ''">unit_name = #{unitName},</if>
+            <if test="teamName != null  and teamName != ''"> team_name = #{teamName},</if>
+            <if test="unitCode != null and unitCode != ''">unit_code = #{unitCode},</if>
+            <if test="dutyDate != null">duty_date = #{dutyDate},</if>
+            <if test="outputShift1 != null">output_shift1 = #{outputShift1},</if>
+            <if test="outputShift2 != null and outputShift2 != ''">output_shift2 = #{outputShift2},</if>
+            <if test="outputShift3 != null and outputShift3 != ''">output_shift3 = #{outputShift3},</if>
+            <if test="originalOutput != null and originalOutput != ''">original_output = #{originalOutput},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWorkFullyMechanizedStatsById" parameterType="java.lang.String">
+        delete from work_fully_mechanized_stats where id = #{id}
+    </delete>
+
+    <delete id="deleteWorkFullyMechanizedStatsByIds" parameterType="java.lang.String">
+        delete from work_fully_mechanized_stats where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

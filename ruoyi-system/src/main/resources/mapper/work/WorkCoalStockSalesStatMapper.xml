@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.work.WorkCoalStockSalesStatMapper">
+
+    <resultMap type="com.ruoyi.system.domain.work.WorkCoalStockSalesStat" id="WorkCoalStockSalesStatResult">
+        <result property="id"    column="id"    />
+        <result property="recordDate"    column="record_date"    />
+        <result property="coalType"    column="coal_type"    />
+        <result property="rawCoalPreviousStock"    column="raw_coal_previous_stock"    />
+        <result property="rawCoalDailyChange"    column="raw_coal_daily_change"    />
+        <result property="rawCoalCurrentStock"    column="raw_coal_current_stock"    />
+        <result property="cleanCoalPreviousWarehouse"    column="clean_coal_previous_warehouse"    />
+        <result property="cleanCoalDailyProduction"    column="clean_coal_daily_production"    />
+        <result property="cleanCoalDailySales"    column="clean_coal_daily_sales"    />
+        <result property="cleanCoalCurrentWarehouse"    column="clean_coal_current_warehouse"    />
+        <result property="cleanCoalCurrentStock"    column="clean_coal_current_stock"    />
+        <result property="leanCoalPreviousWarehouse"    column="lean_coal_previous_warehouse"    />
+        <result property="leanCoalDailyProduction"    column="lean_coal_daily_production"    />
+        <result property="leanCoalDailySales"    column="lean_coal_daily_sales"    />
+        <result property="leanCoalCurrentWarehouse"    column="lean_coal_current_warehouse"    />
+        <result property="leanCoalCurrentStock"    column="lean_coal_current_stock"    />
+        <result property="slimePreviousWarehouse"    column="slime_previous_warehouse"    />
+        <result property="slimeDailyProduction"    column="slime_daily_production"    />
+        <result property="slimeDailySales"    column="slime_daily_sales"    />
+        <result property="slimeCurrentWarehouse"    column="slime_current_warehouse"    />
+        <result property="slimeCurrentStock"    column="slime_current_stock"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectWorkCoalStockSalesStatVo">
+        select id, record_date, coal_type, raw_coal_previous_stock, raw_coal_daily_change, raw_coal_current_stock, clean_coal_previous_warehouse, clean_coal_daily_production, clean_coal_daily_sales, clean_coal_current_warehouse, clean_coal_current_stock, lean_coal_previous_warehouse, lean_coal_daily_production, lean_coal_daily_sales, lean_coal_current_warehouse, lean_coal_current_stock, slime_previous_warehouse, slime_daily_production, slime_daily_sales, slime_current_warehouse, slime_current_stock, remark, create_time from work_coal_stock_sales_stat
+    </sql>
+
+    <select id="selectWorkCoalStockSalesStatList" parameterType="com.ruoyi.system.domain.work.WorkCoalStockSalesStat" resultMap="WorkCoalStockSalesStatResult">
+        <include refid="selectWorkCoalStockSalesStatVo"/>
+        <where>
+            <if test="recordDate != null "> and record_date = #{recordDate}</if>
+            <if test="coalType != null  and coalType != ''"> and coal_type = #{coalType}</if>
+            <if test="rawCoalPreviousStock != null "> and raw_coal_previous_stock = #{rawCoalPreviousStock}</if>
+            <if test="rawCoalDailyChange != null "> and raw_coal_daily_change = #{rawCoalDailyChange}</if>
+            <if test="rawCoalCurrentStock != null "> and raw_coal_current_stock = #{rawCoalCurrentStock}</if>
+            <if test="cleanCoalPreviousWarehouse != null "> and clean_coal_previous_warehouse = #{cleanCoalPreviousWarehouse}</if>
+            <if test="cleanCoalDailyProduction != null "> and clean_coal_daily_production = #{cleanCoalDailyProduction}</if>
+            <if test="cleanCoalDailySales != null "> and clean_coal_daily_sales = #{cleanCoalDailySales}</if>
+            <if test="cleanCoalCurrentWarehouse != null "> and clean_coal_current_warehouse = #{cleanCoalCurrentWarehouse}</if>
+            <if test="cleanCoalCurrentStock != null "> and clean_coal_current_stock = #{cleanCoalCurrentStock}</if>
+            <if test="leanCoalPreviousWarehouse != null "> and lean_coal_previous_warehouse = #{leanCoalPreviousWarehouse}</if>
+            <if test="leanCoalDailyProduction != null "> and lean_coal_daily_production = #{leanCoalDailyProduction}</if>
+            <if test="leanCoalDailySales != null "> and lean_coal_daily_sales = #{leanCoalDailySales}</if>
+            <if test="leanCoalCurrentWarehouse != null "> and lean_coal_current_warehouse = #{leanCoalCurrentWarehouse}</if>
+            <if test="leanCoalCurrentStock != null "> and lean_coal_current_stock = #{leanCoalCurrentStock}</if>
+            <if test="slimePreviousWarehouse != null "> and slime_previous_warehouse = #{slimePreviousWarehouse}</if>
+            <if test="slimeDailyProduction != null "> and slime_daily_production = #{slimeDailyProduction}</if>
+            <if test="slimeDailySales != null "> and slime_daily_sales = #{slimeDailySales}</if>
+            <if test="slimeCurrentWarehouse != null "> and slime_current_warehouse = #{slimeCurrentWarehouse}</if>
+            <if test="slimeCurrentStock != null "> and slime_current_stock = #{slimeCurrentStock}</if>
+        </where>
+    </select>
+
+    <select id="selectWorkCoalStockSalesStatById" parameterType="java.lang.String" resultMap="WorkCoalStockSalesStatResult">
+        <include refid="selectWorkCoalStockSalesStatVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWorkCoalStockSalesStat" parameterType="com.ruoyi.system.domain.work.WorkCoalStockSalesStat" useGeneratedKeys="true" keyProperty="id">
+        insert into work_coal_stock_sales_stat
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="recordDate != null">record_date,</if>
+            <if test="coalType != null and coalType != ''">coal_type,</if>
+            <if test="rawCoalPreviousStock != null">raw_coal_previous_stock,</if>
+            <if test="rawCoalDailyChange != null">raw_coal_daily_change,</if>
+            <if test="rawCoalCurrentStock != null">raw_coal_current_stock,</if>
+            <if test="cleanCoalPreviousWarehouse != null">clean_coal_previous_warehouse,</if>
+            <if test="cleanCoalDailyProduction != null">clean_coal_daily_production,</if>
+            <if test="cleanCoalDailySales != null">clean_coal_daily_sales,</if>
+            <if test="cleanCoalCurrentWarehouse != null">clean_coal_current_warehouse,</if>
+            <if test="cleanCoalCurrentStock != null">clean_coal_current_stock,</if>
+            <if test="leanCoalPreviousWarehouse != null">lean_coal_previous_warehouse,</if>
+            <if test="leanCoalDailyProduction != null">lean_coal_daily_production,</if>
+            <if test="leanCoalDailySales != null">lean_coal_daily_sales,</if>
+            <if test="leanCoalCurrentWarehouse != null">lean_coal_current_warehouse,</if>
+            <if test="leanCoalCurrentStock != null">lean_coal_current_stock,</if>
+            <if test="slimePreviousWarehouse != null">slime_previous_warehouse,</if>
+            <if test="slimeDailyProduction != null">slime_daily_production,</if>
+            <if test="slimeDailySales != null">slime_daily_sales,</if>
+            <if test="slimeCurrentWarehouse != null">slime_current_warehouse,</if>
+            <if test="slimeCurrentStock != null">slime_current_stock,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="recordDate != null">#{recordDate},</if>
+            <if test="coalType != null and coalType != ''">#{coalType},</if>
+            <if test="rawCoalPreviousStock != null">#{rawCoalPreviousStock},</if>
+            <if test="rawCoalDailyChange != null">#{rawCoalDailyChange},</if>
+            <if test="rawCoalCurrentStock != null">#{rawCoalCurrentStock},</if>
+            <if test="cleanCoalPreviousWarehouse != null">#{cleanCoalPreviousWarehouse},</if>
+            <if test="cleanCoalDailyProduction != null">#{cleanCoalDailyProduction},</if>
+            <if test="cleanCoalDailySales != null">#{cleanCoalDailySales},</if>
+            <if test="cleanCoalCurrentWarehouse != null">#{cleanCoalCurrentWarehouse},</if>
+            <if test="cleanCoalCurrentStock != null">#{cleanCoalCurrentStock},</if>
+            <if test="leanCoalPreviousWarehouse != null">#{leanCoalPreviousWarehouse},</if>
+            <if test="leanCoalDailyProduction != null">#{leanCoalDailyProduction},</if>
+            <if test="leanCoalDailySales != null">#{leanCoalDailySales},</if>
+            <if test="leanCoalCurrentWarehouse != null">#{leanCoalCurrentWarehouse},</if>
+            <if test="leanCoalCurrentStock != null">#{leanCoalCurrentStock},</if>
+            <if test="slimePreviousWarehouse != null">#{slimePreviousWarehouse},</if>
+            <if test="slimeDailyProduction != null">#{slimeDailyProduction},</if>
+            <if test="slimeDailySales != null">#{slimeDailySales},</if>
+            <if test="slimeCurrentWarehouse != null">#{slimeCurrentWarehouse},</if>
+            <if test="slimeCurrentStock != null">#{slimeCurrentStock},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateWorkCoalStockSalesStat" parameterType="com.ruoyi.system.domain.work.WorkCoalStockSalesStat">
+        update work_coal_stock_sales_stat
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="recordDate != null">record_date = #{recordDate},</if>
+            <if test="coalType != null and coalType != ''">coal_type = #{coalType},</if>
+            <if test="rawCoalPreviousStock != null">raw_coal_previous_stock = #{rawCoalPreviousStock},</if>
+            <if test="rawCoalDailyChange != null">raw_coal_daily_change = #{rawCoalDailyChange},</if>
+            <if test="rawCoalCurrentStock != null">raw_coal_current_stock = #{rawCoalCurrentStock},</if>
+            <if test="cleanCoalPreviousWarehouse != null">clean_coal_previous_warehouse = #{cleanCoalPreviousWarehouse},</if>
+            <if test="cleanCoalDailyProduction != null">clean_coal_daily_production = #{cleanCoalDailyProduction},</if>
+            <if test="cleanCoalDailySales != null">clean_coal_daily_sales = #{cleanCoalDailySales},</if>
+            <if test="cleanCoalCurrentWarehouse != null">clean_coal_current_warehouse = #{cleanCoalCurrentWarehouse},</if>
+            <if test="cleanCoalCurrentStock != null">clean_coal_current_stock = #{cleanCoalCurrentStock},</if>
+            <if test="leanCoalPreviousWarehouse != null">lean_coal_previous_warehouse = #{leanCoalPreviousWarehouse},</if>
+            <if test="leanCoalDailyProduction != null">lean_coal_daily_production = #{leanCoalDailyProduction},</if>
+            <if test="leanCoalDailySales != null">lean_coal_daily_sales = #{leanCoalDailySales},</if>
+            <if test="leanCoalCurrentWarehouse != null">lean_coal_current_warehouse = #{leanCoalCurrentWarehouse},</if>
+            <if test="leanCoalCurrentStock != null">lean_coal_current_stock = #{leanCoalCurrentStock},</if>
+            <if test="slimePreviousWarehouse != null">slime_previous_warehouse = #{slimePreviousWarehouse},</if>
+            <if test="slimeDailyProduction != null">slime_daily_production = #{slimeDailyProduction},</if>
+            <if test="slimeDailySales != null">slime_daily_sales = #{slimeDailySales},</if>
+            <if test="slimeCurrentWarehouse != null">slime_current_warehouse = #{slimeCurrentWarehouse},</if>
+            <if test="slimeCurrentStock != null">slime_current_stock = #{slimeCurrentStock},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWorkCoalStockSalesStatById" parameterType="java.lang.String">
+        delete from work_coal_stock_sales_stat where id = #{id}
+    </delete>
+
+    <delete id="deleteWorkCoalStockSalesStatByIds" parameterType="java.lang.String">
+        delete from work_coal_stock_sales_stat where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

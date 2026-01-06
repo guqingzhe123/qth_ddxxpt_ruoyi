@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SubLongmeiPlanInputMapper">
+
+    <resultMap type="com.ruoyi.system.domain.SubLongmeiPlanInput" id="SubLongmeiPlanInputResult">
+        <result property="id"    column="id"    />
+        <result property="coalPlantStorageId"    column="coal_plant_storage_id"    />
+        <result property="unitName"    column="unit_name"    />
+        <result property="rawCoalProductionPlanMonth"    column="raw_coal_production_plan_month"    />
+        <result property="rawCoalProductionPlanDay"    column="raw_coal_production_plan_day"    />
+        <result property="excavationPlanMonth"    column="excavation_plan_month"    />
+        <result property="excavationPlanDay"    column="excavation_plan_day"    />
+        <result property="developmentPlanMonth"    column="development_plan_month"    />
+        <result property="developmentPlanDay"    column="development_plan_day"    />
+    </resultMap>
+
+    <sql id="selectSubLongmeiPlanInputVo">
+        select id, coal_plant_storage_id, unit_name, raw_coal_production_plan_month, raw_coal_production_plan_day, excavation_plan_month, excavation_plan_day, development_plan_month, development_plan_day from sub_longmei_plan_input
+    </sql>
+
+    <select id="selectSubLongmeiPlanInputList" parameterType="com.ruoyi.system.domain.SubLongmeiPlanInput" resultMap="SubLongmeiPlanInputResult">
+        <include refid="selectSubLongmeiPlanInputVo"/>
+        <where>
+            <if test="coalPlantStorageId != null "> and coal_plant_storage_id = #{coalPlantStorageId}</if>
+            <if test="unitName != null  and unitName != ''"> and unit_name like concat('%', #{unitName}, '%')</if>
+            <if test="rawCoalProductionPlanMonth != null "> and raw_coal_production_plan_month = #{rawCoalProductionPlanMonth}</if>
+            <if test="rawCoalProductionPlanDay != null "> and raw_coal_production_plan_day = #{rawCoalProductionPlanDay}</if>
+            <if test="excavationPlanMonth != null "> and excavation_plan_month = #{excavationPlanMonth}</if>
+            <if test="excavationPlanDay != null "> and excavation_plan_day = #{excavationPlanDay}</if>
+            <if test="developmentPlanMonth != null "> and development_plan_month = #{developmentPlanMonth}</if>
+            <if test="developmentPlanDay != null "> and development_plan_day = #{developmentPlanDay}</if>
+        </where>
+    </select>
+
+    <select id="selectSubLongmeiPlanInputById" parameterType="java.lang.Long" resultMap="SubLongmeiPlanInputResult">
+        <include refid="selectSubLongmeiPlanInputVo"/>
+        where id = #{id}
+    </select>
+    <insert id="insertSubLongmeiPlanInputBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        insert into sub_longmei_plan_input
+        <!-- 字段部分：只生成一次所有可能的字段（和单条插入逻辑一致） -->
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="list != null and list.size() > 0">
+                <!-- 取集合中第一个元素判断字段是否可能存在（避免空集合报错） -->
+                <if test="list[0].coalPlantStorageId != null">coal_plant_storage_id,</if>
+                <if test="list[0].unitName != null and list[0].unitName != ''">unit_name,</if>
+                <if test="list[0].rawCoalProductionPlanMonth != null">raw_coal_production_plan_month,</if>
+                <if test="list[0].rawCoalProductionPlanDay != null">raw_coal_production_plan_day,</if>
+                <if test="list[0].excavationPlanMonth != null">excavation_plan_month,</if>
+                <if test="list[0].excavationPlanDay != null">excavation_plan_day,</if>
+                <if test="list[0].developmentPlanMonth != null">development_plan_month,</if>
+                <if test="list[0].developmentPlanDay != null">development_plan_day,</if>
+            </if>
+        </trim>
+        values
+        <!-- 遍历集合，为每个元素生成一组values -->
+        <foreach collection="list" item="item" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="item.coalPlantStorageId != null">#{item.coalPlantStorageId},</if>
+                <if test="item.unitName != null and item.unitName != ''">#{item.unitName},</if>
+                <if test="item.rawCoalProductionPlanMonth != null">#{item.rawCoalProductionPlanMonth},</if>
+                <if test="item.rawCoalProductionPlanDay != null">#{item.rawCoalProductionPlanDay},</if>
+                <if test="item.excavationPlanMonth != null">#{item.excavationPlanMonth},</if>
+                <if test="item.excavationPlanDay != null">#{item.excavationPlanDay},</if>
+                <if test="item.developmentPlanMonth != null">#{item.developmentPlanMonth},</if>
+                <if test="item.developmentPlanDay != null">#{item.developmentPlanDay},</if>
+            </trim>
+        </foreach>
+    </insert>
+    <insert id="insertSubLongmeiPlanInput" parameterType="com.ruoyi.system.domain.SubLongmeiPlanInput" useGeneratedKeys="true" keyProperty="id">
+        insert into sub_longmei_plan_input
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="coalPlantStorageId != null">coal_plant_storage_id,</if>
+            <if test="unitName != null and unitName != ''">unit_name,</if>
+            <if test="rawCoalProductionPlanMonth != null">raw_coal_production_plan_month,</if>
+            <if test="rawCoalProductionPlanDay != null">raw_coal_production_plan_day,</if>
+            <if test="excavationPlanMonth != null">excavation_plan_month,</if>
+            <if test="excavationPlanDay != null">excavation_plan_day,</if>
+            <if test="developmentPlanMonth != null">development_plan_month,</if>
+            <if test="developmentPlanDay != null">development_plan_day,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="coalPlantStorageId != null">#{coalPlantStorageId},</if>
+            <if test="unitName != null and unitName != ''">#{unitName},</if>
+            <if test="rawCoalProductionPlanMonth != null">#{rawCoalProductionPlanMonth},</if>
+            <if test="rawCoalProductionPlanDay != null">#{rawCoalProductionPlanDay},</if>
+            <if test="excavationPlanMonth != null">#{excavationPlanMonth},</if>
+            <if test="excavationPlanDay != null">#{excavationPlanDay},</if>
+            <if test="developmentPlanMonth != null">#{developmentPlanMonth},</if>
+            <if test="developmentPlanDay != null">#{developmentPlanDay},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSubLongmeiPlanInput" parameterType="com.ruoyi.system.domain.SubLongmeiPlanInput">
+        update sub_longmei_plan_input
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="coalPlantStorageId != null">coal_plant_storage_id = #{coalPlantStorageId},</if>
+            <if test="unitName != null and unitName != ''">unit_name = #{unitName},</if>
+            <if test="rawCoalProductionPlanMonth != null">raw_coal_production_plan_month = #{rawCoalProductionPlanMonth},</if>
+            <if test="rawCoalProductionPlanDay != null">raw_coal_production_plan_day = #{rawCoalProductionPlanDay},</if>
+            <if test="excavationPlanMonth != null">excavation_plan_month = #{excavationPlanMonth},</if>
+            <if test="excavationPlanDay != null">excavation_plan_day = #{excavationPlanDay},</if>
+            <if test="developmentPlanMonth != null">development_plan_month = #{developmentPlanMonth},</if>
+            <if test="developmentPlanDay != null">development_plan_day = #{developmentPlanDay},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSubLongmeiPlanInputById" parameterType="java.lang.Long">
+        delete from sub_longmei_plan_input where id = #{id}
+    </delete>
+
+    <delete id="deleteSubLongmeiPlanInputByIds" parameterType="java.lang.String">
+        delete from sub_longmei_plan_input where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteSubLongmeiPlanInputByPlanId" parameterType="java.lang.Long">
+        delete from sub_longmei_plan_input where coal_plant_storage_id = #{coalPlantStorageId}
+    </delete>
+</mapper>

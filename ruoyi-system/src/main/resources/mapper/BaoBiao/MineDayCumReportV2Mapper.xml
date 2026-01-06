@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ruoyi.system.mapper.BaoBiao.MineDayCumReportV2Mapper">
+
+    <!-- 1) 一级矿列表 -->
+    <select id="selectTopLevelMines" resultType="java.lang.String">
+        SELECT m.area_name
+        FROM mining_area_category m
+        WHERE m.level = 1
+        <if test="includeSealed == null or includeSealed == false">
+            AND m.is_sealed = 0
+        </if>
+        <if test="unitNames != null and unitNames.size() > 0">
+            AND m.area_name IN
+            <foreach collection="unitNames" item="n" open="(" close=")" separator=",">
+                #{n}
+            </foreach>
+        </if>
+        ORDER BY COALESCE(m.sequence, m.id)
+    </select>
+
+    <!-- 2) 当日完成（sum output by data_type at recordDate） -->
+    <select id="sumDailyOutput" resultType="com.ruoyi.system.domain.BaoBiao.vo.plan.MineData">
+        SELECT COALESCE(sum(s.production_data), 0) as productionData,
+               COALESCE(sum(s.expand_data), 0) as expandData,
+               COALESCE(sum(s.footage_data), 0) as footageData,
+               COALESCE(sum(s.enter_well_num), 0) as enterWellNum,
+               COALESCE(sum(s.come_out_well_num), 0) as comeOutWellNum
+        FROM mine_development_data md
+                 JOIN sub_mine_development_data s
+                      ON s.mine_development_dataID = md.id
+        WHERE md.unit_name = #{unitName}
+          AND md.record_date = #{recordDate}
+          AND md.is_deleted = 0
+          and s.unit_nameJSON='合计'
+
+    </select>
+
+    <!-- 3) 累计完成（sum output by data_type in [fromDate, toDate]） -->
+    <select id="sumCumOutput" resultType="com.ruoyi.system.domain.BaoBiao.vo.plan.MineData">
+        SELECT COALESCE(sum(s.production_data), 0) as productionData,
+               COALESCE(sum(s.expand_data), 0) as expandData,
+               COALESCE(sum(s.footage_data), 0) as footageData,
+               COALESCE(sum(s.enter_well_num), 0) as enterWellNum,
+               COALESCE(sum(s.come_out_well_num), 0) as comeOutWellNum
+        FROM mine_development_data md
+                 JOIN sub_mine_development_data s
+                      ON s.mine_development_dataID = md.id
+        WHERE md.unit_name = #{unitName}
+          AND md.is_deleted = 0
+          AND md.record_date BETWEEN #{fromDate} AND #{toDate}
+          and s.unit_nameJSON='合计'
+    </select>
+
+    <!-- 4) 日计划合计（sum day_plan by plan_type & plan_month & unit_name） -->
+    <select id="sumDayPlanForMine" resultType="com.ruoyi.system.domain.CoalMineWorkingDay">
+        SELECT
+            sum(production_plan) as productionPlan,
+            sum(production_objective) as productionObjective,
+            sum(exploration_plan) as explorationPlan,
+            sum(exploration_objective) as exploratioObjective,
+            sum(footage_plan) as footagePlan,
+            sum(footage_objective) as footageObjective
+        from coal_mine_working_day
+        where working_month= #{planMonth} and unit_name= #{unitName} and working_days&lt;=#{days}
+    </select>
+
+</mapper>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MddStatMapper">
+
+    <resultMap id="DateTotalRowMap" type="com.ruoyi.system.domain.DateTotalRow">
+        <result column="recordDate" property="recordDate"/>
+        <result column="total" property="total"/>
+    </resultMap>
+
+    <sql id="BaseJoins">
+        FROM mine_development_data m
+    JOIN sub_mine_development_data s ON s.mine_development_dataID = m.id
+    JOIN mining_area_category mac
+      ON mac.area_name = m.unit_name
+     AND mac.level = 1
+    </sql>
+
+    <!-- 全公司：不筛 is_separate -->
+    <select id="sumOutputByDateAndType" resultType="com.ruoyi.system.domain.BaoBiao.vo.plan.MineData">
+        SELECT COALESCE(sum(s.production_data), 0) as productionData,
+        COALESCE(sum(s.expand_data), 0) as expandData,
+        COALESCE(sum(s.footage_data), 0) as footageData,
+        COALESCE(sum(s.enter_well_num), 0) as enterWellNum,
+        COALESCE(sum(s.come_out_well_num), 0) as comeOutWellNum
+        <include refid="BaseJoins"/>
+        WHERE m.record_date = #{date}
+        and s.unit_nameJSON='合计'
+    </select>
+
+    <!-- 分/七煤：按 is_separate = 0/1 -->
+    <select id="sumOutputByDateTypeSeparate" resultType="com.ruoyi.system.domain.BaoBiao.vo.plan.MineData">
+        SELECT COALESCE(sum(s.production_data), 0) as productionData,
+        COALESCE(sum(s.expand_data), 0) as expandData,
+        COALESCE(sum(s.footage_data), 0) as footageData,
+        COALESCE(sum(s.enter_well_num), 0) as enterWellNum,
+        COALESCE(sum(s.come_out_well_num), 0) as comeOutWellNum
+        <include refid="BaseJoins"/>
+        WHERE m.record_date = #{date}
+        AND mac.is_separate = #{isSeparate}
+        and s.unit_nameJSON='合计'
+    </select>
+
+    <!-- 七日序列：按天聚合；确保按日期排序 -->
+    <select id="sevenDaySeries" resultMap="DateTotalRowMap">
+        SELECT m.record_date AS recordDate,
+        COALESCE(sum(s.production_data), 0) as productionData,
+        COALESCE(sum(s.expand_data), 0) as expandData,
+        COALESCE(sum(s.footage_data), 0) as footageData,
+        COALESCE(sum(s.enter_well_num), 0) as enterWellNum,
+        COALESCE(sum(s.come_out_well_num), 0) as comeOutWellNum
+        <include refid="BaseJoins"/>
+        WHERE m.record_date BETWEEN #{startDate} AND #{endDate}
+        AND mac.is_separate = #{isSeparate}
+        AND s.unit_nameJSON = '合计'
+        GROUP BY m.record_date
+        ORDER BY m.record_date ASC
+    </select>
+    <!-- 七日序列：按天聚合；确保按日期排序 -->
+    <select id="sevenDaySeriesProductionAndPlanning" resultType="com.ruoyi.system.domain.BaoBiao.vo.plan.MineData">
+        SELECT m.record_date AS recordDate,
+               COALESCE(sum(s.production_data), 0) as productionData,
+               COALESCE(sum(s.expand_data), 0) as expandData,
+               COALESCE(sum(s.footage_data), 0) as footageData,
+               COALESCE(sum(s.enter_well_num), 0) as enterWellNum,
+               COALESCE(sum(s.come_out_well_num), 0) as comeOutWellNum
+        FROM mine_development_data m
+        JOIN sub_mine_development_data s ON s.mine_development_dataID = m.id
+        WHERE m.record_date BETWEEN #{startDate} AND #{endDate}
+        AND s.unit_nameJSON = '合计'
+        GROUP BY m.record_date
+        ORDER BY m.record_date ASC
+    </select>
+    <!-- 七日序列：按天聚合；确保按日期排序 -->
+    <select id="sevendayPlanData" resultMap="DateTotalRowMap">
+        SELECT  COALESCE(SUM(t2.day_plan), 0) AS total from mine_plan t1 left join sub_mine_plan t2 on t1.id=t2.mine_plan_id
+        where t1.plan_type= #{dataType} and mine_category='全矿' and YEAR(t1.plan_month)= YEAR(#{Date})
+          and MONTH(t1.plan_month)=MONTH(#{Date}) and t2.is_deleted =0
+    </select>
+    <select id="PlanData" resultType="java.math.BigDecimal">
+        SELECT COALESCE(SUM(t2.day_plan), 0) AS total from mine_plan t1 left join sub_mine_plan t2 on t1.id=t2.mine_plan_id
+        where t1.plan_type= #{dataType} and mine_category='全矿' and YEAR(t1.plan_month)= YEAR(#{Date})
+          and MONTH(t1.plan_month)=MONTH(#{Date})
+    </select>
+    <select id="targetData" resultType="java.math.BigDecimal">
+        SELECT COALESCE(SUM(t2.day_target), 0) AS total from mine_plan t1 left join sub_mine_plan t2 on t1.id=t2.mine_plan_id
+        where t1.plan_type= #{dataType} and mine_category='全矿' and YEAR(t1.plan_month)= YEAR(#{Date})
+          and MONTH(t1.plan_month)=MONTH(#{Date})
+    </select>
+</mapper>

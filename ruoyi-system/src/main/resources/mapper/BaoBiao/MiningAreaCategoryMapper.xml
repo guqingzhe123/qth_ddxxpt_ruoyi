@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ruoyi.system.mapper.BaoBiao.MiningAreaCategoryMapper">
+
+    <resultMap id="MiningAreaCategoryMap" type="com.ruoyi.system.domain.BaoBiao.MiningAreaCategory">
+        <id     property="id"         column="id"/>
+        <result property="areaCode"   column="area_code"/>
+        <result property="areaName"   column="area_name"/>
+        <result property="level"      column="level"/>
+        <result property="isSealed"   column="is_sealed"/>
+        <result property="isPlanned"  column="is_planned"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="userid"     column="user_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="isseparate" column="is_separate"/>
+        <result property="sequence" column="sequence"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, area_code, area_name, level, is_sealed, is_planned, create_time, update_time,user_id,parent_id,is_separate,sequence
+    </sql>
+
+    <select id="selectById" resultMap="MiningAreaCategoryMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM mining_area_category
+        WHERE id = #{id} order by sequence asc
+    </select>
+    <select id="selectByLevel" resultMap="MiningAreaCategoryMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM mining_area_category
+        WHERE level = #{level}  order by sequence asc
+    </select>
+    <select id="selectList" resultMap="MiningAreaCategoryMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM mining_area_category
+        <where>
+            <if test="areaCode != null and areaCode != ''">
+                AND area_code = #{areaCode}
+            </if>
+            <if test="areaName != null and areaName != ''">
+                AND area_name LIKE CONCAT('%', #{areaName}, '%')
+            </if>
+            <if test="level != null">
+                AND level = #{level}
+            </if>
+            <if test="isSealed != null">
+                AND is_sealed = #{isSealed}
+            </if>
+            <if test="isPlanned != null">
+                AND is_planned = #{isPlanned}
+            </if>
+            <if test="parentId != null">
+                AND parent_id = #{parentId}
+            </if>
+        </where>
+        order by sequence asc
+    </select>
+    <select id="select" resultMap="MiningAreaCategoryMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM mining_area_category
+        <where>
+            <if test="areaCode != null and areaCode != ''">
+                AND area_code = #{areaCode}
+            </if>
+            <if test="areaName != null and areaName != ''">
+                AND area_name LIKE CONCAT('%', #{areaName}, '%')
+            </if>
+            <if test="level != null">
+                AND level = #{level}
+            </if>
+            <if test="isSealed != null">
+                AND is_sealed = #{isSealed}
+            </if>
+            <if test="isPlanned != null">
+                AND is_planned = #{isPlanned}
+            </if>
+        </where>
+        order by sequence asc
+    </select>
+    <insert id="insert" parameterType="com.ruoyi.system.domain.BaoBiao.MiningAreaCategory" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO mining_area_category (
+            area_code, area_name, level, is_sealed, is_planned,parent_id,is_separate,sequence
+        ) VALUES (
+                     #{areaCode}, #{areaName}, #{level}, #{isSealed}, #{isPlanned},#{parentId},#{isseparate},#{sequence}
+                 )
+    </insert>
+
+    <update id="update" parameterType="com.ruoyi.system.domain.BaoBiao.MiningAreaCategory">
+        UPDATE mining_area_category
+        SET area_code = #{areaCode},
+            area_name = #{areaName},
+            level = #{level},
+            is_sealed = #{isSealed},
+            is_planned = #{isPlanned},
+            is_separate = #{isseparate},
+            sequence = #{sequence}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM mining_area_category WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteByIds">
+        DELETE FROM mining_area_category WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getPartentId" resultMap="MiningAreaCategoryMap">
+        SELECT  <include refid="Base_Column_List"/>
+        FROM mining_area_category
+        WHERE id = #{parentId}  order by sequence asc
+    </select>
+    <select id="getAreaName" resultMap="MiningAreaCategoryMap">
+        SELECT  <include refid="Base_Column_List"/>
+        FROM mining_area_category
+        WHERE area_name = #{areaName}  order by sequence asc
+    </select>
+    <select id="getAreaCode" resultMap="MiningAreaCategoryMap">
+        SELECT  <include refid="Base_Column_List"/>
+        FROM mining_area_category
+        WHERE area_code = #{areaCode}  order by sequence asc
+    </select>
+    <select id="QueryTeamName" resultMap="MiningAreaCategoryMap">
+        WITH RECURSIVE department_hierarchy AS (
+        SELECT id,area_code,area_name,parent_id,1 AS level FROM mining_area_category WHERE area_code = #{areaCode} UNION ALL
+        SELECT d.id,d.area_code,d.area_name,d.parent_id,dh.level + 1 AS level FROM mining_area_category d INNER JOIN
+        department_hierarchy dh ON d.parent_id = dh.id WHERE dh.level &lt; 3 )
+        SELECT * FROM department_hierarchy WHERE level = 3;
+    </select>
+
+
+</mapper>

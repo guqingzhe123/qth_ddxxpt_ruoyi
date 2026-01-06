@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.work.WorkLeaderOnDutyMapper">
+
+    <resultMap type="com.ruoyi.system.domain.work.WorkLeaderOnDuty" id="WorkLeaderOnDutyResult">
+        <result property="id"    column="id"    />
+        <result property="unit"    column="unit"    />
+        <result property="unitCode"    column="unit_code"    />
+        <result property="dutyDate"    column="duty_date"    />
+        <result property="leaderShift1"    column="leader_shift1"    />
+        <result property="leaderShift2"    column="leader_shift2"    />
+        <result property="leaderShift3"    column="leader_shift3"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectWorkLeaderOnDutyVo">
+        select id, unit, unit_code, duty_date, leader_shift1, leader_shift2, leader_shift3, status, create_time from work_leader_on_duty
+    </sql>
+
+    <select id="selectWorkLeaderOnDutyList" parameterType="com.ruoyi.system.domain.work.WorkLeaderOnDuty" resultMap="WorkLeaderOnDutyResult">
+        <include refid="selectWorkLeaderOnDutyVo"/>
+        <where>
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="unitCode != null  and unitCode != ''"> and unit_code = #{unitCode}</if>
+            <if test="dutyDate != null "> and duty_date = #{dutyDate}</if>
+            <if test="leaderShift1 != null  and leaderShift1 != ''"> and leader_shift1 = #{leaderShift1}</if>
+            <if test="leaderShift2 != null  and leaderShift2 != ''"> and leader_shift2 = #{leaderShift2}</if>
+            <if test="leaderShift3 != null  and leaderShift3 != ''"> and leader_shift3 = #{leaderShift3}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectWorkLeaderOnDutyALLList" parameterType="com.ruoyi.system.domain.work.WorkLeaderOnDuty" resultMap="WorkLeaderOnDutyResult">
+        <include refid="selectWorkLeaderOnDutyVo"/>
+        where YEAR(duty_date) = YEAR(#{dutyDate}) and MONTH(duty_date) = MONTH(#{dutyDate}) and duty_date &lt;= #{dutyDate}
+    </select>
+
+    <select id="selectWorkLeaderOnDutyById" parameterType="java.lang.Integer" resultMap="WorkLeaderOnDutyResult">
+        <include refid="selectWorkLeaderOnDutyVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWorkLeaderOnDuty" parameterType="com.ruoyi.system.domain.work.WorkLeaderOnDuty" useGeneratedKeys="true" keyProperty="id">
+        insert into work_leader_on_duty
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="unit != null and unit != ''">unit,</if>
+            <if test="unitCode != null and unitCode != ''">unit_code,</if>
+            <if test="dutyDate != null">duty_date,</if>
+            <if test="leaderShift1 != null">leader_shift1,</if>
+            <if test="leaderShift2 != null">leader_shift2,</if>
+            <if test="leaderShift3 != null">leader_shift3,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="unit != null and unit != ''">#{unit},</if>
+            <if test="unitCode != null and unitCode != ''">#{unitCode},</if>
+            <if test="dutyDate != null">#{dutyDate},</if>
+            <if test="leaderShift1 != null">#{leaderShift1},</if>
+            <if test="leaderShift2 != null">#{leaderShift2},</if>
+            <if test="leaderShift3 != null">#{leaderShift3},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateWorkLeaderOnDuty" parameterType="com.ruoyi.system.domain.work.WorkLeaderOnDuty">
+        update work_leader_on_duty
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="unit != null and unit != ''">unit = #{unit},</if>
+            <if test="unitCode != null and unitCode != ''">unit_code = #{unitCode},</if>
+            <if test="dutyDate != null">duty_date = #{dutyDate},</if>
+            <if test="leaderShift1 != null">leader_shift1 = #{leaderShift1},</if>
+            <if test="leaderShift2 != null">leader_shift2 = #{leaderShift2},</if>
+            <if test="leaderShift3 != null">leader_shift3 = #{leaderShift3},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWorkLeaderOnDutyById" parameterType="java.lang.Integer">
+        delete from work_leader_on_duty where id = #{id}
+    </delete>
+
+    <delete id="deleteWorkLeaderOnDutyByIds" parameterType="java.lang.String">
+        delete from work_leader_on_duty where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

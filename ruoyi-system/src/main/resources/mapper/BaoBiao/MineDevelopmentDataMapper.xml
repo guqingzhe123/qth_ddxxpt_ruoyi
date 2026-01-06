@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BaoBiao.MineDevelopmentDataMapper">
+
+    <resultMap id="MddMap" type="com.ruoyi.system.domain.BaoBiao.po.MineDevelopmentDataPO">
+        <id     column="id"                  property="id"/>
+        <result column="data_type"           property="dataType"/>
+        <result column="unit_code"           property="unitCode"/>
+        <result column="unit_name"           property="unitName"/>
+        <result column="record_date"         property="recordDate"/>
+        <result column="current_shift"       property="currentShift"/>
+
+        <result column="total_down_count"    property="totalDownCount"/>
+        <result column="mining_down_count"   property="miningDownCount"/>
+        <result column="driving_down_count"  property="drivingDownCount"/>
+        <result column="other_down_count"    property="otherDownCount"/>
+        <result column="total_up_count"      property="totalUpCount"/>
+        <result column="mining_up_count"     property="miningUpCount"/>
+        <result column="driving_up_count"    property="drivingUpCount"/>
+        <result column="other_up_count"      property="otherUpCount"/>
+
+        <result column="create_time"         property="createTime"/>
+        <result column="update_time"         property="updateTime"/>
+        <result column="user_id"             property="userId"/>
+        <result column="is_deleted"          property="isDeleted"/>
+        <result column="mine_category"       property="mineCategory"/>
+    </resultMap>
+
+    <sql id="BaseCols">
+        id, data_type, unit_code, unit_name, record_date, current_shift,
+    total_down_count, mining_down_count, driving_down_count, other_down_count,
+    total_up_count, mining_up_count, driving_up_count, other_up_count,
+    create_time, update_time, user_id, is_deleted, mine_category
+    </sql>
+
+    <insert id="insert" parameterType="com.ruoyi.system.domain.BaoBiao.po.MineDevelopmentDataPO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO mine_development_data
+        (data_type, unit_code, unit_name, record_date, current_shift,
+         total_down_count, mining_down_count, driving_down_count, other_down_count,
+         total_up_count, mining_up_count, driving_up_count, other_up_count,
+         user_id, is_deleted, mine_category)
+        VALUES
+            (#{dataType}, #{unitCode}, #{unitName}, #{recordDate}, #{currentShift},
+             #{totalDownCount}, #{miningDownCount}, #{drivingDownCount}, #{otherDownCount},
+             #{totalUpCount}, #{miningUpCount}, #{drivingUpCount}, #{otherUpCount},
+             #{userId}, 0, #{mineCategory})
+    </insert>
+
+    <update id="update" parameterType="com.ruoyi.system.domain.BaoBiao.po.MineDevelopmentDataPO">
+        UPDATE mine_development_data
+        SET data_type = #{dataType},
+            unit_code = #{unitCode},
+            unit_name = #{unitName},
+            record_date = #{recordDate},
+            current_shift = #{currentShift},
+            total_down_count = #{totalDownCount},
+            mining_down_count = #{miningDownCount},
+            driving_down_count = #{drivingDownCount},
+            other_down_count = #{otherDownCount},
+            total_up_count = #{totalUpCount},
+            mining_up_count = #{miningUpCount},
+            driving_up_count = #{drivingUpCount},
+            other_up_count = #{otherUpCount},
+            user_id = #{userId},
+            mine_category = #{mineCategory}
+        WHERE id = #{id}
+    </update>
+
+    <update id="softDeleteById">
+        UPDATE mine_development_data SET is_deleted = 1 WHERE id = #{id}
+    </update>
+    <update id="softUpdeById">
+        UPDATE mine_development_data SET is_deleted = 0,total_down_count = #{totalDownCount},total_up_count = #{totalUpCount} WHERE id = #{id}
+    </update>
+    <select id="selectById" resultMap="MddMap">
+        SELECT <include refid="BaseCols"/> FROM mine_development_data
+        WHERE id = #{id}
+        LIMIT 1
+    </select>
+
+    <select id="selectList" resultMap="MddMap" parameterType="com.ruoyi.system.domain.BaoBiao.po.MineDevelopmentDataPO">
+        SELECT <include refid="BaseCols"/> FROM mine_development_data
+        <where>
+            <if test="isDeleted != null">AND is_deleted = #{isDeleted}</if>
+            <if test="dataType != null and dataType != ''">AND data_type = #{dataType}</if>
+            <if test="unitCode != null and unitCode != ''">AND unit_code = #{unitCode}</if>
+            <if test="unitName != null and unitName != ''">AND unit_name LIKE CONCAT('%', #{unitName}, '%')</if>
+            <if test="recordDate != null">AND record_date = #{recordDate}</if>
+            <if test="currentShift != null">AND current_shift = #{currentShift}</if>
+            <if test="userId != null and userId != ''">AND user_id = #{userId}</if>
+            <if test="mineCategory != null and mineCategory != ''">AND mine_category = #{mineCategory}</if>
+        </where>
+        ORDER BY record_date DESC, current_shift DESC, id DESC
+    </select>
+
+</mapper>
+
+
+        <!--<?xml version="1.0" encoding="UTF-8" ?>-->
+<!--<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"-->
+<!--        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">-->
+
+<!--<mapper namespace="com.ruoyi.system.mapper.BaoBiao.MineDevelopmentDataMapper">-->
+
+<!--    <resultMap id="MineDevDataMap" type="com.ruoyi.system.domain.BaoBiao.po.MineDevelopmentDataPO">-->
+<!--        <id     column="id"               property="id"/>-->
+<!--        <result column="data_type"        property="dataType"/>-->
+<!--        <result column="unit_code"        property="unitCode"/>-->
+<!--        <result column="unit_name"        property="unitName"/>-->
+<!--        <result column="record_date"      property="recordDate"/>-->
+<!--        <result column="current_shift"    property="currentShift"/>-->
+
+<!--        <result column="unit_nameJSON"        property="unitNameJSON"/>-->
+<!--        <result column="output"               property="output"/>-->
+<!--        <result column="attendance_count"     property="attendanceCount"/>-->
+<!--        <result column="total_down_count"     property="totalDownCount"/>-->
+<!--        <result column="mining_down_count"    property="miningDownCount"/>-->
+<!--        <result column="driving_down_count"   property="drivingDownCount"/>-->
+<!--        <result column="other_down_count"     property="otherDownCount"/>-->
+<!--        <result column="total_up_count"       property="totalUpCount"/>-->
+<!--        <result column="mining_up_count"      property="miningUpCount"/>-->
+<!--        <result column="driving_up_count"     property="drivingUpCount"/>-->
+<!--        <result column="other_up_count"       property="otherUpCount"/>-->
+
+<!--        <result column="create_time"      property="createTime"/>-->
+<!--        <result column="update_time"      property="updateTime"/>-->
+<!--        <result column="user_id"          property="userId"/>-->
+<!--        <result column="is_deleted"       property="isDeleted"/>-->
+<!--        <result column="mine_category"    property="mineCategory"/>-->
+<!--    </resultMap>-->
+
+<!--    <sql id="Base_Columns">-->
+<!--        id, data_type, unit_code, unit_name, record_date, current_shift,-->
+<!--        unit_nameJSON, output, attendance_count, total_down_count,-->
+<!--        mining_down_count, driving_down_count, other_down_count,-->
+<!--        total_up_count, mining_up_count, driving_up_count, other_up_count,-->
+<!--        create_time, update_time, user_id, is_deleted, mine_category-->
+<!--    </sql>-->
+
+<!--    <insert id="insert" parameterType="com.ruoyi.system.domain.BaoBiao.po.MineDevelopmentDataPO" useGeneratedKeys="true" keyProperty="id">-->
+<!--        INSERT INTO mine_development_data(-->
+<!--            data_type, unit_code, unit_name, record_date, current_shift,-->
+<!--            unit_nameJSON, output, attendance_count, total_down_count,-->
+<!--            mining_down_count, driving_down_count, other_down_count,-->
+<!--            total_up_count, mining_up_count, driving_up_count, other_up_count,-->
+<!--            user_id, is_deleted, mine_category-->
+<!--        ) VALUES (-->
+<!--                     #{dataType}, #{unitCode}, #{unitName}, #{recordDate}, #{currentShift},-->
+<!--                     CAST(#{unitNameJSON} AS JSON), CAST(#{output} AS JSON), CAST(#{attendanceCount} AS JSON), CAST(#{totalDownCount} AS JSON),-->
+<!--                     CAST(#{miningDownCount} AS JSON), CAST(#{drivingDownCount} AS JSON), CAST(#{otherDownCount} AS JSON),-->
+<!--                     CAST(#{totalUpCount} AS JSON), CAST(#{miningUpCount} AS JSON), CAST(#{drivingUpCount} AS JSON), CAST(#{otherUpCount} AS JSON),-->
+<!--                     #{userId}, #{isDeleted}, #{mineCategory}-->
+<!--                 )-->
+<!--    </insert>-->
+
+<!--    <update id="update" parameterType="com.ruoyi.system.domain.BaoBiao.po.MineDevelopmentDataPO">-->
+<!--        UPDATE mine_development_data-->
+<!--        SET data_type = #{dataType},-->
+<!--            unit_code = #{unitCode},-->
+<!--            unit_name = #{unitName},-->
+<!--            record_date = #{recordDate},-->
+<!--            current_shift = #{currentShift},-->
+<!--            unit_nameJSON = CAST(#{unitNameJSON} AS JSON),-->
+<!--            output = CAST(#{output} AS JSON),-->
+<!--            attendance_count = CAST(#{attendanceCount} AS JSON),-->
+<!--            total_down_count = CAST(#{totalDownCount} AS JSON),-->
+<!--            mining_down_count = CAST(#{miningDownCount} AS JSON),-->
+<!--            driving_down_count = CAST(#{drivingDownCount} AS JSON),-->
+<!--            other_down_count = CAST(#{otherDownCount} AS JSON),-->
+<!--            total_up_count = CAST(#{totalUpCount} AS JSON),-->
+<!--            mining_up_count = CAST(#{miningUpCount} AS JSON),-->
+<!--            driving_up_count = CAST(#{drivingUpCount} AS JSON),-->
+<!--            other_up_count = CAST(#{otherUpCount} AS JSON),-->
+<!--            user_id = #{userId},-->
+<!--            mine_category = #{mineCategory}-->
+<!--        WHERE id = #{id} AND is_deleted = 0-->
+<!--    </update>-->
+
+<!--    <update id="softDeleteById">-->
+<!--        UPDATE mine_development_data SET is_deleted = 1 WHERE id = #{id}-->
+<!--    </update>-->
+
+<!--    <select id="selectById" resultMap="MineDevDataMap">-->
+<!--        SELECT <include refid="Base_Columns"/> FROM mine_development_data-->
+<!--        WHERE id = #{id} AND is_deleted = 0-->
+<!--        LIMIT 1-->
+<!--    </select>-->
+
+<!--    <select id="selectList" resultMap="MineDevDataMap" parameterType="com.ruoyi.system.domain.BaoBiao.po.MineDevelopmentDataPO">-->
+<!--        SELECT <include refid="Base_Columns"/> FROM mine_development_data-->
+<!--        <where>-->
+<!--            <if test="isDeleted != null">AND is_deleted = #{isDeleted}</if>-->
+<!--            <if test="isDeleted == null">AND is_deleted = 0</if>-->
+<!--            <if test="mineCategory != null and mineCategory != ''">AND mine_category = #{mineCategory}</if>-->
+<!--            <if test="userId != null and userId != ''">AND user_id = #{userId}</if>-->
+<!--            <if test="dataType != null and dataType != ''">AND data_type = #{dataType}</if>-->
+<!--            <if test="unitCode != null and unitCode != ''">AND unit_code = #{unitCode}</if>-->
+<!--            <if test="recordDate != null">AND record_date = #{recordDate}</if>-->
+<!--        </where>-->
+<!--        ORDER BY record_date DESC, id DESC-->
+<!--    </select>-->
+
+<!--</mapper>-->
+
+        <!--<?xml version="1.0" encoding="UTF-8" ?>-->
+<!--<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"-->
+<!--        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">-->
+
+<!--<mapper namespace="com.ruoyi.system.mapper.BaoBiao.MineDevelopmentDataMapper">-->
+
+<!--    <resultMap id="MineDevelopmentDataMap" type="com.ruoyi.system.domain.BaoBiao.MineDevelopmentData">-->
+<!--        <id     property="id"                 column="id"/>-->
+<!--        <result property="dataType"           column="data_type"/>-->
+<!--        <result property="unitCode"           column="unit_code"/>-->
+<!--        <result property="unitName"           column="unit_name"/>-->
+<!--        <result property="recordDate"         column="record_date"/>-->
+<!--        <result property="currentShift"       column="current_shift"/>-->
+<!--        <result property="output"             column="output"/>-->
+<!--        <result property="attendanceCount"    column="attendance_count"/>-->
+<!--        <result property="totalDownCount"     column="total_down_count"/>-->
+<!--        <result property="miningDownCount"    column="mining_down_count"/>-->
+<!--        <result property="drivingDownCount"   column="driving_down_count"/>-->
+<!--        <result property="otherDownCount"     column="other_down_count"/>-->
+<!--        <result property="totalUpCount"       column="total_up_count"/>-->
+<!--        <result property="miningUpCount"      column="mining_up_count"/>-->
+<!--        <result property="drivingUpCount"     column="driving_up_count"/>-->
+<!--        <result property="otherUpCount"       column="other_up_count"/>-->
+<!--        <result property="createTime"         column="create_time"/>-->
+<!--        <result property="updateTime"         column="update_time"/>-->
+<!--        <result property="userid"             column="userid"/>-->
+<!--    </resultMap>-->
+
+<!--    <sql id="Base_Column_List">-->
+<!--        id, data_type, unit_code, unit_name, record_date, current_shift,-->
+<!--        output, attendance_count, total_down_count, mining_down_count, driving_down_count, other_down_count,-->
+<!--        total_up_count, mining_up_count, driving_up_count, other_up_count, create_time, update_time,userid-->
+<!--    </sql>-->
+
+<!--    <select id="selectById" resultMap="MineDevelopmentDataMap">-->
+<!--        SELECT <include refid="Base_Column_List"/>-->
+<!--        FROM mine_development_data-->
+<!--        WHERE id = #{id}-->
+<!--    </select>-->
+
+<!--    <select id="selectList" resultMap="MineDevelopmentDataMap">-->
+<!--        SELECT <include refid="Base_Column_List"/>-->
+<!--        FROM mine_development_data-->
+<!--        <where>-->
+<!--            <if test="dataType != null and dataType != ''">-->
+<!--                AND data_type = #{dataType}-->
+<!--            </if>-->
+<!--            <if test="unitCode != null and unitCode != ''">-->
+<!--                AND unit_code = #{unitCode}-->
+<!--            </if>-->
+<!--            <if test="recordDate != null">-->
+<!--                AND record_date = #{recordDate}-->
+<!--            </if>-->
+<!--            <if test="currentShift != null and currentShift != ''">-->
+<!--                AND current_shift = #{currentShift}-->
+<!--            </if>-->
+<!--        </where>-->
+<!--        ORDER BY record_date DESC, id DESC-->
+<!--    </select>-->
+
+<!--    <insert id="insert" parameterType="com.ruoyi.system.domain.BaoBiao.MineDevelopmentData" useGeneratedKeys="true" keyProperty="id">-->
+<!--        INSERT INTO mine_development_data (-->
+<!--            data_type, unit_code, unit_name, record_date, current_shift,-->
+<!--            output, attendance_count, total_down_count, mining_down_count, driving_down_count, other_down_count,-->
+<!--            total_up_count, mining_up_count, driving_up_count, other_up_count-->
+<!--        ) VALUES (-->
+<!--                     #{dataType}, #{unitCode}, #{unitName}, #{recordDate}, #{currentShift},-->
+<!--                     #{output}, #{attendanceCount}, #{totalDownCount}, #{miningDownCount}, #{drivingDownCount}, #{otherDownCount},-->
+<!--                     #{totalUpCount}, #{miningUpCount}, #{drivingUpCount}, #{otherUpCount}-->
+<!--                 )-->
+<!--    </insert>-->
+
+<!--    <update id="update" parameterType="com.ruoyi.system.domain.BaoBiao.MineDevelopmentData">-->
+<!--        UPDATE mine_development_data-->
+<!--        SET data_type = #{dataType},-->
+<!--            unit_code = #{unitCode},-->
+<!--            unit_name = #{unitName},-->
+<!--            record_date = #{recordDate},-->
+<!--            current_shift = #{currentShift},-->
+<!--            output = #{output},-->
+<!--            attendance_count = #{attendanceCount},-->
+<!--            total_down_count = #{totalDownCount},-->
+<!--            mining_down_count = #{miningDownCount},-->
+<!--            driving_down_count = #{drivingDownCount},-->
+<!--            other_down_count = #{otherDownCount},-->
+<!--            total_up_count = #{totalUpCount},-->
+<!--            mining_up_count = #{miningUpCount},-->
+<!--            driving_up_count = #{drivingUpCount},-->
+<!--            other_up_count = #{otherUpCount}-->
+<!--        WHERE id = #{id}-->
+<!--    </update>-->
+
+<!--    <delete id="deleteById">-->
+<!--        DELETE FROM mine_development_data WHERE id = #{id}-->
+<!--    </delete>-->
+
+<!--    <delete id="deleteByIds">-->
+<!--        DELETE FROM mine_development_data WHERE id IN-->
+<!--        <foreach collection="ids" item="id" open="(" separator="," close=")">-->
+<!--            #{id}-->
+<!--        </foreach>-->
+<!--    </delete>-->
+
+<!--</mapper>-->

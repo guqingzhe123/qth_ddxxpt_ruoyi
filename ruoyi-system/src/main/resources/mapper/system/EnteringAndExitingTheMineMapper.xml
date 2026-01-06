@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.EnteringAndExitingTheMineMapper">
+
+    <resultMap type="com.ruoyi.system.domain.EnteringAndExitingTheMine" id="EnteringAndExitingTheMineResult">
+        <result property="id"    column="id"    />
+        <result property="unitCode"    column="unit_code"    />
+        <result property="unitName"    column="unit_name"    />
+        <result property="recordDate"    column="record_date"    />
+        <result property="currentShift"    column="current_shift"    />
+        <result property="totalDownCount"    column="total_down_count"    />
+        <result property="miningDownCount"    column="mining_down_count"    />
+        <result property="drivingDownCount"    column="driving_down_count"    />
+        <result property="pioneerDownCount"    column="pioneer_down_count"    />
+        <result property="otherDownCount"    column="other_down_count"    />
+        <result property="totalUpCount"    column="total_up_count"    />
+        <result property="miningUpCount"    column="mining_up_count"    />
+        <result property="pioneerUpcount"    column="pioneer_upcount"    />
+        <result property="drivingUpCount"    column="driving_up_count"    />
+        <result property="otherUpCount"    column="other_up_count"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="isDeleted"    column="is_deleted"    />
+    </resultMap>
+
+    <sql id="selectEnteringAndExitingTheMineVo">
+        select id, unit_code, unit_name, record_date, current_shift, total_down_count, mining_down_count, driving_down_count, pioneer_down_count, other_down_count, total_up_count, mining_up_count, pioneer_upcount, driving_up_count, other_up_count, create_time, update_time, create_user, update_user, is_deleted from entering_and_exiting_the_mine
+    </sql>
+
+    <select id="selectEnteringAndExitingTheMineList" parameterType="com.ruoyi.system.domain.EnteringAndExitingTheMine" resultMap="EnteringAndExitingTheMineResult">
+        <include refid="selectEnteringAndExitingTheMineVo"/>
+        <where>
+            <if test="unitCode != null  and unitCode != ''"> and unit_code = #{unitCode}</if>
+            <if test="unitName != null  and unitName != ''"> and unit_name like concat('%', #{unitName}, '%')</if>
+            <if test="recordDate != null "> and record_date = #{recordDate}</if>
+            <if test="currentShift != null "> and current_shift = #{currentShift}</if>
+            <if test="totalDownCount != null "> and total_down_count = #{totalDownCount}</if>
+            <if test="miningDownCount != null "> and mining_down_count = #{miningDownCount}</if>
+            <if test="drivingDownCount != null "> and driving_down_count = #{drivingDownCount}</if>
+            <if test="pioneerDownCount != null "> and pioneer_down_count = #{pioneerDownCount}</if>
+            <if test="otherDownCount != null "> and other_down_count = #{otherDownCount}</if>
+            <if test="totalUpCount != null "> and total_up_count = #{totalUpCount}</if>
+            <if test="miningUpCount != null "> and mining_up_count = #{miningUpCount}</if>
+            <if test="pioneerUpcount != null "> and pioneer_upcount = #{pioneerUpcount}</if>
+            <if test="drivingUpCount != null "> and driving_up_count = #{drivingUpCount}</if>
+            <if test="otherUpCount != null "> and other_up_count = #{otherUpCount}</if>
+            <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
+            <if test="updateUser != null "> and update_user = #{updateUser}</if>
+            <if test="isDeleted != null "> and is_deleted = #{isDeleted}</if>
+        </where>
+    </select>
+
+    <select id="selectEnteringAndExitingTheMineById" parameterType="java.lang.Long" resultMap="EnteringAndExitingTheMineResult">
+        <include refid="selectEnteringAndExitingTheMineVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertEnteringAndExitingTheMine" parameterType="com.ruoyi.system.domain.EnteringAndExitingTheMine" useGeneratedKeys="true" keyProperty="id">
+        insert into entering_and_exiting_the_mine
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="unitCode != null">unit_code,</if>
+            <if test="unitName != null">unit_name,</if>
+            <if test="recordDate != null">record_date,</if>
+            <if test="currentShift != null">current_shift,</if>
+            <if test="totalDownCount != null">total_down_count,</if>
+            <if test="miningDownCount != null">mining_down_count,</if>
+            <if test="drivingDownCount != null">driving_down_count,</if>
+            <if test="pioneerDownCount != null">pioneer_down_count,</if>
+            <if test="otherDownCount != null">other_down_count,</if>
+            <if test="totalUpCount != null">total_up_count,</if>
+            <if test="miningUpCount != null">mining_up_count,</if>
+            <if test="pioneerUpcount != null">pioneer_upcount,</if>
+            <if test="drivingUpCount != null">driving_up_count,</if>
+            <if test="otherUpCount != null">other_up_count,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="createUser != null">create_user,</if>
+            <if test="updateUser != null">update_user,</if>
+            <if test="isDeleted != null">is_deleted,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="unitCode != null">#{unitCode},</if>
+            <if test="unitName != null">#{unitName},</if>
+            <if test="recordDate != null">#{recordDate},</if>
+            <if test="currentShift != null">#{currentShift},</if>
+            <if test="totalDownCount != null">#{totalDownCount},</if>
+            <if test="miningDownCount != null">#{miningDownCount},</if>
+            <if test="drivingDownCount != null">#{drivingDownCount},</if>
+            <if test="pioneerDownCount != null">#{pioneerDownCount},</if>
+            <if test="otherDownCount != null">#{otherDownCount},</if>
+            <if test="totalUpCount != null">#{totalUpCount},</if>
+            <if test="miningUpCount != null">#{miningUpCount},</if>
+            <if test="pioneerUpcount != null">#{pioneerUpcount},</if>
+            <if test="drivingUpCount != null">#{drivingUpCount},</if>
+            <if test="otherUpCount != null">#{otherUpCount},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+            <if test="isDeleted != null">#{isDeleted},</if>
+        </trim>
+    </insert>
+
+    <update id="updateEnteringAndExitingTheMine" parameterType="com.ruoyi.system.domain.EnteringAndExitingTheMine">
+        update entering_and_exiting_the_mine
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="unitCode != null">unit_code = #{unitCode},</if>
+            <if test="unitName != null">unit_name = #{unitName},</if>
+            <if test="recordDate != null">record_date = #{recordDate},</if>
+            <if test="currentShift != null">current_shift = #{currentShift},</if>
+            <if test="totalDownCount != null">total_down_count = #{totalDownCount},</if>
+            <if test="miningDownCount != null">mining_down_count = #{miningDownCount},</if>
+            <if test="drivingDownCount != null">driving_down_count = #{drivingDownCount},</if>
+            <if test="pioneerDownCount != null">pioneer_down_count = #{pioneerDownCount},</if>
+            <if test="otherDownCount != null">other_down_count = #{otherDownCount},</if>
+            <if test="totalUpCount != null">total_up_count = #{totalUpCount},</if>
+            <if test="miningUpCount != null">mining_up_count = #{miningUpCount},</if>
+            <if test="pioneerUpcount != null">pioneer_upcount = #{pioneerUpcount},</if>
+            <if test="drivingUpCount != null">driving_up_count = #{drivingUpCount},</if>
+            <if test="otherUpCount != null">other_up_count = #{otherUpCount},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="createUser != null">create_user = #{createUser},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEnteringAndExitingTheMineById" parameterType="java.lang.Long">
+        delete from entering_and_exiting_the_mine where id = #{id}
+    </delete>
+
+    <delete id="deleteEnteringAndExitingTheMineByIds" parameterType="java.lang.String">
+        delete from entering_and_exiting_the_mine where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

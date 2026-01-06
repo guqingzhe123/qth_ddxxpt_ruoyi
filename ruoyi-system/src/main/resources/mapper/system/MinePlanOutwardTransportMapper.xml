@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MinePlanOutwardTransportMapper">
+
+    <resultMap type="com.ruoyi.system.domain.MinePlanOutwardTransport" id="MinePlanOutwardTransportResult">
+        <result property="id"    column="id"    />
+        <result property="planMonth"    column="plan_month"    />
+        <result property="totalCompanySalesVehicles"    column="total_company_sales_vehicles"    />
+        <result property="totalCompanySalesTons"    column="total_company_sales_tons"    />
+        <result property="cleanCoalSalesVehicles"    column="clean_coal_sales_vehicles"    />
+        <result property="cleanCoalSalesTons"    column="clean_coal_sales_tons"    />
+    </resultMap>
+
+    <sql id="selectMinePlanOutwardTransportVo">
+        select id, plan_month, total_company_sales_vehicles, total_company_sales_tons, clean_coal_sales_vehicles, clean_coal_sales_tons from mine_plan_outward_transport
+    </sql>
+
+    <select id="selectMinePlanOutwardTransportList" parameterType="com.ruoyi.system.domain.MinePlanOutwardTransport" resultMap="MinePlanOutwardTransportResult">
+        <include refid="selectMinePlanOutwardTransportVo"/>
+        <where>
+            <if test="planMonth != null "> and plan_month = #{planMonth}</if>
+            <if test="totalCompanySalesVehicles != null "> and total_company_sales_vehicles = #{totalCompanySalesVehicles}</if>
+            <if test="totalCompanySalesTons != null "> and total_company_sales_tons = #{totalCompanySalesTons}</if>
+            <if test="cleanCoalSalesVehicles != null "> and clean_coal_sales_vehicles = #{cleanCoalSalesVehicles}</if>
+            <if test="cleanCoalSalesTons != null "> and clean_coal_sales_tons = #{cleanCoalSalesTons}</if>
+        </where>
+    </select>
+
+    <select id="selectMinePlanOutwardTransportById" parameterType="java.lang.Long" resultMap="MinePlanOutwardTransportResult">
+        <include refid="selectMinePlanOutwardTransportVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectMinePlanOutwardTransportByMonth" parameterType="java.util.List" resultMap="MinePlanOutwardTransportResult">
+        SELECT * from mine_plan_outward_transport where plan_month=#{statsDate}
+    </select>
+    <select id="selectMinePlanOutwardTransportByYear" parameterType="java.util.List" resultMap="MinePlanOutwardTransportResult">
+        SELECT sum(total_company_sales_vehicles) as total_company_sales_vehicles, sum(total_company_sales_tons) as total_company_sales_tons,
+               sum(clean_coal_sales_vehicles) as clean_coal_sales_vehicles , sum(clean_coal_sales_tons) as clean_coal_sales_tons from mine_plan_outward_transport
+        where  YEAR(plan_month) = YEAR(#{statsDate}) and  plan_month &lt;= #{statsDate}
+    </select>
+
+    <insert id="insertMinePlanOutwardTransport" parameterType="com.ruoyi.system.domain.MinePlanOutwardTransport" useGeneratedKeys="true" keyProperty="id">
+        insert into mine_plan_outward_transport
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="planMonth != null">plan_month,</if>
+            <if test="totalCompanySalesVehicles != null">total_company_sales_vehicles,</if>
+            <if test="totalCompanySalesTons != null">total_company_sales_tons,</if>
+            <if test="cleanCoalSalesVehicles != null">clean_coal_sales_vehicles,</if>
+            <if test="cleanCoalSalesTons != null">clean_coal_sales_tons,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="planMonth != null">#{planMonth},</if>
+            <if test="totalCompanySalesVehicles != null">#{totalCompanySalesVehicles},</if>
+            <if test="totalCompanySalesTons != null">#{totalCompanySalesTons},</if>
+            <if test="cleanCoalSalesVehicles != null">#{cleanCoalSalesVehicles},</if>
+            <if test="cleanCoalSalesTons != null">#{cleanCoalSalesTons},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMinePlanOutwardTransport" parameterType="com.ruoyi.system.domain.MinePlanOutwardTransport">
+        update mine_plan_outward_transport
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="planMonth != null">plan_month = #{planMonth},</if>
+            <if test="totalCompanySalesVehicles != null">total_company_sales_vehicles = #{totalCompanySalesVehicles},</if>
+            <if test="totalCompanySalesTons != null">total_company_sales_tons = #{totalCompanySalesTons},</if>
+            <if test="cleanCoalSalesVehicles != null">clean_coal_sales_vehicles = #{cleanCoalSalesVehicles},</if>
+            <if test="cleanCoalSalesTons != null">clean_coal_sales_tons = #{cleanCoalSalesTons},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMinePlanOutwardTransportById" parameterType="java.lang.Long">
+        delete from mine_plan_outward_transport where id = #{id}
+    </delete>
+
+    <delete id="deleteMinePlanOutwardTransportByIds" parameterType="java.lang.String">
+        delete from mine_plan_outward_transport where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

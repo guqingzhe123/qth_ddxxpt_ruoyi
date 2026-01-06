@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.flowable.mapper.ImChatMessageMapper">
+
+    <select id="selectChatHistory" resultType="com.ruoyi.flowable.domain.ImChatMessage">
+        SELECT * from ( SELECT id as id ,sender_id as senderId,  receiver_id as  receiverId ,content as content ,fileId as fileId ,msg_type as msgType,
+               createTime as createTime
+        FROM im_chat_message
+        WHERE (sender_id = #{senderId} AND receiver_id = #{receiverId})
+           OR (sender_id = #{receiverId} AND receiver_id = #{senderId})
+        ORDER BY msg_time desc
+            LIMIT #{offset}, #{limit} ) t ORDER BY createTime asc
+    </select>
+
+    <select id="selectChatSessions" resultType="com.ruoyi.flowable.vo.ChatSessionVo">
+        SELECT t1.user_id as id,t1.avatar as avatar,t1.im_online_status as online,
+               (SELECT MAX(msg_time) FROM im_chat_message WHERE (sender_id =#{userId} AND receiver_id = t1.user_id) OR (sender_id = t1.user_id AND receiver_id = #{userId}) ORDER BY msg_time DESC LIMIT 1 )  as lastMsgTime,
+(SELECT content FROM im_chat_message WHERE (sender_id = #{userId} AND receiver_id = t1.user_id) OR (sender_id = t1.user_id AND receiver_id = #{userId}) ORDER BY msg_time DESC LIMIT 1) AS lastMsgContent,
+            (SELECT msg_type FROM im_chat_message WHERE (sender_id = #{userId} AND receiver_id = t1.user_id) OR (sender_id = t1.user_id AND receiver_id = #{userId}) ORDER BY msg_time DESC LIMIT 1) AS lastMsgType
+
+        from sys_user t1 where t1.user_id !=#{userId} and  t1.del_flag = '0'  ORDER BY lastMsgContent desc
+    </select>
+
+    <select id="countUnreadMessages" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM im_chat_message
+        WHERE receiver_id = #{userId}
+          AND sender_id = #{targetId}
+          AND status = 0
+    </select>
+
+    <update id="updateMessageRead">
+        UPDATE im_chat_message
+        SET status = 1, update_time = NOW()
+        WHERE receiver_id = #{userId}
+          AND sender_id = #{targetId}
+          AND status = 0
+    </update>
+
+    <insert id="insertImChatMessage" parameterType="com.ruoyi.flowable.domain.ImChatMessage">
+        insert into im_chat_message(
+        <if test="id != null and id != ''">id,</if>
+        <if test="senderId != null and senderId != ''">sender_id,</if>
+        <if test="receiverId != null and receiverId != ''">receiver_id,</if>
+        <if test="content != null and content != ''">content,</if>
+        <if test="msgType != null and msgType != ''">msg_type,</if>
+        <if test="status != null and status != ''">status,</if>
+        <if test="msgTime != null and msgTime != ''">msg_time,</if>
+        <if test="fileId != null and fileId != ''">fileId,</if>
+        createTime
+        )values(
+        <if test="id != null and id != ''">#{id},</if>
+        <if test="senderId != null and senderId != ''">#{senderId},</if>
+        <if test="receiverId != null and receiverId != ''">#{receiverId},</if>
+        <if test="content != null and content != ''">#{content},</if>
+        <if test="msgType != null and msgType != ''">#{msgType},</if>
+        <if test="status != null and status != ''">#{status},</if>
+        <if test="msgTime != null and msgTime != ''">#{msgTime},</if>
+        <if test="fileId != null and fileId != ''">#{fileId},</if>
+        sysdate()
+        )
+    </insert>
+
+</mapper>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BaoBiao.OtherDataReportV1Mapper">
+
+    <resultMap id="DdrodV1Map" type="com.ruoyi.system.domain.BaoBiao.DispatchDailyReportOtherDataV1PO">
+        <id    column="id"                       property="id"/>
+        <result column="record_date"             property="recordDate"/>
+        <result column="daily_clean_coal_output" property="dailyCleanCoalOutput"/>
+        <result column="daily_product_sales"     property="dailyProductSales"/>
+        <result column="daily_outbound_cars"     property="dailyOutboundCars"/>
+        <result column="daily_outbound_volume"   property="dailyOutboundVolume"/>
+        <result column="daily_sales_total"       property="dailySalesTotal"/>
+        <result column="subtotal"                property="subtotal"/>
+        <result column="raw_coal"                property="rawCoal"/>
+        <result column="clean_coal"              property="cleanCoal"/>
+        <result column="other"                   property="other"/>
+        <result column="daily_local_sales"       property="dailyLocalSales"/>
+        <result column="create_time"             property="createTime"/>
+        <result column="update_time"             property="updateTime"/>
+        <result column="user_id"                 property="userId"/>
+        <result column="is_deleted"              property="isDeleted"/>
+    </resultMap>
+
+    <!-- 当日记录（唯一索引保障单行） -->
+    <select id="selectOneByDate" resultMap="DdrodV1Map">
+        SELECT *
+        FROM dispatch_daily_report_other_data
+        WHERE record_date = #{recordDate}
+          AND is_deleted = 0
+            LIMIT 1
+    </select>
+
+    <!-- 累计：当月1号~当日（含） -->
+    <select id="sumCleanCoalOutput" resultType="java.math.BigDecimal">
+        SELECT COALESCE(SUM(daily_clean_coal_output), 0)
+        FROM dispatch_daily_report_other_data
+        WHERE record_date BETWEEN #{fromDate} AND #{toDate}
+          AND is_deleted = 0
+    </select>
+
+    <select id="sumProductSales" resultType="java.math.BigDecimal">
+        SELECT COALESCE(SUM(daily_product_sales), 0)
+        FROM dispatch_daily_report_other_data
+        WHERE record_date BETWEEN #{fromDate} AND #{toDate}
+          AND is_deleted = 0
+    </select>
+
+    <select id="sumOutboundCars" resultType="java.math.BigDecimal">
+        SELECT COALESCE(SUM(daily_outbound_cars), 0)
+        FROM dispatch_daily_report_other_data
+        WHERE record_date BETWEEN #{fromDate} AND #{toDate}
+          AND is_deleted = 0
+    </select>
+
+    <select id="sumOutboundVolume" resultType="java.math.BigDecimal">
+        SELECT COALESCE(SUM(daily_outbound_volume), 0)
+        FROM dispatch_daily_report_other_data
+        WHERE record_date BETWEEN #{fromDate} AND #{toDate}
+          AND is_deleted = 0
+    </select>
+
+    <select id="sumLocalSales" resultType="java.math.BigDecimal">
+        SELECT COALESCE(SUM(daily_local_sales), 0)
+        FROM dispatch_daily_report_other_data
+        WHERE record_date BETWEEN #{fromDate} AND #{toDate}
+          AND is_deleted = 0
+    </select>
+
+    <select id="sumCleanCoal" resultType="java.math.BigDecimal">
+        SELECT COALESCE(SUM(clean_coal), 0)
+        FROM dispatch_daily_report_other_data
+        WHERE record_date BETWEEN #{fromDate} AND #{toDate}
+          AND is_deleted = 0
+    </select>
+</mapper>

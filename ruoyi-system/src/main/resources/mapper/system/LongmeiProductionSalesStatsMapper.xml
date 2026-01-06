@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.LongmeiProductionSalesStatsMapper">
+    
+    <resultMap type="com.ruoyi.system.domain.LongmeiProductionSalesStats" id="LongmeiProductionSalesStatsResult">
+        <result property="id"    column="id"    />
+        <result property="companyName"    column="company_name"    />
+        <result property="statsDate"    column="stats_date"    />
+        <result property="dailyProduction"    column="daily_production"    />
+        <result property="monthlyCumulativeProduction"    column="monthly_cumulative_production"    />
+        <result property="annualCumulativeProduction"    column="annual_cumulative_production"    />
+        <result property="dailySalesCars"    column="daily_sales_cars"    />
+        <result property="monthlyCumulativeSalesCars"    column="monthly_cumulative_sales_cars"    />
+        <result property="annualCumulativeSalesCars"    column="annual_cumulative_sales_cars"    />
+        <result property="dailySalesTonnage"    column="daily_sales_tonnage"    />
+        <result property="monthlyCumulativeSalesTonnage"    column="monthly_cumulative_sales_tonnage"    />
+        <result property="annualCumulativeSalesTonnage"    column="annual_cumulative_sales_tonnage"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectLongmeiProductionSalesStatsVo">
+        select id, company_name, stats_date, daily_production, monthly_cumulative_production, annual_cumulative_production, daily_sales_cars, monthly_cumulative_sales_cars, annual_cumulative_sales_cars, daily_sales_tonnage, monthly_cumulative_sales_tonnage, annual_cumulative_sales_tonnage, create_time, update_time from longmei_production_sales_stats
+    </sql>
+
+    <select id="selectLongmeiProductionSalesStatsList" parameterType="com.ruoyi.system.domain.LongmeiProductionSalesStats" resultMap="LongmeiProductionSalesStatsResult">
+        <include refid="selectLongmeiProductionSalesStatsVo"/>
+        <where>  
+            <if test="companyName != null  and companyName != ''"> and company_name like concat('%', #{companyName}, '%')</if>
+            <if test="statsDate != null "> and stats_date = #{statsDate}</if>
+            <if test="dailyProduction != null "> and daily_production = #{dailyProduction}</if>
+            <if test="monthlyCumulativeProduction != null "> and monthly_cumulative_production = #{monthlyCumulativeProduction}</if>
+            <if test="annualCumulativeProduction != null "> and annual_cumulative_production = #{annualCumulativeProduction}</if>
+            <if test="dailySalesCars != null  and dailySalesCars != ''"> and daily_sales_cars = #{dailySalesCars}</if>
+            <if test="monthlyCumulativeSalesCars != null  and monthlyCumulativeSalesCars != ''"> and monthly_cumulative_sales_cars = #{monthlyCumulativeSalesCars}</if>
+            <if test="annualCumulativeSalesCars != null  and annualCumulativeSalesCars != ''"> and annual_cumulative_sales_cars = #{annualCumulativeSalesCars}</if>
+            <if test="dailySalesTonnage != null "> and daily_sales_tonnage = #{dailySalesTonnage}</if>
+            <if test="monthlyCumulativeSalesTonnage != null "> and monthly_cumulative_sales_tonnage = #{monthlyCumulativeSalesTonnage}</if>
+            <if test="annualCumulativeSalesTonnage != null "> and annual_cumulative_sales_tonnage = #{annualCumulativeSalesTonnage}</if>
+        </where>
+    </select>
+    <select id="Alllist" parameterType="java.lang.String" resultMap="LongmeiProductionSalesStatsResult">
+        WITH target_cities AS ( SELECT '鸡西' AS city UNION ALL SELECT '鹤岗' AS city UNION ALL SELECT '双鸭山' AS city UNION ALL SELECT '七台河' AS city )
+        SELECT
+            tc.city AS company_name,
+            ms.monthly_cumulative_production,
+            ys.annual_cumulative_production,
+            ms.monthly_cumulative_sales_cars,
+            ys.annual_cumulative_sales_cars,
+            ms.monthly_cumulative_sales_tonnage,
+            ys.annual_cumulative_sales_tonnage
+        FROM target_cities tc
+-- 左连接当月聚合数据
+                 LEFT JOIN (
+            SELECT
+                company_name,
+                SUM(daily_production) AS monthly_cumulative_production,
+                SUM(daily_sales_cars) AS monthly_cumulative_sales_cars,
+                SUM(daily_sales_tonnage) AS monthly_cumulative_sales_tonnage
+            FROM longmei_production_sales_stats
+            WHERE YEAR(stats_date) = YEAR(#{statsDate})
+              AND MONTH(stats_date) = MONTH(#{statsDate})
+                and stats_date &lt;=  #{statsDate}
+            GROUP BY company_name  -- 按公司聚合当月数据，确保每个公司1条记录
+        ) ms ON tc.city = ms.company_name
+-- 左连接当年聚合数据
+                 LEFT JOIN (
+            SELECT
+                company_name,
+                SUM(daily_production) AS annual_cumulative_production,
+                SUM(daily_sales_cars) AS annual_cumulative_sales_cars,
+                SUM(daily_sales_tonnage) AS annual_cumulative_sales_tonnage
+            FROM longmei_production_sales_stats
+            WHERE YEAR(stats_date) = YEAR(#{statsDate})
+              and stats_date &lt;=  #{statsDate}
+            GROUP BY company_name  -- 按公司聚合当年数据，确保每个公司1条记录
+        ) ys ON tc.city = ys.company_name
+        ORDER BY tc.city;
+
+
+    </select>
+
+    <select id="selectLongmeiProductionSalesStatsById" parameterType="java.lang.String" resultMap="LongmeiProductionSalesStatsResult">
+        <include refid="selectLongmeiProductionSalesStatsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertLongmeiProductionSalesStats" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        insert into longmei_production_sales_stats
+        <!-- 字段部分：基于集合第一个元素判断非空字段（确保批量插入字段统一） -->
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="list != null and list.size() > 0">
+                <if test="list[0].companyName != null and list[0].companyName != ''">company_name,</if>
+                <if test="list[0].statsDate != null">stats_date,</if>
+                <if test="list[0].dailyProduction != null">daily_production,</if>
+                <if test="list[0].monthlyCumulativeProduction != null">monthly_cumulative_production,</if>
+                <if test="list[0].annualCumulativeProduction != null">annual_cumulative_production,</if>
+                <if test="list[0].dailySalesCars != null">daily_sales_cars,</if>
+                <if test="list[0].monthlyCumulativeSalesCars != null">monthly_cumulative_sales_cars,</if>
+                <if test="list[0].annualCumulativeSalesCars != null">annual_cumulative_sales_cars,</if>
+                <if test="list[0].dailySalesTonnage != null">daily_sales_tonnage,</if>
+                <if test="list[0].monthlyCumulativeSalesTonnage != null">monthly_cumulative_sales_tonnage,</if>
+                <if test="list[0].annualCumulativeSalesTonnage != null">annual_cumulative_sales_tonnage,</if>
+                <if test="list[0].createTime != null">create_time,</if>
+                <if test="list[0].updateTime != null">update_time,</if>
+            </if>
+        </trim>
+        <!-- 值部分：遍历集合生成批量值列表 -->
+        values
+        <foreach collection="list" item="item" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="item.companyName != null and item.companyName != ''">#{item.companyName},</if>
+                <if test="item.statsDate != null">#{item.statsDate},</if>
+                <if test="item.dailyProduction != null">#{item.dailyProduction},</if>
+                <if test="item.monthlyCumulativeProduction != null">#{item.monthlyCumulativeProduction},</if>
+                <if test="item.annualCumulativeProduction != null">#{item.annualCumulativeProduction},</if>
+                <if test="item.dailySalesCars != null">#{item.dailySalesCars},</if>
+                <if test="item.monthlyCumulativeSalesCars != null">#{item.monthlyCumulativeSalesCars},</if>
+                <if test="item.annualCumulativeSalesCars != null">#{item.annualCumulativeSalesCars},</if>
+                <if test="item.dailySalesTonnage != null">#{item.dailySalesTonnage},</if>
+                <if test="item.monthlyCumulativeSalesTonnage != null">#{item.monthlyCumulativeSalesTonnage},</if>
+                <if test="item.annualCumulativeSalesTonnage != null">#{item.annualCumulativeSalesTonnage},</if>
+                <if test="item.createTime != null">#{item.createTime},</if>
+                <if test="item.updateTime != null">#{item.updateTime},</if>
+            </trim>
+        </foreach>
+    </insert>
+
+    <update id="updateLongmeiProductionSalesStats" parameterType="com.ruoyi.system.domain.LongmeiProductionSalesStats">
+        update longmei_production_sales_stats
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyName != null and companyName != ''">company_name = #{companyName},</if>
+            <if test="statsDate != null">stats_date = #{statsDate},</if>
+            <if test="dailyProduction != null">daily_production = #{dailyProduction},</if>
+            <if test="monthlyCumulativeProduction != null">monthly_cumulative_production = #{monthlyCumulativeProduction},</if>
+            <if test="annualCumulativeProduction != null">annual_cumulative_production = #{annualCumulativeProduction},</if>
+            <if test="dailySalesCars != null">daily_sales_cars = #{dailySalesCars},</if>
+            <if test="monthlyCumulativeSalesCars != null">monthly_cumulative_sales_cars = #{monthlyCumulativeSalesCars},</if>
+            <if test="annualCumulativeSalesCars != null">annual_cumulative_sales_cars = #{annualCumulativeSalesCars},</if>
+            <if test="dailySalesTonnage != null">daily_sales_tonnage = #{dailySalesTonnage},</if>
+            <if test="monthlyCumulativeSalesTonnage != null">monthly_cumulative_sales_tonnage = #{monthlyCumulativeSalesTonnage},</if>
+            <if test="annualCumulativeSalesTonnage != null">annual_cumulative_sales_tonnage = #{annualCumulativeSalesTonnage},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLongmeiProductionSalesStatsById" parameterType="java.lang.String">
+        delete from longmei_production_sales_stats where id = #{id}
+    </delete>
+
+    <delete id="deleteLongmeiProductionSalesStatsByIds" parameterType="java.lang.String">
+        delete from longmei_production_sales_stats where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

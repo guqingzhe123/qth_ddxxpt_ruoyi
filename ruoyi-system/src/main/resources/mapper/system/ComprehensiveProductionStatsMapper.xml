@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ComprehensiveProductionStatsMapper">
+    
+    <resultMap type="com.ruoyi.system.domain.ComprehensiveProductionStats" id="ComprehensiveProductionStatsResult">
+        <result property="id"    column="id"    />
+        <result property="statsDate"    column="stats_date"    />
+        <result property="totalSalesCars"    column="total_sales_cars"    />
+        <result property="totalSalesTonnage"    column="total_sales_tonnage"    />
+        <result property="cleanCoalSalesCars"    column="clean_coal_sales_cars"    />
+        <result property="cleanCoalSalesTonnage"    column="clean_coal_sales_tonnage"    />
+        <result property="acknowledgedCarsTotal"    column="acknowledged_cars_total"    />
+        <result property="cleanCoalAcknowledged"    column="clean_coal_acknowledged"    />
+        <result property="shenjuCars"    column="shenju_cars"    />
+        <result property="qitaihePowerPlantCars"    column="qitaihe_power_plant_cars"    />
+        <result property="qitaihePowerPlant"    column="qitaihe_power_plant"    />
+        <result property="longyangCars"    column="longyang_cars"    />
+        <result property="dailyPowerGeneration"    column="daily_power_generation"    />
+        <result property="dailyPowerSupply"    column="daily_power_supply"    />
+        <result property="maxPower"    column="max_power"    />
+        <result property="minPower"    column="min_power"    />
+        <result property="coalStorage"    column="coal_storage"    />
+        <result property="dailyCoalIn"    column="daily_coal_in"    />
+        <result property="dailyCoalConsumption"    column="daily_coal_consumption"    />
+        <result property="cokeDailyProduction"    column="coke_daily_production"    />
+        <result property="cokeDailySalesCars"    column="coke_daily_sales_cars"    />
+        <result property="cokeDailySalesTonnage"    column="coke_daily_sales_tonnage"    />
+        <result property="dailyLivingWater"    column="daily_living_water"    />
+        <result property="dailyIndustrialWater"    column="daily_industrial_water"    />
+        <result property="eastNetworkSupplyTempMax"    column="east_network_supply_temp_max"    />
+        <result property="eastNetworkSupplyTempMin"    column="east_network_supply_temp_min"    />
+        <result property="eastNetworkReturnTempMax"    column="east_network_return_temp_max"    />
+        <result property="eastNetworkReturnTempMin"    column="east_network_return_temp_min"    />
+        <result property="westNetworkSupplyTempMax"    column="west_network_supply_temp_max"    />
+        <result property="westNetworkSupplyTempMin"    column="west_network_supply_temp_min"    />
+        <result property="westNetworkReturnTempMax"    column="west_network_return_temp_max"    />
+        <result property="westNetworkReturnTempMin"    column="west_network_return_temp_min"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateUser"    column="update_user"    />
+    </resultMap>
+
+    <sql id="selectComprehensiveProductionStatsVo">
+        select id, stats_date, total_sales_cars, total_sales_tonnage, clean_coal_sales_cars, clean_coal_sales_tonnage, acknowledged_cars_total,
+               clean_coal_acknowledged, shenju_cars, qitaihe_power_plant, qitaihe_power_plant_cars, longyang_cars, daily_power_generation,
+               daily_power_supply, max_power, min_power, coal_storage, daily_coal_in, daily_coal_consumption, coke_daily_production,
+               coke_daily_sales_cars, coke_daily_sales_tonnage, daily_living_water, daily_industrial_water, east_network_supply_temp_max,
+               east_network_supply_temp_min, east_network_return_temp_max, east_network_return_temp_min, west_network_supply_temp_max,
+               west_network_supply_temp_min, west_network_return_temp_max, west_network_return_temp_min, create_time, create_user, update_time, update_user from comprehensive_production_stats
+    </sql>
+
+    <select id="selectComprehensiveProductionStatsList" parameterType="com.ruoyi.system.domain.ComprehensiveProductionStats" resultMap="ComprehensiveProductionStatsResult">
+        <include refid="selectComprehensiveProductionStatsVo"/>
+        <where>  
+            <if test="statsDate != null "> and stats_date = #{statsDate}</if>
+            <if test="totalSalesCars != null  and totalSalesCars != ''"> and total_sales_cars = #{totalSalesCars}</if>
+            <if test="totalSalesTonnage != null "> and total_sales_tonnage = #{totalSalesTonnage}</if>
+            <if test="cleanCoalSalesCars != null  and cleanCoalSalesCars != ''"> and clean_coal_sales_cars = #{cleanCoalSalesCars}</if>
+            <if test="cleanCoalSalesTonnage != null "> and clean_coal_sales_tonnage = #{cleanCoalSalesTonnage}</if>
+            <if test="acknowledgedCarsTotal != null  and acknowledgedCarsTotal != ''"> and acknowledged_cars_total = #{acknowledgedCarsTotal}</if>
+            <if test="cleanCoalAcknowledged != null  and cleanCoalAcknowledged != ''"> and clean_coal_acknowledged = #{cleanCoalAcknowledged}</if>
+            <if test="shenjuCars != null  and shenjuCars != ''"> and shenju_cars = #{shenjuCars}</if>
+            <if test="qitaihePowerPlantCars != null  and qitaihePowerPlantCars != ''"> and qitaihe_power_plant_cars = #{qitaihePowerPlantCars}</if>
+            <if test="qitaihePowerPlant != null  and qitaihePowerPlant != ''"> and qitaihe_power_plant = #{qitaihePowerPlant}</if>
+            <if test="longyangCars != null  and longyangCars != ''"> and longyang_cars = #{longyangCars}</if>
+            <if test="dailyPowerGeneration != null "> and daily_power_generation = #{dailyPowerGeneration}</if>
+            <if test="dailyPowerSupply != null "> and daily_power_supply = #{dailyPowerSupply}</if>
+            <if test="maxPower != null "> and max_power = #{maxPower}</if>
+            <if test="minPower != null "> and min_power = #{minPower}</if>
+            <if test="coalStorage != null "> and coal_storage = #{coalStorage}</if>
+            <if test="dailyCoalIn != null "> and daily_coal_in = #{dailyCoalIn}</if>
+            <if test="dailyCoalConsumption != null "> and daily_coal_consumption = #{dailyCoalConsumption}</if>
+            <if test="cokeDailyProduction != null "> and coke_daily_production = #{cokeDailyProduction}</if>
+            <if test="cokeDailySalesCars != null  and cokeDailySalesCars != ''"> and coke_daily_sales_cars = #{cokeDailySalesCars}</if>
+            <if test="cokeDailySalesTonnage != null "> and coke_daily_sales_tonnage = #{cokeDailySalesTonnage}</if>
+            <if test="dailyLivingWater != null "> and daily_living_water = #{dailyLivingWater}</if>
+            <if test="dailyIndustrialWater != null "> and daily_industrial_water = #{dailyIndustrialWater}</if>
+            <if test="eastNetworkSupplyTempMax != null "> and east_network_supply_temp_max = #{eastNetworkSupplyTempMax}</if>
+            <if test="eastNetworkSupplyTempMin != null "> and east_network_supply_temp_min = #{eastNetworkSupplyTempMin}</if>
+            <if test="eastNetworkReturnTempMax != null "> and east_network_return_temp_max = #{eastNetworkReturnTempMax}</if>
+            <if test="eastNetworkReturnTempMin != null "> and east_network_return_temp_min = #{eastNetworkReturnTempMin}</if>
+            <if test="westNetworkSupplyTempMax != null "> and west_network_supply_temp_max = #{westNetworkSupplyTempMax}</if>
+            <if test="westNetworkSupplyTempMin != null "> and west_network_supply_temp_min = #{westNetworkSupplyTempMin}</if>
+            <if test="westNetworkReturnTempMax != null "> and west_network_return_temp_max = #{westNetworkReturnTempMax}</if>
+            <if test="westNetworkReturnTempMin != null "> and west_network_return_temp_min = #{westNetworkReturnTempMin}</if>
+            <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
+            <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
+        </where>
+    </select>
+    
+    <select id="selectComprehensiveProductionStatsById" parameterType="java.lang.String" resultMap="ComprehensiveProductionStatsResult">
+        <include refid="selectComprehensiveProductionStatsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertComprehensiveProductionStats" parameterType="com.ruoyi.system.domain.ComprehensiveProductionStats" useGeneratedKeys="true" keyProperty="id">
+        insert into comprehensive_production_stats
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="statsDate != null">stats_date,</if>
+            <if test="totalSalesCars != null">total_sales_cars,</if>
+            <if test="totalSalesTonnage != null">total_sales_tonnage,</if>
+            <if test="cleanCoalSalesCars != null">clean_coal_sales_cars,</if>
+            <if test="cleanCoalSalesTonnage != null">clean_coal_sales_tonnage,</if>
+            <if test="acknowledgedCarsTotal != null">acknowledged_cars_total,</if>
+            <if test="cleanCoalAcknowledged != null">clean_coal_acknowledged,</if>
+            <if test="shenjuCars != null">shenju_cars,</if>
+            <if test="qitaihePowerPlantCars != null">qitaihe_power_plant_cars,</if>
+            <if test="qitaihePowerPlant != null">qitaihe_power_plant,</if>
+            <if test="longyangCars != null">longyang_cars,</if>
+            <if test="dailyPowerGeneration != null">daily_power_generation,</if>
+            <if test="dailyPowerSupply != null">daily_power_supply,</if>
+            <if test="maxPower != null">max_power,</if>
+            <if test="minPower != null">min_power,</if>
+            <if test="coalStorage != null">coal_storage,</if>
+            <if test="dailyCoalIn != null">daily_coal_in,</if>
+            <if test="dailyCoalConsumption != null">daily_coal_consumption,</if>
+            <if test="cokeDailyProduction != null">coke_daily_production,</if>
+            <if test="cokeDailySalesCars != null">coke_daily_sales_cars,</if>
+            <if test="cokeDailySalesTonnage != null">coke_daily_sales_tonnage,</if>
+            <if test="dailyLivingWater != null">daily_living_water,</if>
+            <if test="dailyIndustrialWater != null">daily_industrial_water,</if>
+            <if test="eastNetworkSupplyTempMax != null">east_network_supply_temp_max,</if>
+            <if test="eastNetworkSupplyTempMin != null">east_network_supply_temp_min,</if>
+            <if test="eastNetworkReturnTempMax != null">east_network_return_temp_max,</if>
+            <if test="eastNetworkReturnTempMin != null">east_network_return_temp_min,</if>
+            <if test="westNetworkSupplyTempMax != null">west_network_supply_temp_max,</if>
+            <if test="westNetworkSupplyTempMin != null">west_network_supply_temp_min,</if>
+            <if test="westNetworkReturnTempMax != null">west_network_return_temp_max,</if>
+            <if test="westNetworkReturnTempMin != null">west_network_return_temp_min,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createUser != null">create_user,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateUser != null">update_user,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="statsDate != null">#{statsDate},</if>
+            <if test="totalSalesCars != null">#{totalSalesCars},</if>
+            <if test="totalSalesTonnage != null">#{totalSalesTonnage},</if>
+            <if test="cleanCoalSalesCars != null">#{cleanCoalSalesCars},</if>
+            <if test="cleanCoalSalesTonnage != null">#{cleanCoalSalesTonnage},</if>
+            <if test="acknowledgedCarsTotal != null">#{acknowledgedCarsTotal},</if>
+            <if test="cleanCoalAcknowledged != null">#{cleanCoalAcknowledged},</if>
+            <if test="shenjuCars != null">#{shenjuCars},</if>
+            <if test="qitaihePowerPlantCars != null">#{qitaihePowerPlantCars},</if>
+            <if test="qitaihePowerPlant != null">#{qitaihePowerPlant},</if>
+            <if test="longyangCars != null">#{longyangCars},</if>
+            <if test="dailyPowerGeneration != null">#{dailyPowerGeneration},</if>
+            <if test="dailyPowerSupply != null">#{dailyPowerSupply},</if>
+            <if test="maxPower != null">#{maxPower},</if>
+            <if test="minPower != null">#{minPower},</if>
+            <if test="coalStorage != null">#{coalStorage},</if>
+            <if test="dailyCoalIn != null">#{dailyCoalIn},</if>
+            <if test="dailyCoalConsumption != null">#{dailyCoalConsumption},</if>
+            <if test="cokeDailyProduction != null">#{cokeDailyProduction},</if>
+            <if test="cokeDailySalesCars != null">#{cokeDailySalesCars},</if>
+            <if test="cokeDailySalesTonnage != null">#{cokeDailySalesTonnage},</if>
+            <if test="dailyLivingWater != null">#{dailyLivingWater},</if>
+            <if test="dailyIndustrialWater != null">#{dailyIndustrialWater},</if>
+            <if test="eastNetworkSupplyTempMax != null">#{eastNetworkSupplyTempMax},</if>
+            <if test="eastNetworkSupplyTempMin != null">#{eastNetworkSupplyTempMin},</if>
+            <if test="eastNetworkReturnTempMax != null">#{eastNetworkReturnTempMax},</if>
+            <if test="eastNetworkReturnTempMin != null">#{eastNetworkReturnTempMin},</if>
+            <if test="westNetworkSupplyTempMax != null">#{westNetworkSupplyTempMax},</if>
+            <if test="westNetworkSupplyTempMin != null">#{westNetworkSupplyTempMin},</if>
+            <if test="westNetworkReturnTempMax != null">#{westNetworkReturnTempMax},</if>
+            <if test="westNetworkReturnTempMin != null">#{westNetworkReturnTempMin},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+         </trim>
+    </insert>
+
+    <update id="updateComprehensiveProductionStats" parameterType="com.ruoyi.system.domain.ComprehensiveProductionStats">
+        update comprehensive_production_stats
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="statsDate != null">stats_date = #{statsDate},</if>
+            <if test="totalSalesCars != null">total_sales_cars = #{totalSalesCars},</if>
+            <if test="totalSalesTonnage != null">total_sales_tonnage = #{totalSalesTonnage},</if>
+            <if test="cleanCoalSalesCars != null">clean_coal_sales_cars = #{cleanCoalSalesCars},</if>
+            <if test="cleanCoalSalesTonnage != null">clean_coal_sales_tonnage = #{cleanCoalSalesTonnage},</if>
+            <if test="acknowledgedCarsTotal != null">acknowledged_cars_total = #{acknowledgedCarsTotal},</if>
+            <if test="cleanCoalAcknowledged != null">clean_coal_acknowledged = #{cleanCoalAcknowledged},</if>
+            <if test="shenjuCars != null">shenju_cars = #{shenjuCars},</if>
+            <if test="qitaihePowerPlantCars != null">qitaihe_power_plant_cars = #{qitaihePowerPlantCars},</if>
+            <if test="qitaihePowerPlant != null">qitaihe_power_plant = #{qitaihePowerPlant},</if>
+            <if test="longyangCars != null">longyang_cars = #{longyangCars},</if>
+            <if test="dailyPowerGeneration != null">daily_power_generation = #{dailyPowerGeneration},</if>
+            <if test="dailyPowerSupply != null">daily_power_supply = #{dailyPowerSupply},</if>
+            <if test="maxPower != null">max_power = #{maxPower},</if>
+            <if test="minPower != null">min_power = #{minPower},</if>
+            <if test="coalStorage != null">coal_storage = #{coalStorage},</if>
+            <if test="dailyCoalIn != null">daily_coal_in = #{dailyCoalIn},</if>
+            <if test="dailyCoalConsumption != null">daily_coal_consumption = #{dailyCoalConsumption},</if>
+            <if test="cokeDailyProduction != null">coke_daily_production = #{cokeDailyProduction},</if>
+            <if test="cokeDailySalesCars != null">coke_daily_sales_cars = #{cokeDailySalesCars},</if>
+            <if test="cokeDailySalesTonnage != null">coke_daily_sales_tonnage = #{cokeDailySalesTonnage},</if>
+            <if test="dailyLivingWater != null">daily_living_water = #{dailyLivingWater},</if>
+            <if test="dailyIndustrialWater != null">daily_industrial_water = #{dailyIndustrialWater},</if>
+            <if test="eastNetworkSupplyTempMax != null">east_network_supply_temp_max = #{eastNetworkSupplyTempMax},</if>
+            <if test="eastNetworkSupplyTempMin != null">east_network_supply_temp_min = #{eastNetworkSupplyTempMin},</if>
+            <if test="eastNetworkReturnTempMax != null">east_network_return_temp_max = #{eastNetworkReturnTempMax},</if>
+            <if test="eastNetworkReturnTempMin != null">east_network_return_temp_min = #{eastNetworkReturnTempMin},</if>
+            <if test="westNetworkSupplyTempMax != null">west_network_supply_temp_max = #{westNetworkSupplyTempMax},</if>
+            <if test="westNetworkSupplyTempMin != null">west_network_supply_temp_min = #{westNetworkSupplyTempMin},</if>
+            <if test="westNetworkReturnTempMax != null">west_network_return_temp_max = #{westNetworkReturnTempMax},</if>
+            <if test="westNetworkReturnTempMin != null">west_network_return_temp_min = #{westNetworkReturnTempMin},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createUser != null">create_user = #{createUser},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteComprehensiveProductionStatsById" parameterType="java.lang.String">
+        delete from comprehensive_production_stats where id = #{id}
+    </delete>
+
+    <delete id="deleteComprehensiveProductionStatsByIds" parameterType="java.lang.String">
+        delete from comprehensive_production_stats where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <select id="selectComprehensiveProductionStatsDayList" parameterType="com.ruoyi.system.domain.ComprehensiveProductionStats" resultMap="ComprehensiveProductionStatsResult">
+        select
+            sum(qitaihe_power_plant) as qitaihe_power_plant,
+            SUM(total_sales_cars) as total_sales_cars, sum(total_sales_tonnage) as total_sales_tonnage, sum(clean_coal_sales_cars) as clean_coal_sales_cars,
+                sum(clean_coal_sales_tonnage) as clean_coal_sales_tonnage, sum(acknowledged_cars_total) as acknowledged_cars_total, sum(clean_coal_acknowledged) as clean_coal_acknowledged,
+                sum(shenju_cars) as shenju_cars, sum(qitaihe_power_plant_cars) as qitaihe_power_plant_cars, sum(longyang_cars) as longyang_cars, sum(daily_power_generation) as daily_power_generation,
+                sum(daily_power_supply) as daily_power_supply, sum(max_power) as max_power, sum(min_power) as min_power, sum(coal_storage) as coal_storage, sum(daily_coal_in) as daily_coal_in,
+                sum(daily_coal_consumption) as daily_coal_consumption, sum(coke_daily_production) as coke_daily_production, sum(coke_daily_sales_cars) as coke_daily_sales_cars,
+                sum(coke_daily_sales_tonnage) as coke_daily_sales_tonnage, sum(daily_living_water) as daily_living_water, sum(daily_industrial_water) as daily_industrial_water,
+                sum(east_network_supply_temp_max) as east_network_supply_temp_max, sum(east_network_supply_temp_min) as east_network_supply_temp_min,
+                sum(east_network_return_temp_max) as east_network_return_temp_max, sum(east_network_return_temp_min) as east_network_return_temp_min,
+                sum(west_network_supply_temp_max) as west_network_supply_temp_max, sum(west_network_supply_temp_min) as west_network_supply_temp_min,
+                sum(west_network_return_temp_max) as west_network_return_temp_max, sum(west_network_return_temp_min) as west_network_return_temp_min
+        from comprehensive_production_stats
+        where stats_date =#{statsDate}
+    </select>
+
+    <select id="selectComprehensiveProductionStatsMonthList" parameterType="com.ruoyi.system.domain.ComprehensiveProductionStats" resultMap="ComprehensiveProductionStatsResult">
+        select  sum(qitaihe_power_plant) as qitaihe_power_plant,SUM(total_sales_cars) as total_sales_cars, sum(total_sales_tonnage) as total_sales_tonnage, sum(clean_coal_sales_cars) as clean_coal_sales_cars,
+                sum(clean_coal_sales_tonnage) as clean_coal_sales_tonnage, sum(acknowledged_cars_total) as acknowledged_cars_total, sum(clean_coal_acknowledged) as clean_coal_acknowledged,
+                sum(shenju_cars) as shenju_cars, sum(qitaihe_power_plant_cars) as qitaihe_power_plant_cars, sum(longyang_cars) as longyang_cars, sum(daily_power_generation) as daily_power_generation,
+                sum(daily_power_supply) as daily_power_supply, sum(max_power) as max_power, sum(min_power) as min_power, sum(coal_storage) as coal_storage, sum(daily_coal_in) as daily_coal_in,
+                sum(daily_coal_consumption) as daily_coal_consumption, sum(coke_daily_production) as coke_daily_production, sum(coke_daily_sales_cars) as coke_daily_sales_cars,
+                sum(coke_daily_sales_tonnage) as coke_daily_sales_tonnage, sum(daily_living_water) as daily_living_water, sum(daily_industrial_water) as daily_industrial_water,
+                sum(east_network_supply_temp_max) as east_network_supply_temp_max, sum(east_network_supply_temp_min) as east_network_supply_temp_min,
+                sum(east_network_return_temp_max) as east_network_return_temp_max, sum(east_network_return_temp_min) as east_network_return_temp_min,
+                sum(west_network_supply_temp_max) as west_network_supply_temp_max, sum(west_network_supply_temp_min) as west_network_supply_temp_min,
+                sum(west_network_return_temp_max) as west_network_return_temp_max, sum(west_network_return_temp_min) as west_network_return_temp_min
+        from comprehensive_production_stats
+        where YEAR(stats_date)=YEAR(#{statsDate}) AND MONTH(stats_date)=MONTH(#{statsDate})
+    </select>
+    <select id="selectComprehensiveProductionStatsYearList" parameterType="com.ruoyi.system.domain.ComprehensiveProductionStats" resultMap="ComprehensiveProductionStatsResult">
+        select  sum(qitaihe_power_plant) as qitaihe_power_plant,SUM(total_sales_cars) as total_sales_cars, sum(total_sales_tonnage) as total_sales_tonnage, sum(clean_coal_sales_cars) as clean_coal_sales_cars,
+                sum(clean_coal_sales_tonnage) as clean_coal_sales_tonnage, sum(acknowledged_cars_total) as acknowledged_cars_total, sum(clean_coal_acknowledged) as clean_coal_acknowledged,
+                sum(shenju_cars) as shenju_cars, sum(qitaihe_power_plant_cars) as qitaihe_power_plant_cars, sum(longyang_cars) as longyang_cars, sum(daily_power_generation) as daily_power_generation,
+                sum(daily_power_supply) as daily_power_supply, sum(max_power) as max_power, sum(min_power) as min_power, sum(coal_storage) as coal_storage, sum(daily_coal_in) as daily_coal_in,
+                sum(daily_coal_consumption) as daily_coal_consumption, sum(coke_daily_production) as coke_daily_production, sum(coke_daily_sales_cars) as coke_daily_sales_cars,
+                sum(coke_daily_sales_tonnage) as coke_daily_sales_tonnage, sum(daily_living_water) as daily_living_water, sum(daily_industrial_water) as daily_industrial_water,
+                sum(east_network_supply_temp_max) as east_network_supply_temp_max, sum(east_network_supply_temp_min) as east_network_supply_temp_min,
+                sum(east_network_return_temp_max) as east_network_return_temp_max, sum(east_network_return_temp_min) as east_network_return_temp_min,
+                sum(west_network_supply_temp_max) as west_network_supply_temp_max, sum(west_network_supply_temp_min) as west_network_supply_temp_min,
+                sum(west_network_return_temp_max) as west_network_return_temp_max, sum(west_network_return_temp_min) as west_network_return_temp_min
+        from comprehensive_production_stats
+        where YEAR(stats_date)=YEAR(#{statsDate}) and stats_date &lt;=#{statsDate}
+    </select>
+
+</mapper>

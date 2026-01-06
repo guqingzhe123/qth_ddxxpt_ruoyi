@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BaoBiao.CoalWashingProductionMapper">
+
+    <resultMap id="CwpMap" type="com.ruoyi.system.domain.BaoBiao.po.CoalWashingProductionPO">
+        <id     column="id"                property="id"/>
+        <result column="production_date"   property="productionDate"/>
+        <result column="unit_code"         property="unitCode"/>
+        <result column="unit_name"         property="unitName"/>
+
+        <result column="drop_in"           property="dropIn"/>
+        <result column="wash_in"           property="washIn"/>
+        <result column="clean_coal"        property="cleanCoal"/>
+        <result column="lump_coal"         property="lumpCoal"/>
+        <result column="slack_coal"        property="slackCoal"/>
+        <result column="sludge_coal"       property="sludgeCoal"/>
+        <result column="available_gangue"  property="availableGangue"/>
+        <result column="waste"             property="waste"/>
+        <result column="total"             property="total"/>
+        <result column="self_use"          property="selfUse"/>
+        <result column="car_count"         property="carCount"/>
+        <result column="sales_volume"      property="salesVolume"/>
+        <result column="clean_coal_yield"  property="cleanCoalYield"/>
+        <result column="comprehensive_yield" property="comprehensiveYield"/>
+        <result column="daily_stock"       property="dailyStock"/>
+
+        <result column="create_time"       property="createTime"/>
+        <result column="update_time"       property="updateTime"/>
+        <result column="user_id"           property="userId"/>
+        <result column="is_deleted"        property="isDeleted"/>
+        <result column="mine_category"     property="mineCategory"/>
+    </resultMap>
+
+    <sql id="BaseCols">
+        id, production_date, unit_code, unit_name,
+    drop_in, wash_in, clean_coal, lump_coal, slack_coal, sludge_coal, available_gangue, waste, total, self_use, car_count,
+    sales_volume, clean_coal_yield, comprehensive_yield, daily_stock,
+    create_time, update_time, user_id, is_deleted, mine_category
+    </sql>
+
+    <insert id="insert" parameterType="com.ruoyi.system.domain.BaoBiao.po.CoalWashingProductionPO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO coal_washing_production (
+            production_date, unit_code, unit_name,
+            drop_in, wash_in, clean_coal, lump_coal, slack_coal, sludge_coal, available_gangue, waste, total, self_use, car_count,
+            sales_volume, clean_coal_yield, comprehensive_yield, daily_stock,
+            user_id, is_deleted, mine_category
+        ) VALUES (
+                     #{productionDate}, #{unitCode}, #{unitName},
+                     #{dropIn}, #{washIn}, #{cleanCoal}, #{lumpCoal}, #{slackCoal}, #{sludgeCoal}, #{availableGangue}, #{waste}, #{total}, #{selfUse}, #{carCount},
+                     #{salesVolume}, #{cleanCoalYield}, #{comprehensiveYield}, #{dailyStock},
+                     #{userId}, #{isDeleted}, #{mineCategory}
+                 )
+    </insert>
+
+    <update id="update" parameterType="com.ruoyi.system.domain.BaoBiao.po.CoalWashingProductionPO">
+        UPDATE coal_washing_production
+        SET
+            production_date   = #{productionDate},
+            unit_code         = #{unitCode},
+            unit_name         = #{unitName},
+            drop_in           = #{dropIn},
+            wash_in           = #{washIn},
+            clean_coal        = #{cleanCoal},
+            lump_coal         = #{lumpCoal},
+            slack_coal        = #{slackCoal},
+            sludge_coal       = #{sludgeCoal},
+            available_gangue  = #{availableGangue},
+            waste             = #{waste},
+            total             = #{total},
+            self_use          = #{selfUse},
+            car_count         = #{carCount},
+            sales_volume      = #{salesVolume},
+            clean_coal_yield  = #{cleanCoalYield},
+            comprehensive_yield = #{comprehensiveYield},
+            daily_stock       = #{dailyStock},
+            user_id           = #{userId},
+            is_deleted        = #{isDeleted},
+            mine_category     = #{mineCategory}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM coal_washing_production WHERE id = #{id}
+    </delete>
+
+    <select id="selectById" resultMap="CwpMap">
+        SELECT <include refid="BaseCols"/> FROM coal_washing_production
+        WHERE id = #{id} LIMIT 1
+    </select>
+
+    <select id="selectByUnique" resultMap="CwpMap">
+        SELECT <include refid="BaseCols"/> FROM coal_washing_production
+        WHERE production_date = #{param1} AND unit_code = #{param2}
+        LIMIT 1
+    </select>
+
+    <select id="selectPageList" parameterType="map" resultMap="CwpMap">
+        SELECT <include refid="BaseCols"/>
+        FROM coal_washing_production t
+        <where>
+            <if test="productionDate != null and productionDate != ''">
+                AND t.production_date = #{productionDate}
+            </if>
+            <if test="unitCode != null and unitCode != ''">
+                AND t.unit_code = #{unitCode}
+            </if>
+            <if test="unitName != null and unitName != ''">
+                AND t.unit_name LIKE CONCAT('%', #{unitName}, '%')
+            </if>
+            <if test="mineCategory != null and mineCategory != ''">
+                AND t.mine_category = #{mineCategory}
+            </if>
+            <if test="userId != null and userId != ''">
+                AND t.user_id = #{userId}
+            </if>
+            <if test="isDeleted != null">
+                AND t.is_deleted = #{isDeleted}
+            </if>
+        </where>
+        ORDER BY t.production_date DESC, t.unit_code ASC
+    </select>
+    <select id="selectByDay" resultMap="CwpMap">
+        SELECT drop_in,wash_in,clean_coal,lump_coal,slack_coal,sludge_coal,available_gangue,waste,total
+        FROM coal_washing_production
+        WHERE production_date = #{statsDate} AND unit_code = #{unitCode}
+        LIMIT 1
+    </select>
+    <select id="selectByInDay" resultMap="CwpMap">
+        SELECT sum(drop_in) as drop_in,sum(wash_in) as wash_in,sum(clean_coal) as clean_coal,sum(lump_coal) as lump_coal,sum(slack_coal) as slack_coal,
+               sum(sludge_coal) as sludge_coal,sum(available_gangue) as available_gangue,sum(waste) as waste,sum(total) as total
+        FROM coal_washing_production
+        WHERE production_date = #{statsDate}
+    </select>
+    <select id="selectByMonth" resultMap="CwpMap">
+        SELECT sum(drop_in) as drop_in,sum(wash_in) as wash_in,sum(clean_coal) as clean_coal,sum(lump_coal) as lump_coal,sum(slack_coal) as slack_coal,
+        sum(sludge_coal) as sludge_coal,sum(available_gangue) as available_gangue,sum(waste) as waste,sum(total) as total
+        FROM coal_washing_production
+        WHERE YEAR(production_date) = YEAR(#{statsDate}) AND  MONTH(production_date) = MONTH(#{statsDate})
+        AND unit_code = #{unitCode}
+            LIMIT 1
+    </select>
+
+    <select id="selectByYear" resultMap="CwpMap">
+        SELECT sum(drop_in) as drop_in,sum(wash_in) as wash_in,sum(clean_coal) as clean_coal,sum(lump_coal) as lump_coal,sum(slack_coal) as slack_coal,
+        sum(sludge_coal) as sludge_coal,sum(available_gangue) as available_gangue,sum(waste) as waste,sum(total) as total
+        FROM coal_washing_production
+        WHERE YEAR(production_date) = YEAR(#{statsDate})  AND unit_code = #{unitCode}
+            LIMIT 1
+    </select>
+    <select id="selectByDayUnitCode" resultMap="CwpMap">
+        SELECT drop_in,wash_in,clean_coal,lump_coal,slack_coal,sludge_coal,available_gangue,waste,total
+        FROM coal_washing_production
+        WHERE production_date = #{statsDate} AND unit_code = #{unitCode}
+            LIMIT 1
+    </select>
+
+    <select id="selectByMonthUnitCode" resultMap="CwpMap">
+        SELECT sum(drop_in) as drop_in,sum(wash_in) as wash_in,sum(clean_coal) as clean_coal,sum(lump_coal) as lump_coal,sum(slack_coal) as slack_coal,
+               sum(sludge_coal) as sludge_coal,sum(available_gangue) as available_gangue,sum(waste) as waste,sum(total) as total
+        FROM coal_washing_production
+        WHERE YEAR(production_date) = YEAR(#{statsDate}) AND  MONTH(production_date) = MONTH(#{statsDate})
+        AND unit_code = #{unitCode}
+            LIMIT 1
+    </select>
+
+    <select id="selectByYearUnitCode" resultMap="CwpMap">
+        SELECT sum(drop_in) as drop_in,sum(wash_in) as wash_in,sum(clean_coal) as clean_coal,sum(lump_coal) as lump_coal,sum(slack_coal) as slack_coal,
+               sum(sludge_coal) as sludge_coal,sum(available_gangue) as available_gangue,sum(waste) as waste,sum(total) as total
+        FROM coal_washing_production
+        WHERE YEAR(production_date) = YEAR(#{statsDate})  AND unit_code = #{unitCode}
+            LIMIT 1
+    </select>
+    <select id="selecList" resultMap="CwpMap">
+        SELECT *
+        FROM coal_washing_production
+        WHERE production_date = #{statsDate}
+    </select>
+    <select id="selecMonthList" resultMap="CwpMap">
+        SELECT unit_name,sum(drop_in) as drop_in,sum(wash_in) as wash_in,sum(clean_coal) as clean_coal,sum(lump_coal) as lump_coal,sum(slack_coal) as slack_coal,
+               sum(sludge_coal) as sludge_coal,sum(available_gangue) as available_gangue,sum(waste) as waste,sum(total) as total
+        FROM coal_washing_production
+        WHERE YEAR(production_date) = YEAR(#{statsDate})
+        AND  MONTH(production_date) = MONTH(#{statsDate})
+          AND production_date &lt;= #{statsDate}
+        group by unit_name
+    </select>
+
+    <select id="selecYearList" resultMap="CwpMap">
+        SELECT unit_name, sum(drop_in) as drop_in,sum(wash_in) as wash_in,sum(clean_coal) as clean_coal,sum(lump_coal) as lump_coal,sum(slack_coal) as slack_coal,
+               sum(sludge_coal) as sludge_coal,sum(available_gangue) as available_gangue,sum(waste) as waste,sum(total) as total
+        FROM coal_washing_production
+        WHERE YEAR(production_date) = YEAR(#{statsDate})
+          AND production_date &lt;= #{statsDate}
+        group by unit_name
+    </select>
+</mapper>

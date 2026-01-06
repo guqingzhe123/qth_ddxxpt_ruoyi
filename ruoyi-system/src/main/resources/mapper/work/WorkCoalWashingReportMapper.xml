@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.work.WorkCoalWashingReportMapper">
+
+    <resultMap type="com.ruoyi.system.domain.work.WorkCoalWashingReport" id="WorkCoalWashingReportResult">
+        <result property="id"    column="id"    />
+        <result property="reportTime"    column="report_time"    />
+        <result property="unitName"    column="unit_name"    />
+        <result property="unitCode"    column="unit_code"    />
+        <result property="totalInput"    column="total_input"    />
+        <result property="internalInput"    column="internal_input"    />
+        <result property="externalInput"    column="external_input"    />
+        <result property="outputCoal"    column="output_coal"    />
+        <result property="remainingRawCoal"    column="remaining_raw_coal"    />
+        <result property="washingInput"    column="washing_input"    />
+        <result property="cleanCoal"    column="clean_coal"    />
+        <result property="cleanCoalYield"    column="clean_coal_yield"    />
+        <result property="washedLumpCoal"    column="washed_lump_coal"    />
+        <result property="washedFineCoal"    column="washed_fine_coal"    />
+        <result property="comprehensiveYield"    column="comprehensive_yield"    />
+        <result property="washingConsumption"    column="washing_consumption"    />
+        <result property="washingConsumptionRate"    column="washing_consumption_rate"    />
+        <result property="thirdSelectionFineCoal"    column="third_selection_fine_coal"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="state"    column="state"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectWorkCoalWashingReportVo">
+        select id, report_time, unit_name, unit_code, total_input, internal_input, external_input, output_coal, remaining_raw_coal, washing_input,
+               clean_coal, clean_coal_yield, washed_lump_coal, washed_fine_coal, comprehensive_yield, washing_consumption, washing_consumption_rate, third_selection_fine_coal,
+               remarks,state, create_time from work_coal_washing_report
+    </sql>
+
+    <select id="selectWorkCoalWashingReportList" parameterType="com.ruoyi.system.domain.work.WorkCoalWashingReport" resultMap="WorkCoalWashingReportResult">
+        <include refid="selectWorkCoalWashingReportVo"/>
+        <where>
+            <if test="reportTime != null "> and report_time = #{reportTime}</if>
+            <if test="unitName != null  and unitName != ''"> and unit_name like concat('%', #{unitName}, '%')</if>
+            <if test="unitCode != null  and unitCode != ''"> and unit_code = #{unitCode}</if>
+            <if test="totalInput != null "> and total_input = #{totalInput}</if>
+            <if test="internalInput != null "> and internal_input = #{internalInput}</if>
+            <if test="externalInput != null "> and external_input = #{externalInput}</if>
+            <if test="outputCoal != null "> and output_coal = #{outputCoal}</if>
+            <if test="remainingRawCoal != null "> and remaining_raw_coal = #{remainingRawCoal}</if>
+            <if test="washingInput != null "> and washing_input = #{washingInput}</if>
+            <if test="cleanCoal != null "> and clean_coal = #{cleanCoal}</if>
+            <if test="cleanCoalYield != null "> and clean_coal_yield = #{cleanCoalYield}</if>
+            <if test="washedLumpCoal != null "> and washed_lump_coal = #{washedLumpCoal}</if>
+            <if test="washedFineCoal != null "> and washed_fine_coal = #{washedFineCoal}</if>
+            <if test="comprehensiveYield != null "> and comprehensive_yield = #{comprehensiveYield}</if>
+            <if test="washingConsumption != null "> and washing_consumption = #{washingConsumption}</if>
+            <if test="washingConsumptionRate != null "> and washing_consumption_rate = #{washingConsumptionRate}</if>
+            <if test="thirdSelectionFineCoal != null "> and third_selection_fine_coal = #{thirdSelectionFineCoal}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+            <if test="state != null  and state != ''"> and state = #{state}</if>
+        </where>
+    </select>
+    <select id="selectWorkCoalWashingReportMonthList" parameterType="com.ruoyi.system.domain.work.WorkCoalWashingReport" resultMap="WorkCoalWashingReportResult">
+        select  unit_name, unit_code, sum(total_input) as total_input, sum(internal_input) as internal_input, sum(external_input) as external_input,
+               sum(output_coal) as output_coal, sum(remaining_raw_coal) as remaining_raw_coal, sum(washing_input) as washing_input, sum(clean_coal) as clean_coal,
+               sum(clean_coal_yield) as clean_coal_yield, sum(washed_lump_coal) as washed_lump_coal, sum(washed_fine_coal) as washed_fine_coal, sum(comprehensive_yield) as comprehensive_yield,
+               sum(washing_consumption) as washing_consumption, sum(washing_consumption_rate) as washing_consumption_rate,
+               sum(third_selection_fine_coal) as third_selection_fine_coal
+                from work_coal_washing_report
+        <where>
+            <if test="reportTime != null "> and report_time &lt;= #{reportTime} and Year(report_time) = Year( #{reportTime})  and Month(report_time) = Month( #{reportTime}) </if>
+            <if test="unitName != null  and unitName != ''"> and unit_name like concat('%', #{unitName}, '%')</if>
+            <if test="unitCode != null  and unitCode != ''"> and unit_code = #{unitCode}</if>
+            <if test="totalInput != null "> and total_input = #{totalInput}</if>
+            <if test="internalInput != null "> and internal_input = #{internalInput}</if>
+            <if test="externalInput != null "> and external_input = #{externalInput}</if>
+            <if test="outputCoal != null "> and output_coal = #{outputCoal}</if>
+            <if test="remainingRawCoal != null "> and remaining_raw_coal = #{remainingRawCoal}</if>
+            <if test="washingInput != null "> and washing_input = #{washingInput}</if>
+            <if test="cleanCoal != null "> and clean_coal = #{cleanCoal}</if>
+            <if test="cleanCoalYield != null "> and clean_coal_yield = #{cleanCoalYield}</if>
+            <if test="washedLumpCoal != null "> and washed_lump_coal = #{washedLumpCoal}</if>
+            <if test="washedFineCoal != null "> and washed_fine_coal = #{washedFineCoal}</if>
+            <if test="comprehensiveYield != null "> and comprehensive_yield = #{comprehensiveYield}</if>
+            <if test="washingConsumption != null "> and washing_consumption = #{washingConsumption}</if>
+            <if test="washingConsumptionRate != null "> and washing_consumption_rate = #{washingConsumptionRate}</if>
+            <if test="thirdSelectionFineCoal != null "> and third_selection_fine_coal = #{thirdSelectionFineCoal}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+            <if test="state != null  and state != ''"> and state = #{state}</if>
+        </where>
+        group by  unit_name, unit_code
+    </select>
+    <select id="selectWorkCoalWashingReportYearList" parameterType="com.ruoyi.system.domain.work.WorkCoalWashingReport" resultMap="WorkCoalWashingReportResult">
+        select  unit_name, unit_code, sum(total_input) as total_input, sum(internal_input) as internal_input, sum(external_input) as external_input,
+        sum(output_coal) as output_coal, sum(remaining_raw_coal) as remaining_raw_coal, sum(washing_input) as washing_input, sum(clean_coal) as clean_coal,
+        sum(clean_coal_yield) as clean_coal_yield, sum(washed_lump_coal) as washed_lump_coal, sum(washed_fine_coal) as washed_fine_coal, sum(comprehensive_yield) as comprehensive_yield,
+        sum(washing_consumption) as washing_consumption, sum(washing_consumption_rate) as washing_consumption_rate,
+        sum(third_selection_fine_coal) as third_selection_fine_coal
+        from work_coal_washing_report
+        <where>
+            <if test="reportTime != null "> and report_time &lt;= #{reportTime} and Year(report_time) = Year( #{reportTime}) </if>
+            <if test="unitName != null  and unitName != ''"> and unit_name like concat('%', #{unitName}, '%')</if>
+            <if test="unitCode != null  and unitCode != ''"> and unit_code = #{unitCode}</if>
+            <if test="totalInput != null "> and total_input = #{totalInput}</if>
+            <if test="internalInput != null "> and internal_input = #{internalInput}</if>
+            <if test="externalInput != null "> and external_input = #{externalInput}</if>
+            <if test="outputCoal != null "> and output_coal = #{outputCoal}</if>
+            <if test="remainingRawCoal != null "> and remaining_raw_coal = #{remainingRawCoal}</if>
+            <if test="washingInput != null "> and washing_input = #{washingInput}</if>
+            <if test="cleanCoal != null "> and clean_coal = #{cleanCoal}</if>
+            <if test="cleanCoalYield != null "> and clean_coal_yield = #{cleanCoalYield}</if>
+            <if test="washedLumpCoal != null "> and washed_lump_coal = #{washedLumpCoal}</if>
+            <if test="washedFineCoal != null "> and washed_fine_coal = #{washedFineCoal}</if>
+            <if test="comprehensiveYield != null "> and comprehensive_yield = #{comprehensiveYield}</if>
+            <if test="washingConsumption != null "> and washing_consumption = #{washingConsumption}</if>
+            <if test="washingConsumptionRate != null "> and washing_consumption_rate = #{washingConsumptionRate}</if>
+            <if test="thirdSelectionFineCoal != null "> and third_selection_fine_coal = #{thirdSelectionFineCoal}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+            <if test="state != null  and state != ''"> and state = #{state}</if>
+        </where>
+        group by  unit_name, unit_code
+    </select>
+    <select id="selectWorkCoalWashingReportById" parameterType="java.lang.Integer" resultMap="WorkCoalWashingReportResult">
+        <include refid="selectWorkCoalWashingReportVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWorkCoalWashingReport" parameterType="com.ruoyi.system.domain.work.WorkCoalWashingReport" useGeneratedKeys="true" keyProperty="id">
+        insert into work_coal_washing_report
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="reportTime != null">report_time,</if>
+            <if test="unitName != null and unitName != ''">unit_name,</if>
+            <if test="unitCode != null and unitCode != ''">unit_code,</if>
+            <if test="totalInput != null">total_input,</if>
+            <if test="internalInput != null">internal_input,</if>
+            <if test="externalInput != null">external_input,</if>
+            <if test="outputCoal != null">output_coal,</if>
+            <if test="remainingRawCoal != null">remaining_raw_coal,</if>
+            <if test="washingInput != null">washing_input,</if>
+            <if test="cleanCoal != null">clean_coal,</if>
+            <if test="cleanCoalYield != null">clean_coal_yield,</if>
+            <if test="washedLumpCoal != null">washed_lump_coal,</if>
+            <if test="washedFineCoal != null">washed_fine_coal,</if>
+            <if test="comprehensiveYield != null">comprehensive_yield,</if>
+            <if test="washingConsumption != null">washing_consumption,</if>
+            <if test="washingConsumptionRate != null">washing_consumption_rate,</if>
+            <if test="thirdSelectionFineCoal != null">third_selection_fine_coal,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="state != null">state,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="reportTime != null">#{reportTime},</if>
+            <if test="unitName != null and unitName != ''">#{unitName},</if>
+            <if test="unitCode != null and unitCode != ''">#{unitCode},</if>
+            <if test="totalInput != null">#{totalInput},</if>
+            <if test="internalInput != null">#{internalInput},</if>
+            <if test="externalInput != null">#{externalInput},</if>
+            <if test="outputCoal != null">#{outputCoal},</if>
+            <if test="remainingRawCoal != null">#{remainingRawCoal},</if>
+            <if test="washingInput != null">#{washingInput},</if>
+            <if test="cleanCoal != null">#{cleanCoal},</if>
+            <if test="cleanCoalYield != null">#{cleanCoalYield},</if>
+            <if test="washedLumpCoal != null">#{washedLumpCoal},</if>
+            <if test="washedFineCoal != null">#{washedFineCoal},</if>
+            <if test="comprehensiveYield != null">#{comprehensiveYield},</if>
+            <if test="washingConsumption != null">#{washingConsumption},</if>
+            <if test="washingConsumptionRate != null">#{washingConsumptionRate},</if>
+            <if test="thirdSelectionFineCoal != null">#{thirdSelectionFineCoal},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="state != null">#{state},</if>
+        </trim>
+    </insert>
+
+    <update id="updateWorkCoalWashingReport" parameterType="com.ruoyi.system.domain.work.WorkCoalWashingReport">
+        update work_coal_washing_report
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="reportTime != null">report_time = #{reportTime},</if>
+            <if test="unitName != null and unitName != ''">unit_name = #{unitName},</if>
+            <if test="unitCode != null and unitCode != ''">unit_code = #{unitCode},</if>
+            <if test="totalInput != null">total_input = #{totalInput},</if>
+            <if test="internalInput != null">internal_input = #{internalInput},</if>
+            <if test="externalInput != null">external_input = #{externalInput},</if>
+            <if test="outputCoal != null">output_coal = #{outputCoal},</if>
+            <if test="remainingRawCoal != null">remaining_raw_coal = #{remainingRawCoal},</if>
+            <if test="washingInput != null">washing_input = #{washingInput},</if>
+            <if test="cleanCoal != null">clean_coal = #{cleanCoal},</if>
+            <if test="cleanCoalYield != null">clean_coal_yield = #{cleanCoalYield},</if>
+            <if test="washedLumpCoal != null">washed_lump_coal = #{washedLumpCoal},</if>
+            <if test="washedFineCoal != null">washed_fine_coal = #{washedFineCoal},</if>
+            <if test="comprehensiveYield != null">comprehensive_yield = #{comprehensiveYield},</if>
+            <if test="washingConsumption != null">washing_consumption = #{washingConsumption},</if>
+            <if test="washingConsumptionRate != null">washing_consumption_rate = #{washingConsumptionRate},</if>
+            <if test="thirdSelectionFineCoal != null">third_selection_fine_coal = #{thirdSelectionFineCoal},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="state != null">state = #{state},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWorkCoalWashingReportById" parameterType="java.lang.Integer">
+        delete from work_coal_washing_report where id = #{id}
+    </delete>
+
+    <delete id="deleteWorkCoalWashingReportByIds" parameterType="java.lang.String">
+        delete from work_coal_washing_report where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

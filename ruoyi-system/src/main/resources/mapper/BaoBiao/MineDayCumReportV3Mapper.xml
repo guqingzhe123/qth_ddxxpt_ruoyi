@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ruoyi.system.mapper.BaoBiao.MineDayCumReportV3Mapper">
+
+    <!-- 一级矿名列表 -->
+    <select id="selectTopLevelMines" resultType="java.lang.String">
+        SELECT m.area_name
+        FROM mining_area_category m
+        WHERE m.level = 1
+        <if test="includeSealed == null || includeSealed == false">
+            AND m.is_sealed = 0
+        </if>
+        <if test="unitNames != null and unitNames.size() > 0">
+            AND m.area_name IN
+            <foreach collection="unitNames" item="n" open="(" close=")" separator=",">
+                #{n}
+            </foreach>
+        </if>
+        ORDER BY COALESCE(m.sequence, m.id)
+    </select>
+
+    <!-- 当日完成 -->
+    <select id="sumDailyOutput" resultType="java.math.BigDecimal">
+        SELECT COALESCE(SUM(s.output), 0)
+        FROM mine_development_data md
+                 JOIN sub_mine_development_data s
+                      ON s.mine_development_dataID = md.id
+        WHERE md.unit_name = #{unitName}
+          AND md.record_date = #{recordDate}
+          AND md.data_type = #{dataType}
+    </select>
+
+    <!-- 累完成（[fromDate, toDate]） -->
+    <select id="sumCumOutput" resultType="java.math.BigDecimal">
+        SELECT COALESCE(SUM(s.output), 0)
+        FROM mine_development_data md
+                 JOIN sub_mine_development_data s
+                      ON s.mine_development_dataID = md.id
+        WHERE md.unit_name = #{unitName}
+          AND md.record_date BETWEEN #{fromDate} AND #{toDate}
+          AND md.data_type = #{dataType}
+    </select>
+
+    <!-- 日计划合计 -->
+    <select id="sumDayPlanForMine" resultType="java.math.BigDecimal">
+        SELECT COALESCE(SUM(sub.day_plan), 0)
+        FROM mine_plan mp
+                 JOIN sub_mine_plan sub
+                      ON sub.mine_plan_id = mp.id
+        WHERE mp.plan_type = #{planType}
+          AND mp.plan_month = #{planMonth}
+          AND mp.unit_name  = #{unitName}
+          AND mp.is_deleted = 0
+          and sub.unit_name='计划总量'
+    </select>
+
+</mapper>

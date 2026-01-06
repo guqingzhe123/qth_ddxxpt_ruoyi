@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.DispatchDailyReportOtherDataMapper">
+    
+    <resultMap type="com.ruoyi.system.domain.DispatchDailyReportOtherData" id="DispatchDailyReportOtherDataResult">
+        <result property="id"    column="id"    />
+        <result property="recordDate"    column="record_date"    />
+        <result property="dailyCleanCoalOutput"    column="daily_clean_coal_output"    />
+        <result property="dailyProductSales"    column="daily_product_sales"    />
+        <result property="dailyOutboundCars"    column="daily_outbound_cars"    />
+        <result property="dailyOutboundVolume"    column="daily_outbound_volume"    />
+        <result property="dailySalesTotal"    column="daily_sales_total"    />
+        <result property="subtotal"    column="subtotal"    />
+        <result property="rawCoal"    column="raw_coal"    />
+        <result property="cleanCoal"    column="clean_coal"    />
+        <result property="other"    column="other"    />
+        <result property="dailyLocalSales"    column="daily_local_sales"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="userId"    column="user_id"    />
+        <result property="isDeleted"    column="is_deleted"    />
+    </resultMap>
+
+    <sql id="selectDispatchDailyReportOtherDataVo">
+        select id,  record_date, daily_clean_coal_output, daily_product_sales, daily_outbound_cars, daily_outbound_volume,
+               daily_sales_total, subtotal, raw_coal,clean_coal, other, daily_local_sales, create_time, update_time, user_id, is_deleted
+        from dispatch_daily_report_other_data
+    </sql>
+
+    <select id="selectDispatchDailyReportOtherDataList" parameterType="com.ruoyi.system.domain.DispatchDailyReportOtherData" resultMap="DispatchDailyReportOtherDataResult">
+        <include refid="selectDispatchDailyReportOtherDataVo"/>
+        <where>
+            <if test="recordDate != null "> and record_date = #{recordDate}</if>
+            <if test="dailyCleanCoalOutput != null "> and daily_clean_coal_output = #{dailyCleanCoalOutput}</if>
+            <if test="dailyProductSales != null "> and daily_product_sales = #{dailyProductSales}</if>
+            <if test="dailyOutboundCars != null "> and daily_outbound_cars = #{dailyOutboundCars}</if>
+            <if test="dailyOutboundVolume != null "> and daily_outbound_volume = #{dailyOutboundVolume}</if>
+            <if test="dailySalesTotal != null "> and daily_sales_total = #{dailySalesTotal}</if>
+            <if test="subtotal != null "> and subtotal = #{subtotal}</if>
+            <if test="rawCoal != null "> and raw_coal = #{rawCoal}</if>
+            <if test="cleanCoal != null "> and clean_coal = #{cleanCoal}</if>
+            <if test="other != null "> and other = #{other}</if>
+            <if test="dailyLocalSales != null "> and daily_local_sales = #{dailyLocalSales}</if>
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+            <if test="isDeleted != null "> and is_deleted = #{isDeleted}</if>
+        </where>
+    </select>
+    <select id="selectDispatchDailyReportOtherData" parameterType="com.ruoyi.system.domain.DispatchDailyReportOtherData" resultMap="DispatchDailyReportOtherDataResult">
+        <include refid="selectDispatchDailyReportOtherDataVo"/>
+        <where>
+            <if test="recordDate != null "> and record_date = #{recordDate}</if>
+            <if test="dailyCleanCoalOutput != null "> and daily_clean_coal_output = #{dailyCleanCoalOutput}</if>
+            <if test="dailyProductSales != null "> and daily_product_sales = #{dailyProductSales}</if>
+            <if test="dailyOutboundCars != null "> and daily_outbound_cars = #{dailyOutboundCars}</if>
+            <if test="dailyOutboundVolume != null "> and daily_outbound_volume = #{dailyOutboundVolume}</if>
+            <if test="dailySalesTotal != null "> and daily_sales_total = #{dailySalesTotal}</if>
+            <if test="subtotal != null "> and subtotal = #{subtotal}</if>
+            <if test="rawCoal != null "> and raw_coal = #{rawCoal}</if>
+            <if test="cleanCoal != null "> and clean_coal = #{cleanCoal}</if>
+            <if test="other != null "> and other = #{other}</if>
+            <if test="dailyLocalSales != null "> and daily_local_sales = #{dailyLocalSales}</if>
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+            <if test="isDeleted != null "> and is_deleted = #{isDeleted}</if>
+        </where>
+    </select>
+    <select id="selectDispatchDailyReportOtherDataById" parameterType="java.lang.Long" resultMap="DispatchDailyReportOtherDataResult">
+        <include refid="selectDispatchDailyReportOtherDataVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertDispatchDailyReportOtherData" parameterType="com.ruoyi.system.domain.DispatchDailyReportOtherData" useGeneratedKeys="true" keyProperty="id">
+        insert into dispatch_daily_report_other_data
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="recordDate != null">record_date,</if>
+            <if test="dailyCleanCoalOutput != null">daily_clean_coal_output,</if>
+            <if test="dailyProductSales != null">daily_product_sales,</if>
+            <if test="dailyOutboundCars != null">daily_outbound_cars,</if>
+            <if test="dailyOutboundVolume != null">daily_outbound_volume,</if>
+            <if test="dailySalesTotal != null">daily_sales_total,</if>
+            <if test="subtotal != null">subtotal,</if>
+            <if test="rawCoal != null">raw_coal,</if>
+            <if test="cleanCoal != null">clean_coal,</if>
+            <if test="other != null">other,</if>
+            <if test="dailyLocalSales != null">daily_local_sales,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="isDeleted != null">is_deleted,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="recordDate != null">#{recordDate},</if>
+            <if test="dailyCleanCoalOutput != null">#{dailyCleanCoalOutput},</if>
+            <if test="dailyProductSales != null">#{dailyProductSales},</if>
+            <if test="dailyOutboundCars != null">#{dailyOutboundCars},</if>
+            <if test="dailyOutboundVolume != null">#{dailyOutboundVolume},</if>
+            <if test="dailySalesTotal != null">#{dailySalesTotal},</if>
+            <if test="subtotal != null">#{subtotal},</if>
+            <if test="rawCoal != null">#{rawCoal},</if>
+            <if test="cleanCoal != null">#{cleanCoal},</if>
+            <if test="other != null">#{other},</if>
+            <if test="dailyLocalSales != null">#{dailyLocalSales},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="isDeleted != null">#{isDeleted},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDispatchDailyReportOtherData" parameterType="com.ruoyi.system.domain.DispatchDailyReportOtherData">
+        update dispatch_daily_report_other_data
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="recordDate != null">record_date = #{recordDate},</if>
+            <if test="dailyCleanCoalOutput != null">daily_clean_coal_output = #{dailyCleanCoalOutput},</if>
+            <if test="dailyProductSales != null">daily_product_sales = #{dailyProductSales},</if>
+            <if test="dailyOutboundCars != null">daily_outbound_cars = #{dailyOutboundCars},</if>
+            <if test="dailyOutboundVolume != null">daily_outbound_volume = #{dailyOutboundVolume},</if>
+            <if test="dailySalesTotal != null">daily_sales_total = #{dailySalesTotal},</if>
+            <if test="subtotal != null">subtotal = #{subtotal},</if>
+            <if test="rawCoal != null">raw_coal_clean_coal = #{rawCoal},</if>
+            <if test="cleanCoal != null">raw_coal_clean_coal = #{cleanCoal},</if>
+            <if test="other != null">other = #{other},</if>
+            <if test="dailyLocalSales != null">daily_local_sales = #{dailyLocalSales},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDispatchDailyReportOtherDataById" parameterType="java.lang.Long">
+        delete from dispatch_daily_report_other_data where id = #{id}
+    </delete>
+
+    <delete id="deleteDispatchDailyReportOtherDataByIds" parameterType="java.lang.String">
+        delete from dispatch_daily_report_other_data where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+</mapper>

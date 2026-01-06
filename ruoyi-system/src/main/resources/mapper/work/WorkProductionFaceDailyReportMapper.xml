@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.work.WorkProductionFaceDailyReportMapper">
+    <resultMap type="com.ruoyi.system.domain.work.WorkProductionFaceDailyReport"
+               id="WorkProductionFaceDailyReportResult">
+        <result property="id" column="id"/>
+        <result property="unit" column="unit"/>
+        <result property="unitCode" column="unit_code"/>
+        <result property="reportDate" column="report_date"/>
+        <result property="teamId" column="team_id"/>
+        <result property="workLocation" column="work_location"/>
+        <result property="miningTechnology" column="mining_technology"/>
+        <result property="unitModel" column="unit_model"/>
+        <result property="scraperConveyorModel" column="scraper_conveyor_model"/>
+        <result property="supportForm" column="support_form"/>
+        <result property="oneAttendance" column="one_attendance"/>
+        <result property="twoAttendance" column="two_attendance"/>
+        <result property="threeAttendance" column="three_attendance"/>
+        <result property="countAttendance" column="count_attendance"/>
+        <result property="oneOutput" column="one_output"/>
+        <result property="twoOutput" column="two_output"/>
+        <result property="threeOutput" column="three_output"/>
+        <result property="countOutput" column="count_output"/>
+        <result property="oneCutsNum" column="one_cuts_num"/>
+        <result property="twoCutsNum" column="two_cuts_num"/>
+        <result property="threeCutsNum" column="three_cuts_num"/>
+        <result property="countCutsNum" column="count_cuts_num"/>
+        <result property="remarks" column="remarks"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+
+    <sql id="selectWorkProductionFaceDailyReportVo">
+        SELECT id,
+               unit,
+               unit_code,
+               report_date,
+               team_id,
+               work_location,
+               mining_technology,
+               unit_model,
+               scraper_conveyor_model,
+               support_form,
+               one_attendance,
+               two_attendance,
+               three_attendance,
+               count_attendance,
+               one_output,
+               two_output,
+               three_output,
+               count_output,
+               one_cuts_num,
+               two_cuts_num,
+               three_cuts_num,
+               count_cuts_num,
+               remarks,
+               status,
+               create_time
+        FROM work_production_face_daily_report
+    </sql>
+
+
+    <select id="selectWorkProductionFaceDailyReportList"
+            parameterType="com.ruoyi.system.domain.work.WorkProductionFaceDailyReport"
+            resultMap="WorkProductionFaceDailyReportResult">
+        <include refid="selectWorkProductionFaceDailyReportVo"/>
+        <where>
+            <if test="unit != null and unit != ''">
+                AND unit = #{unit}
+            </if>
+            <if test="unitCode != null and unitCode != ''">
+                AND unit_code = #{unitCode}
+            </if>
+            <if test="reportDate != null and reportDate != ''">
+                AND report_date = #{reportDate}
+            </if>
+            <if test="teamId != null and teamId != ''">
+                AND team_id = #{teamId}
+            </if>
+            <if test="workLocation != null and workLocation != ''">
+                AND work_location = #{workLocation}
+            </if>
+            <if test="miningTechnology != null and miningTechnology != ''">
+                AND mining_technology = #{miningTechnology}
+            </if>
+            <if test="unitModel != null and unitModel != ''">
+                AND unit_model = #{unitModel}
+            </if>
+            <if test="scraperConveyorModel != null and scraperConveyorModel != ''">
+                AND scraper_conveyor_model = #{scraperConveyorModel}
+            </if>
+            <if test="supportForm != null and supportForm != ''">
+                AND support_form = #{supportForm}
+            </if>
+            <if test="oneAttendance != null">
+                AND one_attendance = #{oneAttendance}
+            </if>
+            <if test="twoAttendance != null">
+                AND two_attendance = #{twoAttendance}
+            </if>
+            <if test="threeAttendance != null">
+                AND three_attendance = #{threeAttendance}
+            </if>
+            <if test="countAttendance != null">
+                AND count_attendance = #{countAttendance}
+            </if>
+            <if test="oneOutput != null">
+                AND one_output = #{oneOutput}
+            </if>
+            <if test="twoOutput != null">
+                AND two_output = #{twoOutput}
+            </if>
+            <if test="threeOutput != null">
+                AND three_output = #{threeOutput}
+            </if>
+            <if test="countOutput != null">
+                AND count_output = #{countOutput}
+            </if>
+            <if test="oneCutsNum != null">
+                AND one_cuts_num = #{oneCutsNum}
+            </if>
+            <if test="twoCutsNum != null">
+                AND two_cuts_num = #{twoCutsNum}
+            </if>
+            <if test="threeCutsNum != null">
+                AND three_cuts_num = #{threeCutsNum}
+            </if>
+            <if test="countCutsNum != null">
+                AND count_cuts_num = #{countCutsNum}
+            </if>
+            <if test="remarks != null and remarks != ''">
+                AND remarks = #{remarks}
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="selectWorkProductionFaceDailyReportById" parameterType="java.lang.String"
+            resultMap="WorkProductionFaceDailyReportResult">
+        <include refid="selectWorkProductionFaceDailyReportVo"/>
+        WHERE id = #{id}
+    </select>
+
+
+    <insert id="insertWorkProductionFaceDailyReport"
+            parameterType="com.ruoyi.system.domain.work.WorkProductionFaceDailyReport"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO work_production_face_daily_report
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="unit != null and unit != ''">
+                unit,
+            </if>
+            <if test="unitCode != null and unitCode != ''">
+                unit_code,
+            </if>
+            <!-- 在字段列表中添加 -->
+            <if test="reportDate != null and reportDate !=''">
+                report_date,
+            </if>
+            <if test="teamId != null and teamId != ''">
+                team_id,
+            </if>
+            <if test="workLocation != null and workLocation != ''">
+                work_location,
+            </if>
+            <if test="miningTechnology != null and miningTechnology != ''">
+                mining_technology,
+            </if>
+            <if test="unitModel != null">
+                unit_model,
+            </if>
+            <if test="scraperConveyorModel != null">
+                scraper_conveyor_model,
+            </if>
+            <if test="supportForm != null and supportForm != ''">
+                support_form,
+            </if>
+            <if test="oneAttendance != null">
+                one_attendance,
+            </if>
+            <if test="twoAttendance != null">
+                two_attendance,
+            </if>
+            <if test="threeAttendance != null">
+                three_attendance,
+            </if>
+            <if test="countAttendance != null">
+                count_attendance,
+            </if>
+            <if test="oneOutput != null">
+                one_output,
+            </if>
+            <if test="twoOutput != null">
+                two_output,
+            </if>
+            <if test="threeOutput != null">
+                three_output,
+            </if>
+            <if test="countOutput != null">
+                count_output,
+            </if>
+            <if test="oneCutsNum != null">
+                one_cuts_num,
+            </if>
+            <if test="twoCutsNum != null">
+                two_cuts_num,
+            </if>
+            <if test="threeCutsNum != null">
+                three_cuts_num,
+            </if>
+            <if test="countCutsNum != null">
+                count_cuts_num,
+            </if>
+            <if test="remarks != null">
+                remarks,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="unit != null and unit != ''">
+                #{unit},
+            </if>
+            <if test="unitCode != null and unitCode != ''">
+                #{unitCode},
+            </if>
+            <!-- 在值列表中添加 -->
+            <if test="reportDate != null and reportDate != ''">
+                #{reportDate},
+            </if>
+            <if test="teamId != null and teamId != ''">
+                #{teamId},
+            </if>
+            <if test="workLocation != null and workLocation != ''">
+                #{workLocation},
+            </if>
+            <if test="miningTechnology != null and miningTechnology != ''">
+                #{miningTechnology},
+            </if>
+            <if test="unitModel != null">
+                #{unitModel},
+            </if>
+            <if test="scraperConveyorModel != null">
+                #{scraperConveyorModel},
+            </if>
+            <if test="supportForm != null and supportForm != ''">
+                #{supportForm},
+            </if>
+            <if test="oneAttendance != null">
+                #{oneAttendance},
+            </if>
+            <if test="twoAttendance != null">
+                #{twoAttendance},
+            </if>
+            <if test="threeAttendance != null">
+                #{threeAttendance},
+            </if>
+            <if test="countAttendance != null">
+                #{countAttendance},
+            </if>
+            <if test="oneOutput != null">
+                #{oneOutput},
+            </if>
+            <if test="twoOutput != null">
+                #{twoOutput},
+            </if>
+            <if test="threeOutput != null">
+                #{threeOutput},
+            </if>
+            <if test="countOutput != null">
+                #{countOutput},
+            </if>
+            <if test="oneCutsNum != null">
+                #{oneCutsNum},
+            </if>
+            <if test="twoCutsNum != null">
+                #{twoCutsNum},
+            </if>
+            <if test="threeCutsNum != null">
+                #{threeCutsNum},
+            </if>
+            <if test="countCutsNum != null">
+                #{countCutsNum},
+            </if>
+            <if test="remarks != null">
+                #{remarks},
+            </if>
+            <if test="status != null">
+                #{status},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+        </trim>
+    </insert>
+
+
+    <update id="updateWorkProductionFaceDailyReport"
+            parameterType="com.ruoyi.system.domain.work.WorkProductionFaceDailyReport">
+        UPDATE work_production_face_daily_report
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="unit != null and unit != ''">
+                unit = #{unit},
+            </if>
+            <if test="unitCode != null and unitCode != ''">
+                unit_code = #{unitCode},
+            </if>
+            <if test="reportDate != null and reportDate != ''">
+                report_date = #{reportDate},
+            </if>
+
+            <if test="teamId != null and teamId != ''">
+                team_id = #{teamId},
+            </if>
+            <if test="workLocation != null and workLocation != ''">
+                work_location = #{workLocation},
+            </if>
+            <if test="miningTechnology != null and miningTechnology != ''">
+                mining_technology = #{miningTechnology},
+            </if>
+            <if test="unitModel != null">
+                unit_model = #{unitModel},
+            </if>
+            <if test="scraperConveyorModel != null">
+                scraper_conveyor_model = #{scraperConveyorModel},
+            </if>
+            <if test="supportForm != null and supportForm != ''">
+                support_form = #{supportForm},
+            </if>
+            <if test="oneAttendance != null">
+                one_attendance = #{oneAttendance},
+            </if>
+            <if test="twoAttendance != null">
+                two_attendance = #{twoAttendance},
+            </if>
+            <if test="threeAttendance != null">
+                three_attendance = #{threeAttendance},
+            </if>
+            <if test="countAttendance != null">
+                count_attendance = #{countAttendance},
+            </if>
+            <if test="oneOutput != null">
+                one_output = #{oneOutput},
+            </if>
+            <if test="twoOutput != null">
+                two_output = #{twoOutput},
+            </if>
+            <if test="threeOutput != null">
+                three_output = #{threeOutput},
+            </if>
+            <if test="countOutput != null">
+                count_output = #{countOutput},
+            </if>
+            <if test="oneCutsNum != null">
+                one_cuts_num = #{oneCutsNum},
+            </if>
+            <if test="twoCutsNum != null">
+                two_cuts_num = #{twoCutsNum},
+            </if>
+            <if test="threeCutsNum != null">
+                three_cuts_num = #{threeCutsNum},
+            </if>
+            <if test="countCutsNum != null">
+                count_cuts_num = #{countCutsNum},
+            </if>
+            <if test="remarks != null">
+                remarks = #{remarks},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+
+    <update id="batchUpdateWorkProductionFaceDailyReport" parameterType="java.util.List">
+        <foreach collection="list" item="item" separator=";">
+            UPDATE work_production_face_daily_report
+            <trim prefix="SET" suffixOverrides=",">
+                <if test="item.unit != null and item.unit != ''">
+                    unit = #{item.unit},
+                </if>
+                <if test="item.reportDate != null and item.reportDate != ''">
+                    report_date = #{item.reportDate},
+                </if>
+                <if test="item.unitCode != null and item.unitCode != ''">
+                    unit_code = #{item.unitCode},
+                </if>
+                <if test="item.teamId != null and item.teamId != ''">
+                    team_id = #{item.teamId},
+                </if>
+                <if test="item.workLocation != null and item.workLocation != ''">
+                    work_location = #{item.workLocation},
+                </if>
+                <if test="item.miningTechnology != null and item.miningTechnology != ''">
+                    mining_technology = #{item.miningTechnology},
+                </if>
+                <if test="item.unitModel != null">
+                    unit_model = #{item.unitModel},
+                </if>
+                <if test="item.scraperConveyorModel != null">
+                    scraper_conveyor_model = #{item.scraperConveyorModel},
+                </if>
+                <if test="item.supportForm != null and item.supportForm != ''">
+                    support_form = #{item.supportForm},
+                </if>
+                <if test="item.oneAttendance != null">
+                    one_attendance = #{item.oneAttendance},
+                </if>
+                <if test="item.twoAttendance != null">
+                    two_attendance = #{item.twoAttendance},
+                </if>
+                <if test="item.threeAttendance != null">
+                    three_attendance = #{item.threeAttendance},
+                </if>
+                <if test="item.countAttendance != null">
+                    count_attendance = #{item.countAttendance},
+                </if>
+                <if test="item.oneOutput != null">
+                    one_output = #{item.oneOutput},
+                </if>
+                <if test="item.twoOutput != null">
+                    two_output = #{item.twoOutput},
+                </if>
+                <if test="item.threeOutput != null">
+                    three_output = #{item.threeOutput},
+                </if>
+                <if test="item.countOutput != null">
+                    count_output = #{item.countOutput},
+                </if>
+                <if test="item.oneCutsNum != null">
+                    one_cuts_num = #{item.oneCutsNum},
+                </if>
+                <if test="item.twoCutsNum != null">
+                    two_cuts_num = #{item.twoCutsNum},
+                </if>
+                <if test="item.threeCutsNum != null">
+                    three_cuts_num = #{item.threeCutsNum},
+                </if>
+                <if test="item.countCutsNum != null">
+                    count_cuts_num = #{item.countCutsNum},
+                </if>
+                <if test="item.remarks != null">
+                    remarks = #{item.remarks},
+                </if>
+                <if test="item.status != null">
+                    status = #{item.status},
+                </if>
+                <if test="item.createTime != null">
+                    create_time = #{item.createTime},
+                </if>
+            </trim>
+            WHERE id = #{item.id}
+        </foreach>
+    </update>
+
+
+    <delete id="deleteWorkProductionFaceDailyReportById" parameterType="java.lang.String">
+        DELETE
+        FROM work_production_face_daily_report
+        WHERE id = #{id}
+    </delete>
+
+
+    <delete id="deleteWorkProductionFaceDailyReportByIds" parameterType="java.lang.String">
+        DELETE FROM work_production_face_daily_report
+        WHERE id IN
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

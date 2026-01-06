@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.CokeSalesPlanMapper">
+
+    <resultMap type="com.ruoyi.system.domain.CokeSalesPlan" id="CokeSalesPlanResult">
+        <result property="id"    column="id"    />
+        <result property="planMonth"    column="plan_month"    />
+        <result property="workDaysInMonth"    column="work_days_in_month"    />
+        <result property="productionTonnageMonth"    column="production_tonnage_month"    />
+        <result property="productionTonnageDay"    column="production_tonnage_day"    />
+        <result property="sellingVehiclesMonth"    column="selling_vehicles_month"    />
+        <result property="sellingVehiclesDay"    column="selling_vehicles_day"    />
+        <result property="salesTonnageMonth"    column="sales_tonnage_month"    />
+        <result property="salesTonnageDay"    column="sales_tonnage_day"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateUser"    column="update_user"    />
+    </resultMap>
+
+    <sql id="selectCokeSalesPlanVo">
+        select id, plan_month, work_days_in_month, production_tonnage_month, production_tonnage_day, selling_vehicles_month, selling_vehicles_day, sales_tonnage_month, sales_tonnage_day, create_time, create_user, update_time, update_user from coke_sales_plan
+    </sql>
+
+    <select id="selectCokeSalesPlanList" parameterType="com.ruoyi.system.domain.CokeSalesPlan" resultMap="CokeSalesPlanResult">
+        <include refid="selectCokeSalesPlanVo"/>
+        <where>
+            <if test="planMonth != null "> and plan_month = #{planMonth}</if>
+            <if test="workDaysInMonth != null "> and work_days_in_month = #{workDaysInMonth}</if>
+            <if test="productionTonnageMonth != null "> and production_tonnage_month = #{productionTonnageMonth}</if>
+            <if test="productionTonnageDay != null  and productionTonnageDay != ''"> and production_tonnage_day = #{productionTonnageDay}</if>
+            <if test="sellingVehiclesMonth != null  and sellingVehiclesMonth != ''"> and selling_vehicles_month = #{sellingVehiclesMonth}</if>
+            <if test="sellingVehiclesDay != null  and sellingVehiclesDay != ''"> and selling_vehicles_day = #{sellingVehiclesDay}</if>
+            <if test="salesTonnageMonth != null  and salesTonnageMonth != ''"> and sales_tonnage_month = #{salesTonnageMonth}</if>
+            <if test="salesTonnageDay != null  and salesTonnageDay != ''"> and sales_tonnage_day = #{salesTonnageDay}</if>
+            <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
+            <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
+        </where>
+    </select>
+
+    <select id="selectCokeSalesPlanById" parameterType="java.lang.Long" resultMap="CokeSalesPlanResult">
+        <include refid="selectCokeSalesPlanVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertCokeSalesPlan" parameterType="com.ruoyi.system.domain.CokeSalesPlan">
+        insert into coke_sales_plan
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="planMonth != null">plan_month,</if>
+            <if test="workDaysInMonth != null">work_days_in_month,</if>
+            <if test="productionTonnageMonth != null">production_tonnage_month,</if>
+            <if test="productionTonnageDay != null">production_tonnage_day,</if>
+            <if test="sellingVehiclesMonth != null">selling_vehicles_month,</if>
+            <if test="sellingVehiclesDay != null">selling_vehicles_day,</if>
+            <if test="salesTonnageMonth != null">sales_tonnage_month,</if>
+            <if test="salesTonnageDay != null">sales_tonnage_day,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createUser != null">create_user,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateUser != null">update_user,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="planMonth != null">#{planMonth},</if>
+            <if test="workDaysInMonth != null">#{workDaysInMonth},</if>
+            <if test="productionTonnageMonth != null">#{productionTonnageMonth},</if>
+            <if test="productionTonnageDay != null">#{productionTonnageDay},</if>
+            <if test="sellingVehiclesMonth != null">#{sellingVehiclesMonth},</if>
+            <if test="sellingVehiclesDay != null">#{sellingVehiclesDay},</if>
+            <if test="salesTonnageMonth != null">#{salesTonnageMonth},</if>
+            <if test="salesTonnageDay != null">#{salesTonnageDay},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCokeSalesPlan" parameterType="com.ruoyi.system.domain.CokeSalesPlan">
+        update coke_sales_plan
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="planMonth != null">plan_month = #{planMonth},</if>
+            <if test="workDaysInMonth != null">work_days_in_month = #{workDaysInMonth},</if>
+            <if test="productionTonnageMonth != null">production_tonnage_month = #{productionTonnageMonth},</if>
+            <if test="productionTonnageDay != null">production_tonnage_day = #{productionTonnageDay},</if>
+            <if test="sellingVehiclesMonth != null">selling_vehicles_month = #{sellingVehiclesMonth},</if>
+            <if test="sellingVehiclesDay != null">selling_vehicles_day = #{sellingVehiclesDay},</if>
+            <if test="salesTonnageMonth != null">sales_tonnage_month = #{salesTonnageMonth},</if>
+            <if test="salesTonnageDay != null">sales_tonnage_day = #{salesTonnageDay},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createUser != null">create_user = #{createUser},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCokeSalesPlanById" parameterType="java.lang.Long">
+        delete from coke_sales_plan where id = #{id}
+    </delete>
+
+    <delete id="deleteCokeSalesPlanByIds" parameterType="java.lang.String">
+        delete from coke_sales_plan where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="selectCokeSalesPlanDayList"  resultMap="CokeSalesPlanResult">
+        select sum(work_days_in_month) as work_days_in_month, sum(production_tonnage_month) as production_tonnage_month, sum(production_tonnage_day) as production_tonnage_day,
+               sum(selling_vehicles_month) as selling_vehicles_month, sum(selling_vehicles_day) as selling_vehicles_day, sum(sales_tonnage_month) as sales_tonnage_month,
+               sum(sales_tonnage_day) as sales_tonnage_day from coke_sales_plan
+        where plan_month = #{planMonth}
+    </select>
+    <select id="selectCokeSalesPlanYearList"  resultMap="CokeSalesPlanResult">
+        select sum(work_days_in_month) as work_days_in_month, sum(production_tonnage_month) as production_tonnage_month, sum(production_tonnage_day) as production_tonnage_day,
+               sum(selling_vehicles_month) as selling_vehicles_month, sum(selling_vehicles_day) as selling_vehicles_day, sum(sales_tonnage_month) as sales_tonnage_month,
+               sum(sales_tonnage_day) as sales_tonnage_day from coke_sales_plan
+        where plan_month like concat(#{planMonth}, '%')
+    </select>
+
+</mapper>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BaoBiao.SubCoalPlantStorageMapper">
+
+    <resultMap id="SubMap" type="com.ruoyi.system.domain.BaoBiao.po.SubCoalPlantStoragePO">
+        <id     column="id"                     property="id"/>
+        <result column="coal_plant_storageID"   property="coalPlantStorageID"/>
+        <result column="record_date"            property="recordDate"/>
+        <result column="clean_coal"             property="cleanCoal"/>
+        <result column="slack_coal"             property="slackCoal"/>
+        <result column="lump_coal"              property="lumpCoal"/>
+        <result column="raw_coal"               property="rawCoal"/>
+    </resultMap>
+
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT INTO sub_coal_plant_storage(
+        coal_plant_storageID, record_date, clean_coal, slack_coal, lump_coal, raw_coal
+        ) VALUES
+        <foreach collection="list" item="it" separator=",">
+            (#{it.coalPlantStorageID}, #{it.recordDate}, #{it.cleanCoal}, #{it.slackCoal}, #{it.lumpCoal}, #{it.rawCoal})
+        </foreach>
+    </insert>
+
+    <delete id="deleteByParentId">
+        DELETE FROM sub_coal_plant_storage WHERE coal_plant_storageID = #{parentId}
+    </delete>
+
+    <select id="selectByParentId" resultMap="SubMap">
+        SELECT * FROM sub_coal_plant_storage
+        WHERE coal_plant_storageID = #{parentId}
+        ORDER BY record_date DESC, id ASC
+    </select>
+
+    <select id="selectByParentIds" parameterType="java.util.List" resultMap="SubMap">
+        SELECT * FROM sub_coal_plant_storage
+        WHERE coal_plant_storageID IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">#{id}</foreach>
+        ORDER BY coal_plant_storageID ASC, record_date DESC, id ASC
+    </select>
+
+</mapper>

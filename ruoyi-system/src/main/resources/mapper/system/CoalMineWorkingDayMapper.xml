@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.CoalMineWorkingDayMapper">
+
+    <resultMap type="com.ruoyi.system.domain.CoalMineWorkingDay" id="CoalMineWorkingDayResult">
+        <result property="id"    column="id"    />
+        <result property="unitName"    column="unit_name"    />
+        <result property="unitCode"    column="unit_code"    />
+        <result property="workingMonth"    column="working_month"    />
+        <result property="workingDays"    column="working_days"    />
+        <result property="whetherWorking"    column="whether_working"    />
+
+        <result property="productionPlan"    column="production_plan"    />
+        <result property="productionObjective"    column="production_objective"    />
+        <result property="explorationPlan"    column="exploration_plan"    />
+        <result property="explorationObjective"    column="exploration_objective"    />
+        <result property="footagePlan"    column="footage_plan"    />
+        <result property="footageObjective"    column="footage_objective"    />
+    </resultMap>
+
+    <sql id="selectCoalMineWorkingDayVo">
+        select id, unit_name,unit_code,  working_month, working_days, whether_working,
+               production_plan,production_objective,exploration_plan,exploration_objective,footage_plan,footage_objective
+        from coal_mine_working_day
+    </sql>
+
+    <select id="selectCoalMineWorkingDayList" parameterType="com.ruoyi.system.domain.CoalMineWorkingDay" resultMap="CoalMineWorkingDayResult">
+        <include refid="selectCoalMineWorkingDayVo"/>
+        <where>
+            <if test="unitName != null  and unitName != ''"> and unit_name = #{unitName} </if>
+            <if test="unitCode != null  and unitCode != ''"> and unit_code = #{unitCode} </if>
+            <if test="workingMonth != null  and workingMonth != ''"> and working_month = #{workingMonth}</if>
+            <if test="workingDays != null "> and working_days = #{workingDays}</if>
+            <if test="whetherWorking != null "> and whether_working = #{whetherWorking}</if>
+        </where>
+    </select>
+
+    <select id="selectCoalMineWorkingDayById" parameterType="java.lang.Long" resultMap="CoalMineWorkingDayResult">
+        <include refid="selectCoalMineWorkingDayVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectCoalMineWorkingDayByDay" resultMap="CoalMineWorkingDayResult">
+        <include refid="selectCoalMineWorkingDayVo"/>
+        where unit_name = #{unitName} and working_month = #{workingMonth} and working_days = #{workingDays}
+    </select>
+    <select id="selectCoalMineWorkingDayByUnitName" resultMap="CoalMineWorkingDayResult">
+        <include refid="selectCoalMineWorkingDayVo"/>
+        where  working_month = #{workingMonth} and working_days = #{workingDays}
+    </select>
+    <select id="selectCoalMineWorkingDayByMonth" resultMap="CoalMineWorkingDayResult">
+        select unit_name,working_month,sum(production_plan) as production_plan,sum(production_objective) as production_objective,
+               sum(exploration_plan) as exploration_plan,sum(exploration_objective) as exploration_objective,sum(footage_plan) as footage_plan,
+               sum(footage_objective) as footage_objective  from coal_mine_working_day
+        where unit_name = #{unitName} and working_month = #{workingMonth} and working_days &lt;= #{workingDays}
+        group by unit_name,working_month
+    </select>
+
+    <select id="selectCoalMineWorkingMonth" resultMap="CoalMineWorkingDayResult">
+        select working_month,sum(production_plan) as production_plan,sum(production_objective) as production_objective,
+               sum(exploration_plan) as exploration_plan,sum(exploration_objective) as exploration_objective,sum(footage_plan) as footage_plan,
+               sum(footage_objective) as footage_objective  from coal_mine_working_day
+        where working_month = #{workingMonth} and working_days = #{workingDays} and unit_name in (select area_name from mining_area_category where level=1)
+        group by working_month
+    </select>
+
+
+    <insert id="insertCoalMineWorkingDay" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        insert into coal_mine_working_day
+        (        unit_name, unit_code,       working_month,        working_days,        whether_working        )
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.unitName},#{item.unitCode},#{item.workingMonth}, #{item.workingDays},#{item.whetherWorking} )
+        </foreach>
+    </insert>
+
+    <update id="updateCoalMineWorkingDay" parameterType="com.ruoyi.system.domain.CoalMineWorkingDay">
+        UPDATE coal_mine_working_day
+        <set>
+            <if test="unitName != null and unitName != ''">unit_name = #{unitName},</if>
+            <if test="unitCode != null and unitCode != ''">unit_code = #{unitCode},</if>
+            <if test="workingMonth != null and workingMonth != ''">working_month = #{workingMonth},</if>
+            <if test="workingDays != null">working_days = #{workingDays},</if>
+            <if test="whetherWorking != null">whether_working = #{whetherWorking},</if>
+            <if test="productionPlan != null">production_plan = #{productionPlan},</if>
+            <if test="productionObjective != null">production_objective = #{productionObjective},</if>
+            <if test="explorationPlan != null">exploration_plan = #{explorationPlan},</if>
+            <if test="explorationObjective != null">exploration_objective = #{explorationObjective},</if>
+            <if test="footagePlan != null">footage_plan = #{footagePlan},</if>
+            <if test="footageObjective != null">footage_objective = #{footageObjective}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+
+    <update id="batcupdateCoalMineWorkingDay" parameterType="java.util.List">
+        UPDATE coal_mine_working_day
+        <trim prefix="SET" suffixOverrides=",">
+            whether_working = CASE <foreach collection="list" item="item">  WHEN id = #{item.id} THEN #{item.whetherWorking} </foreach> ELSE whether_working END,
+            production_plan = CASE <foreach collection="list" item="item">  WHEN id = #{item.id} THEN #{item.productionPlan} </foreach> ELSE production_plan END,
+            production_objective = CASE<foreach collection="list" item="item"> WHEN id = #{item.id} THEN #{item.productionObjective} </foreach> ELSE production_objective END,
+            exploration_plan = CASE <foreach collection="list" item="item"> WHEN id = #{item.id} THEN #{item.explorationPlan} </foreach> ELSE exploration_plan END,
+            exploration_objective = CASE <foreach collection="list" item="item"> WHEN id = #{item.id} THEN #{item.explorationObjective} </foreach> ELSE exploration_objective END,
+            footage_plan = CASE <foreach collection="list" item="item"> WHEN id = #{item.id} THEN #{item.footagePlan} </foreach> ELSE footage_plan END,
+            footage_plan = CASE <foreach collection="list" item="item"> WHEN id = #{item.id} THEN #{item.footageObjective} </foreach> ELSE footage_plan END
+        </trim>
+        WHERE id IN
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
+
+    <!--    <update id="updateCoalMineWorkingDay" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">-->
+<!--&#45;&#45;         update coal_mine_working_day set whether_working= #{whetherWorking} where unit_name = #{unitName} and working_month = #{workingMonth}-->
+<!--&#45;&#45; and working_days = #{workingDays}-->
+<!--        update coal_mine_working_day-->
+<!--        <trim prefix="SET" suffixOverrides=",">-->
+<!--            <if test="whetherWorking != null">whether_working = #{whetherWorking},</if>-->
+<!--            <if test="productionPlan != null">production_plan = #{productionPlan},</if>-->
+<!--            <if test="productionObjective != null">production_objective = #{productionObjective},</if>-->
+<!--            <if test="exploratioPlan != null">exploration_plan = #{exploratioPlan},</if>-->
+<!--            <if test="exploratioObjective != null">exploration_objective = #{exploratioObjective},</if>-->
+<!--            <if test="footagePlan != null">footage_plan = #{footagePlan},</if>-->
+<!--            <if test="footageObjective != null">footage_objective = #{footageObjective},</if>-->
+<!--        </trim>-->
+<!--        where id = #{id}-->
+<!--    </update>-->
+
+    <update id="updateCoalMineWorkingDays" parameterType="com.ruoyi.system.domain.CoalMineWorkingDay">
+            update coal_mine_working_day
+            <trim prefix="SET" suffixOverrides=",">
+                <if test="productionPlan != null">production_plan = #{productionPlan},</if>
+                <if test="productionObjective != null">production_objective = #{productionObjective},</if>
+                <if test="explorationPlan != null">exploration_plan = #{explorationPlan},</if>
+                <if test="explorationObjective != null">exploration_objective = #{explorationObjective},</if>
+                <if test="footagePlan != null">footage_plan = #{footagePlan},</if>
+                <if test="footageObjective != null">footage_objective = #{footageObjective},</if>
+            </trim>
+        where unit_name = #{unitName} and working_month = #{workingMonth}
+        and working_days = #{workingDays}
+    </update>
+
+
+    <delete id="deleteCoalMineWorkingDayById" parameterType="java.lang.Long">
+        delete from coal_mine_working_day where id = #{id}
+    </delete>
+
+    <delete id="deleteCoalMineWorkingDayByIds" parameterType="java.lang.String">
+        delete from coal_mine_working_day where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

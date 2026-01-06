@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ruoyi.system.mapper.BaoBiao.UnitManagementMapper">
+
+    <resultMap id="UnitManagementMap" type="com.ruoyi.system.domain.BaoBiao.UnitManagement">
+        <id     property="id"               column="id"/>
+        <result property="unitType"         column="unit_type"/>
+        <result property="unitCode"         column="unit_code"/>
+        <result property="unitName"         column="unit_name"/>
+        <result property="level"            column="level"/>
+        <result property="miningAreaInfo"   column="mining_area_info"/>
+        <result property="category"         column="category"/>
+        <result property="isSealed"         column="is_sealed"/>
+        <result property="sortOrder"        column="sort_order"/>
+        <result property="createTime"       column="create_time"/>
+        <result property="updateTime"       column="update_time"/>
+        <result property="userid"           column="userid"/>
+        <result property="parentId"           column="parent_id"/>
+
+
+
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, unit_type, unit_code, unit_name, level, mining_area_info, category, is_sealed, sort_order, create_time, update_time,userid,parent_id
+    </sql>
+
+    <select id="selectById" resultMap="UnitManagementMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM unit_management
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectList" resultMap="UnitManagementMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM unit_management
+        <where>
+            <if test="unitType != null and unitType != ''">
+                AND unit_type = #{unitType}
+            </if>
+            <if test="unitCode != null and unitCode != ''">
+                AND unit_code = #{unitCode}
+            </if>
+            <if test="unitName != null and unitName != ''">
+                AND unit_name LIKE CONCAT('%', #{unitName}, '%')
+            </if>
+            <if test="level != null">
+                AND level = #{level}
+            </if>
+            <if test="isSealed != null">
+                AND is_sealed = #{isSealed}
+            </if>
+            <if test="category != null and category != ''">
+                AND category = #{category}
+            </if>
+            <if test="miningAreaInfo != null and miningAreaInfo != ''">
+                AND mining_area_info = #{miningAreaInfo}
+            </if>
+            <if test="parentId != null and parentId != ''">
+                AND parent_id = #{parentId}
+            </if>
+        </where>
+        ORDER BY sort_order ASC, id DESC
+    </select>
+
+    <insert id="insert" parameterType="com.ruoyi.system.domain.BaoBiao.UnitManagement" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO unit_management (
+            unit_type, unit_code, unit_name, level, mining_area_info, category, is_sealed, sort_order,parent_id
+        ) VALUES (
+                     #{unitType}, #{unitCode}, #{unitName}, #{level}, #{miningAreaInfo}, #{category}, #{isSealed}, #{sortOrder}, #{parentId}
+                 )
+    </insert>
+
+    <update id="update" parameterType="com.ruoyi.system.domain.BaoBiao.UnitManagement">
+        UPDATE unit_management
+        SET unit_type = #{unitType},
+            unit_code = #{unitCode},
+            unit_name = #{unitName},
+            level = #{level},
+            mining_area_info = #{miningAreaInfo},
+            category = #{category},
+            is_sealed = #{isSealed},
+            sort_order = #{sortOrder},
+            parent_id = #{parentId}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM unit_management WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteByIds">
+        DELETE FROM unit_management WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

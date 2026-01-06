@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BaoBiao.TemplateDetailsMapper">
+
+    <!-- 实体映射：已包含 code 属性与数据库 Code 列的映射 -->
+    <resultMap id="TemplateDetailsMap" type="com.ruoyi.system.domain.BaoBiao.TemplateDetails">
+        <id     property="id"              column="id"/>
+        <result property="mineTemplateId"  column="Mine_templateID"/>
+        <result property="name"            column="Name"/>
+        <result property="code"            column="Code"/>
+    </resultMap>
+
+    <!-- VO 映射（带模板信息）：无需调整，VO 无 code 属性 -->
+    <resultMap id="TemplateDetailsVOMap" type="com.ruoyi.system.domain.BaoBiao.TemplateDetailsVO">
+        <id     property="id"              column="id"/>
+        <result property="name"            column="detail_name"/>
+        <result property="code"            column="detail_code"/>
+        <result property="mineTemplateId"  column="Mine_templateID"/>
+        <result property="templateName"    column="template_name"/>
+        <result property="unitCode"        column="unitCode"/>
+    </resultMap>
+
+    <!-- SQL片段：核心修改点，补充 Code 列，使引用该片段的查询自动返回 Code 字段 -->
+    <sql id="Base_Column_List">
+        id, Mine_templateID, `Name`, Code
+    </sql>
+
+    <!-- 按ID查询：引用 Base_Column_List，自动包含 Code 列 -->
+    <select id="selectById" resultMap="TemplateDetailsMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM `Template_details`
+        WHERE id = #{id}
+    </select>
+
+    <!-- 列表查询：引用 Base_Column_List，自动包含 Code 列 -->
+    <select id="selectList" resultMap="TemplateDetailsMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM `Template_details`
+        <where>
+            <if test="mineTemplateId != null"> AND Mine_templateID = #{mineTemplateId} </if>
+            <if test="name != null and name != ''"> AND `Name` LIKE CONCAT('%', #{name}, '%') </if>
+        </where>
+        ORDER BY id DESC
+    </select>
+
+    <!-- 按模板ID查详情：引用 Base_Column_List，自动包含 Code 列 -->
+    <select id="selectByTemplateId" resultMap="TemplateDetailsMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM `Template_details`
+        WHERE Mine_templateID = #{mineTemplateId}
+        ORDER BY id DESC
+    </select>
+
+    <!-- 按模板ID查详情（带模板信息）：VO 无 code 属性，无需调整 -->
+    <select id="selectVOByTemplateId" resultMap="TemplateDetailsVOMap">
+        SELECT
+            td.id,
+            td.Mine_templateID,
+            td.`Name`       AS detail_name,
+            td.Code         AS detail_code,
+            mt.`Name`       AS template_name,
+            mt.unitCode     AS unitCode
+        FROM `Template_details` td
+                 JOIN `Mine_template` mt ON mt.id = td.Mine_templateID
+        WHERE td.Mine_templateID = #{mineTemplateId}
+        ORDER BY td.id DESC
+    </select>
+
+    <!-- 新增：无需调整，实体 code 属性若需插入需补充字段（当前按原配置保留） -->
+    <insert id="insert" parameterType="com.ruoyi.system.domain.BaoBiao.TemplateDetails"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `Template_details` (Mine_templateID, `Name`,Code)
+        VALUES (#{mineTemplateId}, #{name}, #{code})
+    </insert>
+
+    <!-- 修改：无需调整，实体 code 属性若需更新需补充字段（当前按原配置保留） -->
+    <update id="update" parameterType="com.ruoyi.system.domain.BaoBiao.TemplateDetails">
+        UPDATE `Template_details`
+        SET Mine_templateID = #{mineTemplateId},
+            `Name`          = #{name},
+            `Code`          = #{code}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 按ID删除：无需调整 -->
+    <delete id="deleteById">
+        DELETE FROM `Template_details` WHERE id = #{id}
+    </delete>
+
+    <!-- 批量删除：无需调整 -->
+    <delete id="deleteByIds">
+        DELETE FROM `Template_details` WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

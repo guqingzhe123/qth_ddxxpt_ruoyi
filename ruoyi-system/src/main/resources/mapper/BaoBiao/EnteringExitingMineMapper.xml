@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BaoBiao.EnteringExitingMineMapper">
+
+    <resultMap id="EemMap" type="com.ruoyi.system.domain.BaoBiao.EnteringExitingMinePO">
+        <id     column="id"                  property="id"/>
+        <result column="unit_code"           property="unitCode"/>
+        <result column="unit_name"           property="unitName"/>
+        <result column="record_date"         property="recordDate"/>
+        <result column="current_shift"       property="currentShift"/>
+
+        <result column="total_down_count"    property="totalDownCount"/>
+        <result column="mining_down_count"   property="miningDownCount"/>
+        <result column="driving_down_count"  property="drivingDownCount"/>
+        <result column="pioneer_down_count"  property="pioneerDownCount"/>
+        <result column="other_down_count"    property="otherDownCount"/>
+
+        <result column="total_up_count"      property="totalUpCount"/>
+        <result column="mining_up_count"     property="miningUpCount"/>
+        <result column="pioneer_upcount"     property="pioneerUpcount"/>
+        <result column="driving_up_count"    property="drivingUpCount"/>
+        <result column="other_up_count"      property="otherUpCount"/>
+
+        <result column="create_time"         property="createTime"/>
+        <result column="update_time"         property="updateTime"/>
+        <result column="create_user"         property="createUser"/>
+        <result column="update_user"         property="updateUser"/>
+        <result column="is_deleted"          property="isDeleted"/>
+    </resultMap>
+
+    <select id="selectByDate" parameterType="map" resultMap="EemMap">
+        SELECT
+        id, unit_code, unit_name, record_date, current_shift,
+        total_down_count, mining_down_count, driving_down_count, pioneer_down_count, other_down_count,
+        total_up_count,   mining_up_count,   pioneer_upcount,   driving_up_count,   other_up_count,
+        create_time, update_time, create_user, update_user, is_deleted
+        FROM entering_and_exiting_the_mine
+        <where>
+            <if test="startTime != null and endTime != null">
+                AND record_date &gt;= #{startTime}
+                AND record_date &lt;  #{endTime}
+            </if>
+            <!-- 只取有效数据可放开 -->
+            <!-- AND (is_deleted IS NULL OR is_deleted = 0) -->
+        </where>
+        ORDER BY unit_name ASC, current_shift ASC
+    </select>
+
+</mapper>

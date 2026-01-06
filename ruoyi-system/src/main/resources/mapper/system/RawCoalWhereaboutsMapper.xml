@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.RawCoalWhereaboutsMapper">
+
+    <resultMap type="com.ruoyi.system.domain.RawCoalWhereabouts" id="RawCoalWhereaboutsResult">
+        <result property="id"    column="id"    />
+        <result property="danwei"    column="danwei"    />
+        <result property="rq"    column="rq"    />
+        <result property="xichangRi"    column="xichang_ri"    />
+        <result property="xichangLeiji"    column="xichang_leiji"    />
+        <result property="tiaoxianchangRi"    column="tiaoxianchang_ri"    />
+        <result property="tiaoxianchangLeiji"    column="tiaoxianchang_leiji"    />
+        <result property="xinxuanchangRi"    column="xinxuanchang_ri"    />
+        <result property="xinxuanchangLeiji"    column="xinxuanchang_leiji"    />
+        <result property="tiexuanchangRi"    column="tiexuanchang_ri"    />
+        <result property="tiexuanchangLeiji"    column="tiexuanchang_leiji"    />
+        <result property="longxichangRi"    column="longxichang_ri"    />
+        <result property="longxichangLeiji"    column="longxichang_leiji"    />
+        <result property="fuxichangRi"    column="fuxichang_ri"    />
+        <result property="fuxichangLeiji"    column="fuxichang_leiji"    />
+        <result property="meiqigongsiRi"    column="meiqigongsi_ri"    />
+        <result property="meiqigongsiLeiji"    column="meiqigongsi_leiji"    />
+        <result property="ziyongRi"    column="ziyong_ri"    />
+        <result property="ziyongLeiji"    column="ziyong_leiji"    />
+        <result property="ganshidianchangRi"    column="ganshidianchang_ri"    />
+        <result property="ganshidianchangLeiji"    column="ganshidianchang_leiji"    />
+        <result property="huochangchuRi"    column="huochangchu_ri"    />
+        <result property="huochangchuLeiji"    column="huochangchu_leiji"    />
+        <result property="tiewaixiaoRi"    column="tiewaixiao_ri"    />
+        <result property="tiewaixiaoLeiji"    column="tiewaixiao_leiji"    />
+        <result property="qitaRi"    column="qita_ri"    />
+        <result property="qitaLeiji"    column="qita_leiji"    />
+        <result property="zonghejiRi"    column="zongheji_ri"    />
+        <result property="zonghejiLeiji"    column="zongheji_leiji"    />
+        <result property="riShengchan"    column="ri_shengchan"    />
+        <result property="riCha"    column="ri_cha"    />
+        <result property="leijiCha"    column="leiji_cha"    />
+        <result property="beizhu"    column="beizhu"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectRawCoalWhereaboutsVo">
+        select id, danwei, rq, xichang_ri, xichang_leiji, tiaoxianchang_ri, tiaoxianchang_leiji, xinxuanchang_ri, xinxuanchang_leiji, tiexuanchang_ri,
+               tiexuanchang_leiji, longxichang_ri, longxichang_leiji, fuxichang_ri, fuxichang_leiji, meiqigongsi_ri, meiqigongsi_leiji, ziyong_ri,
+               ziyong_leiji, ganshidianchang_ri, ganshidianchang_leiji, huochangchu_ri, huochangchu_leiji, tiewaixiao_ri, tiewaixiao_leiji, qita_ri,
+               qita_leiji, zongheji_ri, zongheji_leiji, ri_shengchan, ri_cha, leiji_cha, beizhu, create_time, update_time from raw_coal_whereabouts
+    </sql>
+
+    <select id="selectRawCoalWhereaboutsList" parameterType="com.ruoyi.system.domain.RawCoalWhereabouts" resultMap="RawCoalWhereaboutsResult">
+        <include refid="selectRawCoalWhereaboutsVo"/>
+        <where>
+            <if test="danwei != null  and danwei != ''"> and danwei = #{danwei}</if>
+            <if test="rq != null "> and rq = #{rq}</if>
+            <if test="xichangRi != null "> and xichang_ri = #{xichangRi}</if>
+            <if test="xichangLeiji != null "> and xichang_leiji = #{xichangLeiji}</if>
+            <if test="tiaoxianchangRi != null "> and tiaoxianchang_ri = #{tiaoxianchangRi}</if>
+            <if test="tiaoxianchangLeiji != null "> and tiaoxianchang_leiji = #{tiaoxianchangLeiji}</if>
+            <if test="xinxuanchangRi != null "> and xinxuanchang_ri = #{xinxuanchangRi}</if>
+            <if test="xinxuanchangLeiji != null "> and xinxuanchang_leiji = #{xinxuanchangLeiji}</if>
+            <if test="tiexuanchangRi != null "> and tiexuanchang_ri = #{tiexuanchangRi}</if>
+            <if test="tiexuanchangLeiji != null "> and tiexuanchang_leiji = #{tiexuanchangLeiji}</if>
+            <if test="longxichangRi != null "> and longxichang_ri = #{longxichangRi}</if>
+            <if test="longxichangLeiji != null "> and longxichang_leiji = #{longxichangLeiji}</if>
+            <if test="fuxichangRi != null "> and fuxichang_ri = #{fuxichangRi}</if>
+            <if test="fuxichangLeiji != null "> and fuxichang_leiji = #{fuxichangLeiji}</if>
+            <if test="meiqigongsiRi != null "> and meiqigongsi_ri = #{meiqigongsiRi}</if>
+            <if test="meiqigongsiLeiji != null "> and meiqigongsi_leiji = #{meiqigongsiLeiji}</if>
+            <if test="ziyongRi != null "> and ziyong_ri = #{ziyongRi}</if>
+            <if test="ziyongLeiji != null "> and ziyong_leiji = #{ziyongLeiji}</if>
+            <if test="ganshidianchangRi != null "> and ganshidianchang_ri = #{ganshidianchangRi}</if>
+            <if test="ganshidianchangLeiji != null "> and ganshidianchang_leiji = #{ganshidianchangLeiji}</if>
+            <if test="huochangchuRi != null "> and huochangchu_ri = #{huochangchuRi}</if>
+            <if test="huochangchuLeiji != null "> and huochangchu_leiji = #{huochangchuLeiji}</if>
+            <if test="tiewaixiaoRi != null "> and tiewaixiao_ri = #{tiewaixiaoRi}</if>
+            <if test="tiewaixiaoLeiji != null "> and tiewaixiao_leiji = #{tiewaixiaoLeiji}</if>
+            <if test="qitaRi != null "> and qita_ri = #{qitaRi}</if>
+            <if test="qitaLeiji != null "> and qita_leiji = #{qitaLeiji}</if>
+            <if test="zonghejiRi != null "> and zongheji_ri = #{zonghejiRi}</if>
+            <if test="zonghejiLeiji != null "> and zongheji_leiji = #{zonghejiLeiji}</if>
+            <if test="riShengchan != null "> and ri_shengchan = #{riShengchan}</if>
+            <if test="riCha != null "> and ri_cha = #{riCha}</if>
+            <if test="leijiCha != null "> and leiji_cha = #{leijiCha}</if>
+            <if test="beizhu != null  and beizhu != ''"> and beizhu = #{beizhu}</if>
+        </where>
+    </select>
+
+    <select id="Alllist" parameterType="java.util.Date" resultMap="RawCoalWhereaboutsResult">
+        SELECT t1.area_name as danwei ,sum(t2.xichang_ri) as xichang_leiji ,sum(tiaoxianchang_ri) as tiaoxianchang_leiji,sum(xinxuanchang_ri) as xinxuanchang_leiji,
+               sum(tiexuanchang_ri) as tiexuanchang_leiji ,sum(longxichang_ri) as longxichang_leiji,sum(fuxichang_ri) as fuxichang_leiji,sum(meiqigongsi_ri) as meiqigongsi_leiji,
+               sum(ziyong_ri) as ziyong_leiji,sum(ganshidianchang_ri) as ganshidianchang_leiji,sum(huochangchu_ri)as huochangchu_leiji,sum(tiewaixiao_ri) as tiewaixiao_leiji,
+               sum(qita_ri) as qita_leiji,sum(zongheji_ri)as zongheji_leiji,sum(ri_shengchan) as ri_cha,sum(leiji_cha) as leiji_cha
+        from mining_area_category t1
+                 left JOIN raw_coal_whereabouts t2 on t2.danwei= t1.area_name  AND YEAR(t2.rq) = YEAR(#{statsDate}) AND MONTH(t2.rq) = MONTH(#{statsDate})
+                and t2.rq &lt;= #{statsDate}
+        where  t1.is_sealed =0 and t1.level=1 GROUP BY t1.area_name
+        ORDER BY t1.area_name;
+
+    </select>
+
+    <select id="selectRawCoalWhereaboutsById" parameterType="java.lang.String" resultMap="RawCoalWhereaboutsResult">
+        <include refid="selectRawCoalWhereaboutsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertRawCoalWhereabouts" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO raw_coal_whereabouts (
+        <trim prefix="" suffix="" suffixOverrides=",">
+            danwei,
+            rq,
+            xichang_ri,
+            xichang_leiji,
+            tiaoxianchang_ri,
+            tiaoxianchang_leiji,
+            xinxuanchang_ri,
+            xinxuanchang_leiji,
+            tiexuanchang_ri,
+            tiexuanchang_leiji,
+            longxichang_ri,
+            longxichang_leiji,
+            fuxichang_ri,
+            fuxichang_leiji,
+            meiqigongsi_ri,
+            meiqigongsi_leiji,
+            ziyong_ri,
+            ziyong_leiji,
+            ganshidianchang_ri,
+            ganshidianchang_leiji,
+            huochangchu_ri,
+            huochangchu_leiji,
+            tiewaixiao_ri,
+            tiewaixiao_leiji,
+            qita_ri,
+            qita_leiji,
+            zongheji_ri,
+            zongheji_leiji,
+            ri_shengchan,
+            ri_cha,
+            leiji_cha,
+            beizhu,
+            create_time,
+            update_time
+        </trim>
+        ) VALUES
+        <!-- 遍历集合，每个元素生成对应的值列表，确保与字段列表数量一致 -->
+        <foreach collection="list" item="item" separator=",">
+            (
+            <!-- 每个字段对应的值：有值则填值，无值则填null -->
+            <if test="item.danwei != null and item.danwei != ''">#{item.danwei},</if>
+            <if test="item.danwei == null or item.danwei == ''">null,</if>
+
+            <if test="item.rq != null">#{item.rq},</if>
+            <if test="item.rq == null">null,</if>
+
+            <if test="item.xichangRi != null">#{item.xichangRi},</if>
+            <if test="item.xichangRi == null">null,</if>
+
+            <if test="item.xichangLeiji != null">#{item.xichangLeiji},</if>
+            <if test="item.xichangLeiji == null">null,</if>
+
+            <if test="item.tiaoxianchangRi != null">#{item.tiaoxianchangRi},</if>
+            <if test="item.tiaoxianchangRi == null">null,</if>
+
+            <if test="item.tiaoxianchangLeiji != null">#{item.tiaoxianchangLeiji},</if>
+            <if test="item.tiaoxianchangLeiji == null">null,</if>
+
+            <if test="item.xinxuanchangRi != null">#{item.xinxuanchangRi},</if>
+            <if test="item.xinxuanchangRi == null">null,</if>
+
+            <if test="item.xinxuanchangLeiji != null">#{item.xinxuanchangLeiji},</if>
+            <if test="item.xinxuanchangLeiji == null">null,</if>
+
+            <if test="item.tiexuanchangRi != null">#{item.tiexuanchangRi},</if>
+            <if test="item.tiexuanchangRi == null">null,</if>
+
+            <if test="item.tiexuanchangLeiji != null">#{item.tiexuanchangLeiji},</if>
+            <if test="item.tiexuanchangLeiji == null">null,</if>
+
+            <if test="item.longxichangRi != null">#{item.longxichangRi},</if>
+            <if test="item.longxichangRi == null">null,</if>
+
+            <if test="item.longxichangLeiji != null">#{item.longxichangLeiji},</if>
+            <if test="item.longxichangLeiji == null">null,</if>
+
+            <if test="item.fuxichangRi != null">#{item.fuxichangRi},</if>
+            <if test="item.fuxichangRi == null">null,</if>
+
+            <if test="item.fuxichangLeiji != null">#{item.fuxichangLeiji},</if>
+            <if test="item.fuxichangLeiji == null">null,</if>
+
+            <if test="item.meiqigongsiRi != null">#{item.meiqigongsiRi},</if>
+            <if test="item.meiqigongsiRi == null">null,</if>
+
+            <if test="item.meiqigongsiLeiji != null">#{item.meiqigongsiLeiji},</if>
+            <if test="item.meiqigongsiLeiji == null">null,</if>
+
+            <if test="item.ziyongRi != null">#{item.ziyongRi},</if>
+            <if test="item.ziyongRi == null">null,</if>
+
+            <if test="item.ziyongLeiji != null">#{item.ziyongLeiji},</if>
+            <if test="item.ziyongLeiji == null">null,</if>
+
+            <if test="item.ganshidianchangRi != null">#{item.ganshidianchangRi},</if>
+            <if test="item.ganshidianchangRi == null">null,</if>
+
+            <if test="item.ganshidianchangLeiji != null">#{item.ganshidianchangLeiji},</if>
+            <if test="item.ganshidianchangLeiji == null">null,</if>
+
+            <if test="item.huochangchuRi != null">#{item.huochangchuRi},</if>
+            <if test="item.huochangchuRi == null">null,</if>
+
+            <if test="item.huochangchuLeiji != null">#{item.huochangchuLeiji},</if>
+            <if test="item.huochangchuLeiji == null">null,</if>
+
+            <if test="item.tiewaixiaoRi != null">#{item.tiewaixiaoRi},</if>
+            <if test="item.tiewaixiaoRi == null">null,</if>
+
+            <if test="item.tiewaixiaoLeiji != null">#{item.tiewaixiaoLeiji},</if>
+            <if test="item.tiewaixiaoLeiji == null">null,</if>
+
+            <if test="item.qitaRi != null">#{item.qitaRi},</if>
+            <if test="item.qitaRi == null">null,</if>
+
+            <if test="item.qitaLeiji != null">#{item.qitaLeiji},</if>
+            <if test="item.qitaLeiji == null">null,</if>
+
+            <if test="item.zonghejiRi != null">#{item.zonghejiRi},</if>
+            <if test="item.zonghejiRi == null">null,</if>
+
+            <if test="item.zonghejiLeiji != null">#{item.zonghejiLeiji},</if>
+            <if test="item.zonghejiLeiji == null">null,</if>
+
+            <if test="item.riShengchan != null">#{item.riShengchan},</if>
+            <if test="item.riShengchan == null">null,</if>
+
+            <if test="item.riCha != null">#{item.riCha},</if>
+            <if test="item.riCha == null">null,</if>
+
+            <if test="item.leijiCha != null">#{item.leijiCha},</if>
+            <if test="item.leijiCha == null">null,</if>
+
+            <if test="item.beizhu != null">#{item.beizhu},</if>
+            <if test="item.beizhu == null">null,</if>
+
+            <if test="item.createTime != null">#{item.createTime},</if>
+            <if test="item.createTime == null">null,</if>
+
+            <if test="item.updateTime != null">#{item.updateTime}</if>
+            <if test="item.updateTime == null">null</if>
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateRawCoalWhereabouts" parameterType="com.ruoyi.system.domain.RawCoalWhereabouts">
+        update raw_coal_whereabouts
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="danwei != null and danwei != ''">danwei = #{danwei},</if>
+            <if test="rq != null">rq = #{rq},</if>
+            <if test="xichangRi != null">xichang_ri = #{xichangRi},</if>
+            <if test="xichangLeiji != null">xichang_leiji = #{xichangLeiji},</if>
+            <if test="tiaoxianchangRi != null">tiaoxianchang_ri = #{tiaoxianchangRi},</if>
+            <if test="tiaoxianchangLeiji != null">tiaoxianchang_leiji = #{tiaoxianchangLeiji},</if>
+            <if test="xinxuanchangRi != null">xinxuanchang_ri = #{xinxuanchangRi},</if>
+            <if test="xinxuanchangLeiji != null">xinxuanchang_leiji = #{xinxuanchangLeiji},</if>
+            <if test="tiexuanchangRi != null">tiexuanchang_ri = #{tiexuanchangRi},</if>
+            <if test="tiexuanchangLeiji != null">tiexuanchang_leiji = #{tiexuanchangLeiji},</if>
+            <if test="longxichangRi != null">longxichang_ri = #{longxichangRi},</if>
+            <if test="longxichangLeiji != null">longxichang_leiji = #{longxichangLeiji},</if>
+            <if test="fuxichangRi != null">fuxichang_ri = #{fuxichangRi},</if>
+            <if test="fuxichangLeiji != null">fuxichang_leiji = #{fuxichangLeiji},</if>
+            <if test="meiqigongsiRi != null">meiqigongsi_ri = #{meiqigongsiRi},</if>
+            <if test="meiqigongsiLeiji != null">meiqigongsi_leiji = #{meiqigongsiLeiji},</if>
+            <if test="ziyongRi != null">ziyong_ri = #{ziyongRi},</if>
+            <if test="ziyongLeiji != null">ziyong_leiji = #{ziyongLeiji},</if>
+            <if test="ganshidianchangRi != null">ganshidianchang_ri = #{ganshidianchangRi},</if>
+            <if test="ganshidianchangLeiji != null">ganshidianchang_leiji = #{ganshidianchangLeiji},</if>
+            <if test="huochangchuRi != null">huochangchu_ri = #{huochangchuRi},</if>
+            <if test="huochangchuLeiji != null">huochangchu_leiji = #{huochangchuLeiji},</if>
+            <if test="tiewaixiaoRi != null">tiewaixiao_ri = #{tiewaixiaoRi},</if>
+            <if test="tiewaixiaoLeiji != null">tiewaixiao_leiji = #{tiewaixiaoLeiji},</if>
+            <if test="qitaRi != null">qita_ri = #{qitaRi},</if>
+            <if test="qitaLeiji != null">qita_leiji = #{qitaLeiji},</if>
+            <if test="zonghejiRi != null">zongheji_ri = #{zonghejiRi},</if>
+            <if test="zonghejiLeiji != null">zongheji_leiji = #{zonghejiLeiji},</if>
+            <if test="riShengchan != null">ri_shengchan = #{riShengchan},</if>
+            <if test="riCha != null">ri_cha = #{riCha},</if>
+            <if test="leijiCha != null">leiji_cha = #{leijiCha},</if>
+            <if test="beizhu != null">beizhu = #{beizhu},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRawCoalWhereaboutsById" parameterType="java.lang.String">
+        delete from raw_coal_whereabouts where id = #{id}
+    </delete>
+
+    <delete id="deleteRawCoalWhereaboutsByIds" parameterType="java.lang.String">
+        delete from raw_coal_whereabouts where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

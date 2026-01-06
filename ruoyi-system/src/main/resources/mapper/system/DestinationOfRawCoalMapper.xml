@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.DestinationOfRawCoalMapper">
+    
+    <resultMap type="com.ruoyi.system.domain.DestinationOfRawCoal" id="DestinationOfRawCoalResult">
+        <result property="id"    column="id"    />
+        <result property="recordDate"    column="record_date"    />
+        <result property="unitName"    column="unit_name"    />
+        <result property="salesVolume"    column="sales_volume"    />
+        <result property="railwayTransportVolume"    column="railway_transport_volume"    />
+        <result property="washPlantInbound"    column="wash_plant_inbound"    />
+        <result property="salesYardInbound"    column="sales_yard_inbound"    />
+        <result property="gasCompanySupply"    column="gas_company_supply"    />
+        <result property="selfUse"    column="self_use"    />
+        <result property="otherUse"    column="other_use"    />
+        <result property="inventory"    column="inventory"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="userId"    column="user_id"    />
+        <result property="isDeleted"    column="is_deleted"    />
+    </resultMap>
+
+    <sql id="selectDestinationOfRawCoalVo">
+        select id, record_date, unit_name, sales_volume, railway_transport_volume, wash_plant_inbound, sales_yard_inbound, gas_company_supply,
+               self_use, other_use, inventory, create_time, update_time, user_id, is_deleted from destination_of_raw_coal
+    </sql>
+
+    <select id="selectDestinationOfRawCoalList" parameterType="com.ruoyi.system.domain.DestinationOfRawCoal" resultMap="DestinationOfRawCoalResult">
+        <include refid="selectDestinationOfRawCoalVo"/>
+        <where>
+            <if test="recordDate != null "> and record_date = #{recordDate}</if>
+            <if test="unitName != null  and unitName != ''"> and unit_name like concat('%', #{unitName}, '%')</if>
+            <if test="salesVolume != null "> and sales_volume = #{salesVolume}</if>
+            <if test="railwayTransportVolume != null "> and railway_transport_volume = #{railwayTransportVolume}</if>
+            <if test="washPlantInbound != null "> and wash_plant_inbound = #{washPlantInbound}</if>
+            <if test="salesYardInbound != null "> and sales_yard_inbound = #{salesYardInbound}</if>
+            <if test="gasCompanySupply != null "> and gas_company_supply = #{gasCompanySupply}</if>
+            <if test="selfUse != null "> and self_use = #{selfUse}</if>
+            <if test="otherUse != null "> and other_use = #{otherUse}</if>
+            <if test="inventory != null "> and inventory = #{inventory}</if>
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+            <if test="isDeleted != null "> and is_deleted = #{isDeleted}</if>
+        </where>
+    </select>
+    
+    <select id="selectDestinationOfRawCoalById" parameterType="java.lang.Long" resultMap="DestinationOfRawCoalResult">
+        <include refid="selectDestinationOfRawCoalVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertDestinationOfRawCoal" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        insert into destination_of_raw_coal
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <!-- 字段部分不变，只要List中对象的字段一致即可 -->
+            <if test="list != null and list.size() > 0">
+                <if test="list[0].recordDate != null">record_date,</if>
+                <if test="list[0].unitName != null and list[0].unitName != ''">unit_name,</if>
+                <if test="list[0].salesVolume != null">sales_volume,</if>
+                <if test="list[0].railwayTransportVolume != null">railway_transport_volume,</if>
+                <if test="list[0].washPlantInbound != null">wash_plant_inbound,</if>
+                <if test="list[0].salesYardInbound != null">sales_yard_inbound,</if>
+                <if test="list[0].gasCompanySupply != null">gas_company_supply,</if>
+                <if test="list[0].selfUse != null">self_use,</if>
+                <if test="list[0].otherUse != null">other_use,</if>
+                <if test="list[0].inventory != null">inventory,</if>
+                <if test="list[0].createTime != null">create_time,</if>
+                <if test="list[0].updateTime != null">update_time,</if>
+                <if test="list[0].userId != null">user_id,</if>
+                <if test="list[0].isDeleted != null">is_deleted,</if>
+            </if>
+        </trim>
+        <trim prefix="values " suffixOverrides=",">
+            <!-- 用foreach遍历List，生成多组values -->
+            <foreach collection="list" item="item" separator=",">
+                <trim prefix="(" suffix=")" suffixOverrides=",">
+                    <if test="item.recordDate != null">#{item.recordDate},</if>
+                    <if test="item.unitName != null and item.unitName != ''">#{item.unitName},</if>
+                    <if test="item.salesVolume != null">#{item.salesVolume},</if>
+                    <if test="item.railwayTransportVolume != null">#{item.railwayTransportVolume},</if>
+                    <if test="item.washPlantInbound != null">#{item.washPlantInbound},</if>
+                    <if test="item.salesYardInbound != null">#{item.salesYardInbound},</if>
+                    <if test="item.gasCompanySupply != null">#{item.gasCompanySupply},</if>
+                    <if test="item.selfUse != null">#{item.selfUse},</if>
+                    <if test="item.otherUse != null">#{item.otherUse},</if>
+                    <if test="item.inventory != null">#{item.inventory},</if>
+                    <if test="item.createTime != null">#{item.createTime},</if>
+                    <if test="item.updateTime != null">#{item.updateTime},</if>
+                    <if test="item.userId != null">#{item.userId},</if>
+                    <if test="item.isDeleted != null">#{item.isDeleted},</if>
+                </trim>
+            </foreach>
+        </trim>
+    </insert>
+
+    <update id="updateDestinationOfRawCoal" parameterType="com.ruoyi.system.domain.DestinationOfRawCoal">
+        update destination_of_raw_coal
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="recordDate != null">record_date = #{recordDate},</if>
+            <if test="unitName != null and unitName != ''">unit_name = #{unitName},</if>
+            <if test="salesVolume != null">sales_volume = #{salesVolume},</if>
+            <if test="railwayTransportVolume != null">railway_transport_volume = #{railwayTransportVolume},</if>
+            <if test="washPlantInbound != null">wash_plant_inbound = #{washPlantInbound},</if>
+            <if test="salesYardInbound != null">sales_yard_inbound = #{salesYardInbound},</if>
+            <if test="gasCompanySupply != null">gas_company_supply = #{gasCompanySupply},</if>
+            <if test="selfUse != null">self_use = #{selfUse},</if>
+            <if test="otherUse != null">other_use = #{otherUse},</if>
+            <if test="inventory != null">inventory = #{inventory},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDestinationOfRawCoalById" parameterType="java.lang.Long">
+        delete from destination_of_raw_coal where id = #{id}
+    </delete>
+
+    <delete id="deleteDestinationOfRawCoalByIds" parameterType="java.lang.String">
+        delete from destination_of_raw_coal where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectDestinationOfRawCoalByMonth" parameterType="com.ruoyi.system.domain.DestinationOfRawCoal" resultMap="DestinationOfRawCoalResult">
+        select unit_name,sum(sales_volume) as sales_volume, sum(railway_transport_volume) as railway_transport_volume, sum(wash_plant_inbound) as wash_plant_inbound,
+               sum(sales_yard_inbound) as sales_yard_inbound, sum(gas_company_supply) as gas_company_supply, sum(self_use) as self_use, sum(other_use) as other_use,
+               sum(inventory) as inventory from destination_of_raw_coal
+        where is_deleted =0 and unit_name =#{unitName}
+                  and   YEAR(record_date)=YEAR(#{recordDate})  and MONTH(record_date)= MONTH(#{recordDate})
+        and record_date &lt;= #{recordDate}
+        GROUP BY YEAR(record_date),MONTH(record_date),unit_name
+    </select>
+</mapper>

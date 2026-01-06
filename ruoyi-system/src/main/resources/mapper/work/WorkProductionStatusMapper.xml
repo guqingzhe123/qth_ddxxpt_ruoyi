@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.work.WorkProductionStatusMapper">
+    
+    <resultMap type="com.ruoyi.system.domain.work.WorkProductionStatus" id="WorkProductionStatusResult">
+        <result property="id"    column="id"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="unit"    column="unit"    />
+        <result property="unitCode"    column="unit_code"    />
+        <result property="dailyPlan"    column="daily_plan"    />
+        <result property="dailyComplete"    column="daily_complete"    />
+        <result property="mailySales"    column="maily_sales"    />
+        <result property="monthlyPlanTotal"    column="monthly_plan_total"    />
+        <result property="monthlyCompleteTotal"    column="monthly_complete_total"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectWorkProductionStatusVo">
+        select id, parent_id, unit, unit_code, daily_plan, daily_complete, monthly_plan_total, maily_sales,
+               monthly_complete_total, create_time from work_production_status
+    </sql>
+
+    <select id="selectWorkProductionStatusList" parameterType="com.ruoyi.system.domain.work.WorkProductionStatus" resultMap="WorkProductionStatusResult">
+        <include refid="selectWorkProductionStatusVo"/>
+        <where>  
+            <if test="parentId != null  and parentId != ''"> and parent_id = #{parentId}</if>
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="mailySales != null  and mailySales != ''"> and maily_sales = #{mailySales}</if>
+            <if test="dailyPlan != null "> and daily_plan = #{dailyPlan}</if>
+            <if test="dailyComplete != null "> and daily_complete = #{dailyComplete}</if>
+            <if test="monthlyPlanTotal != null "> and monthly_plan_total = #{monthlyPlanTotal}</if>
+            <if test="monthlyCompleteTotal != null "> and monthly_complete_total = #{monthlyCompleteTotal}</if>
+        </where>
+    </select>
+    <select id="listWorkProductionStatusDay" parameterType="com.ruoyi.system.domain.work.WorkProductionDailyReport" resultMap="WorkProductionStatusResult">
+        SELECT sum(t2.maily_sales) as maily_sales from work_production_daily_report t1 LEFT JOIN work_production_status t2 on t2.parent_id=t1.id
+        <where>
+            <if test="unit != null and unit != ''"> and t1.unit = #{unit}</if>
+            <if test="reportDate != null"> and t1.report_date = #{reportDate}</if>
+        </where>
+    </select>
+
+    <select id="selectWorkProductionStatusById" parameterType="java.lang.String" resultMap="WorkProductionStatusResult">
+        <include refid="selectWorkProductionStatusVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWorkProductionStatus" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        insert into work_production_status (
+        parent_id, unit, unit_code, daily_plan, daily_complete,
+        maily_sales, monthly_plan_total, monthly_complete_total, create_time
+        )
+        values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.parentId,jdbcType=VARCHAR},
+            #{item.unit,jdbcType=VARCHAR},
+            #{item.unitCode,jdbcType=VARCHAR},
+            #{item.dailyPlan,jdbcType=DECIMAL},
+            #{item.dailyComplete,jdbcType=DECIMAL},
+            #{item.mailySales,jdbcType=DECIMAL},
+            #{item.monthlyPlanTotal,jdbcType=DECIMAL},
+            #{item.monthlyCompleteTotal,jdbcType=DECIMAL},
+            #{item.createTime,jdbcType=TIMESTAMP}
+            )
+        </foreach>
+    </insert>
+
+
+    <update id="updateWorkProductionStatus" parameterType="com.ruoyi.system.domain.work.WorkProductionStatus">
+        update work_production_status
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentId != null and parentId != ''">parent_id = #{parentId},</if>
+            <if test="unit != null and unit != ''">unit = #{unit},</if>
+            <if test="unitCode != null and unitCode != ''">unit_code = #{unitCode},</if>
+            <if test="dailyPlan != null">daily_plan = #{dailyPlan},</if>
+            <if test="dailyComplete != null">daily_complete = #{dailyComplete},</if>
+            <if test="mailySales != null">maily_sales =#{mailySales},</if>
+            <if test="monthlyPlanTotal != null">monthly_plan_total = #{monthlyPlanTotal},</if>
+            <if test="monthlyCompleteTotal != null">monthly_complete_total = #{monthlyCompleteTotal},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateWorkProductionStatusList" parameterType="java.util.List">
+        <foreach collection="list" item="item" separator=";">
+            update work_production_status
+            <trim prefix="SET" suffixOverrides=",">
+                <if test="item.parentId != null and item.parentId != ''">parent_id = #{item.parentId},</if>
+                <if test="item.unit != null and item.unit != ''">unit = #{item.unit},</if>
+                <if test="item.unitCode != null and item.unitCode != ''">unit_code = #{item.unitCode},</if>
+                <if test="item.dailyPlan != null">daily_plan = #{item.dailyPlan},</if>
+                <if test="item.mailySales != null">maily_sales =#{item.mailySales},</if>
+                <if test="item.dailyComplete != null">daily_complete = #{item.dailyComplete},</if>
+                <if test="item.monthlyPlanTotal != null">monthly_plan_total = #{item.monthlyPlanTotal},</if>
+                <if test="item.monthlyCompleteTotal != null">monthly_complete_total = #{item.monthlyCompleteTotal},</if>
+                <if test="item.createTime != null">create_time = #{item.createTime},</if>
+            </trim>
+            where id = #{item.id}
+        </foreach>
+    </update>
+
+    <delete id="deleteWorkProductionStatusById" parameterType="java.lang.String">
+        delete from work_production_status where id = #{id}
+    </delete>
+
+    <delete id="deleteWorkProductionStatusByIds" parameterType="java.lang.String">
+        delete from work_production_status where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

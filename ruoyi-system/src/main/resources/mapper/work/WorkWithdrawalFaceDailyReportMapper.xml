@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.work.WorkWithdrawalFaceDailyReportMapper">
+    
+    <resultMap type="com.ruoyi.system.domain.work.WorkWithdrawalFaceDailyReport" id="WorkWithdrawalFaceDailyReportResult">
+        <result property="id"    column="id"    />
+        <result property="unit"    column="unit"    />
+        <result property="unitCode"    column="unit_code"    />
+        <result property="teamNo"    column="team_no"    />
+        <result property="reportDate"    column="report_date"    />
+        <result property="miningTechnology"    column="mining_technology"    />
+        <result property="installationLocation"    column="installation_location"    />
+        <result property="faceYard"    column="face_yard"    />
+        <result property="plannedSupportQty"    column="planned_support_qty"    />
+        <result property="plannedChuteQty"    column="planned_chute_qty"    />
+        <result property="onePlannedSupportQty"    column="one_planned_support_qty"    />
+        <result property="twoPlannedSupportQty"    column="two_planned_support_qty"    />
+        <result property="threePlannedSupportQty"    column="three_planned_support_qty"    />
+        <result property="onePlannedChuteQty"    column="one_planned_chute_qty"    />
+        <result property="twoPlannedChuteQty"    column="two_planned_chute_qty"    />
+        <result property="threePlannedChuteQty"    column="three_planned_chute_qty"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectWorkWithdrawalFaceDailyReportVo">
+        select id, unit, unit_code, team_no, mining_technology, installation_location, face_yard, planned_support_qty, planned_chute_qty,
+               one_planned_support_qty, two_planned_support_qty, three_planned_support_qty, one_planned_chute_qty, two_planned_chute_qty,
+               three_planned_chute_qty, remarks, status, create_time,report_date from work_withdrawal_face_daily_report
+    </sql>
+
+    <select id="selectWorkWithdrawalFaceDailyReportList" parameterType="com.ruoyi.system.domain.work.WorkWithdrawalFaceDailyReport" resultMap="WorkWithdrawalFaceDailyReportResult">
+        <include refid="selectWorkWithdrawalFaceDailyReportVo"/>
+        <where>  
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="unitCode != null  and unitCode != ''"> and unit_code = #{unitCode}</if>
+            <if test="teamNo != null  and teamNo != ''"> and team_no = #{teamNo}</if>
+            <if test="reportDate != null "> and report_date = #{reportDate}</if>
+            <if test="miningTechnology != null  and miningTechnology != ''"> and mining_technology = #{miningTechnology}</if>
+            <if test="installationLocation != null  and installationLocation != ''"> and installation_location = #{installationLocation}</if>
+            <if test="faceYard != null  and faceYard != ''"> and face_yard = #{faceYard}</if>
+            <if test="plannedSupportQty != null  and plannedSupportQty != ''"> and planned_support_qty = #{plannedSupportQty}</if>
+            <if test="plannedChuteQty != null  and plannedChuteQty != ''"> and planned_chute_qty = #{plannedChuteQty}</if>
+            <if test="onePlannedSupportQty != null  and onePlannedSupportQty != ''"> and one_planned_support_qty = #{onePlannedSupportQty}</if>
+            <if test="twoPlannedSupportQty != null  and twoPlannedSupportQty != ''"> and two_planned_support_qty = #{twoPlannedSupportQty}</if>
+            <if test="threePlannedSupportQty != null  and threePlannedSupportQty != ''"> and three_planned_support_qty = #{threePlannedSupportQty}</if>
+            <if test="onePlannedChuteQty != null  and onePlannedChuteQty != ''"> and one_planned_chute_qty = #{onePlannedChuteQty}</if>
+            <if test="twoPlannedChuteQty != null  and twoPlannedChuteQty != ''"> and two_planned_chute_qty = #{twoPlannedChuteQty}</if>
+            <if test="threePlannedChuteQty != null  and threePlannedChuteQty != ''"> and three_planned_chute_qty = #{threePlannedChuteQty}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+
+        order by unit_code asc
+    </select>
+    
+    <select id="selectWorkWithdrawalFaceDailyReportById" parameterType="java.lang.String" resultMap="WorkWithdrawalFaceDailyReportResult">
+        <include refid="selectWorkWithdrawalFaceDailyReportVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWorkWithdrawalFaceDailyReport" parameterType="com.ruoyi.system.domain.work.WorkWithdrawalFaceDailyReport" useGeneratedKeys="true" keyProperty="id">
+        insert into work_withdrawal_face_daily_report
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="unit != null and unit != ''">unit,</if>
+            <if test="unitCode != null and unitCode != ''">unit_code,</if>
+            <if test="teamNo != null and teamNo != ''">team_no,</if>
+            <if test="reportDate != null ">  report_date,</if>
+            <if test="miningTechnology != null and miningTechnology != ''">mining_technology,</if>
+            <if test="installationLocation != null and installationLocation != ''">installation_location,</if>
+            <if test="faceYard != null and faceYard != ''">face_yard,</if>
+            <if test="plannedSupportQty != null and plannedSupportQty != ''">planned_support_qty,</if>
+            <if test="plannedChuteQty != null and plannedChuteQty != ''">planned_chute_qty,</if>
+            <if test="onePlannedSupportQty != null and onePlannedSupportQty != ''">one_planned_support_qty,</if>
+            <if test="twoPlannedSupportQty != null and twoPlannedSupportQty != ''">two_planned_support_qty,</if>
+            <if test="threePlannedSupportQty != null and threePlannedSupportQty != ''">three_planned_support_qty,</if>
+            <if test="onePlannedChuteQty != null and onePlannedChuteQty != ''">one_planned_chute_qty,</if>
+            <if test="twoPlannedChuteQty != null and twoPlannedChuteQty != ''">two_planned_chute_qty,</if>
+            <if test="threePlannedChuteQty != null and threePlannedChuteQty != ''">three_planned_chute_qty,</if>
+            <if test="remarks != null and remarks != ''">remarks,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="unit != null and unit != ''">#{unit},</if>
+            <if test="unitCode != null and unitCode != ''">#{unitCode},</if>
+            <if test="teamNo != null and teamNo != ''">#{teamNo},</if>
+            <if test="reportDate != null ">#{reportDate},</if>
+            <if test="miningTechnology != null and miningTechnology != ''">#{miningTechnology},</if>
+            <if test="installationLocation != null and installationLocation != ''">#{installationLocation},</if>
+            <if test="faceYard != null and faceYard != ''">#{faceYard},</if>
+            <if test="plannedSupportQty != null and plannedSupportQty != ''">#{plannedSupportQty},</if>
+            <if test="plannedChuteQty != null and plannedChuteQty != ''">#{plannedChuteQty},</if>
+            <if test="onePlannedSupportQty != null and onePlannedSupportQty != ''">#{onePlannedSupportQty},</if>
+            <if test="twoPlannedSupportQty != null and twoPlannedSupportQty != ''">#{twoPlannedSupportQty},</if>
+            <if test="threePlannedSupportQty != null and threePlannedSupportQty != ''">#{threePlannedSupportQty},</if>
+            <if test="onePlannedChuteQty != null and onePlannedChuteQty != ''">#{onePlannedChuteQty},</if>
+            <if test="twoPlannedChuteQty != null and twoPlannedChuteQty != ''">#{twoPlannedChuteQty},</if>
+            <if test="threePlannedChuteQty != null and threePlannedChuteQty != ''">#{threePlannedChuteQty},</if>
+            <if test="remarks != null and remarks != ''">#{remarks},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWorkWithdrawalFaceDailyReport" parameterType="com.ruoyi.system.domain.work.WorkWithdrawalFaceDailyReport">
+        update work_withdrawal_face_daily_report
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="unit != null and unit != ''">unit = #{unit},</if>
+            <if test="unitCode != null and unitCode != ''">unit_code = #{unitCode},</if>
+            <if test="teamNo != null and teamNo != ''">team_no = #{teamNo},</if>
+            <if test="reportDate != null">report_date = #{reportDate},</if>
+            <if test="miningTechnology != null and miningTechnology != ''">mining_technology = #{miningTechnology},</if>
+            <if test="installationLocation != null and installationLocation != ''">installation_location = #{installationLocation},</if>
+            <if test="faceYard != null and faceYard != ''">face_yard = #{faceYard},</if>
+            <if test="plannedSupportQty != null and plannedSupportQty != ''">planned_support_qty = #{plannedSupportQty},</if>
+            <if test="plannedChuteQty != null and plannedChuteQty != ''">planned_chute_qty = #{plannedChuteQty},</if>
+            <if test="onePlannedSupportQty != null and onePlannedSupportQty != ''">one_planned_support_qty = #{onePlannedSupportQty},</if>
+            <if test="twoPlannedSupportQty != null and twoPlannedSupportQty != ''">two_planned_support_qty = #{twoPlannedSupportQty},</if>
+            <if test="threePlannedSupportQty != null and threePlannedSupportQty != ''">three_planned_support_qty = #{threePlannedSupportQty},</if>
+            <if test="onePlannedChuteQty != null and onePlannedChuteQty != ''">one_planned_chute_qty = #{onePlannedChuteQty},</if>
+            <if test="twoPlannedChuteQty != null and twoPlannedChuteQty != ''">two_planned_chute_qty = #{twoPlannedChuteQty},</if>
+            <if test="threePlannedChuteQty != null and threePlannedChuteQty != ''">three_planned_chute_qty = #{threePlannedChuteQty},</if>
+            <if test="remarks != null and remarks != ''">remarks = #{remarks},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWorkWithdrawalFaceDailyReportById" parameterType="java.lang.String">
+        delete from work_withdrawal_face_daily_report where id = #{id}
+    </delete>
+
+    <delete id="deleteWorkWithdrawalFaceDailyReportByIds" parameterType="java.lang.String">
+        delete from work_withdrawal_face_daily_report where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

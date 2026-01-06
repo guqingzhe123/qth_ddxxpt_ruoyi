@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BaoBiao.CoalPlantStorageMapper">
+
+    <resultMap id="MainMap" type="com.ruoyi.system.domain.BaoBiao.po.CoalPlantStoragePO">
+        <id     column="id"            property="id"/>
+        <result column="unit_name"     property="unitName"/>
+        <result column="record_time"   property="recordTime"/>
+        <result column="create_time"   property="createTime"/>
+        <result column="update_time"   property="updateTime"/>
+        <result column="user_id"       property="userId"/>
+        <result column="is_deleted"    property="isDeleted"/>
+        <result column="mine_category" property="mineCategory"/>
+    </resultMap>
+
+    <sql id="BaseCols">
+        id, unit_name, record_time, create_time, update_time, user_id, is_deleted, mine_category
+    </sql>
+
+    <insert id="insert" parameterType="com.ruoyi.system.domain.BaoBiao.po.CoalPlantStoragePO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO coal_plant_storage (unit_name, record_time, user_id, is_deleted, mine_category)
+        VALUES (#{unitName}, #{recordTime}, #{userId}, 0, #{mineCategory})
+    </insert>
+
+    <update id="update" parameterType="com.ruoyi.system.domain.BaoBiao.po.CoalPlantStoragePO">
+        UPDATE coal_plant_storage
+        SET unit_name = #{unitName},
+            record_time = #{recordTime},
+            user_id = #{userId},
+            mine_category = #{mineCategory}
+        WHERE id = #{id} AND is_deleted = 0
+    </update>
+
+    <update id="softDeleteById">
+        UPDATE coal_plant_storage SET is_deleted = 1 WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultMap="MainMap">
+        SELECT <include refid="BaseCols"/>
+        FROM coal_plant_storage
+        WHERE id = #{id} AND is_deleted = 0
+        LIMIT 1
+    </select>
+
+    <!-- 主表分页 + 子表EXISTS筛选；排序按时间/ID降序 -->
+    <select id="selectList" parameterType="map" resultMap="MainMap">
+        SELECT <include refid="BaseCols"/>
+        FROM coal_plant_storage m
+        <where>
+            <if test="isDeleted != null">AND m.is_deleted = #{isDeleted}</if>
+            <if test="isDeleted == null">AND m.is_deleted = 0</if>
+<!--&#45;&#45;             <if test="unitName != null and unitName != ''">AND m.unit_name LIKE CONCAT('%', #{unitName}, '%')</if>-->
+            <if test="unitName != null and unitName != ''">AND m.unit_name =#{unitName}</if>
+            <if test="userId != null and userId != ''">AND m.user_id = #{userId}</if>
+            <if test="mineCategory != null and mineCategory != ''">AND m.mine_category = #{mineCategory}</if>
+<!--            <if test="recordTimeFrom != null">AND m.record_time &gt;= #{recordTimeFrom}</if>-->
+<!--            <if test="recordTimeTo != null">AND m.record_time &lt;= #{recordTimeTo}</if>-->
+            <if test="recordDate != null">AND m.record_time = #{recordDate}</if>
+
+<!--            <if test="recordDate != null or recordDateFrom != null or recordDateTo != null">-->
+<!--                AND EXISTS (-->
+<!--                SELECT 1 FROM sub_coal_plant_storage s-->
+<!--                WHERE s.coal_plant_storageID = m.id-->
+<!--                <if test="recordDate != null">AND s.record_date = #{recordDate}</if>-->
+<!--                <if test="recordDateFrom != null">AND s.record_date &gt;= #{recordDateFrom}</if>-->
+<!--                <if test="recordDateTo != null">AND s.record_date &lt;= #{recordDateTo}</if>-->
+<!--                )-->
+<!--            </if>-->
+        </where>
+        ORDER BY m.record_time DESC, m.id DESC
+    </select>
+
+</mapper>

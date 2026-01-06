@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WebRTC 一对一视频通话（REST 信令版）</title>
+  <style>
+    :root{--bg:#0f1115;--panel:#151923;--muted:#8892a6;--text:#e6edf3;--accent:#7aa2f7;--ok:#2ea043;--warn:#f0a020;--err:#ff6b6b;--border:#283040}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,"PingFang SC","Microsoft YaHei",sans-serif}
+    header{display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding:12px 14px;border-bottom:1px solid var(--border);background:#111623}
+    .pill{display:flex;gap:6px;align-items:center;background:#0e1420;border:1px solid var(--border);padding:8px 10px;border-radius:12px}
+    .pill label{font-size:12px;color:var(--muted)} .pill input{background:transparent;border:none;outline:none;color:var(--text);width:120px}
+    .btn{cursor:pointer;border:1px solid var(--border);background:#0e1420;color:var(--text);padding:8px 12px;border-radius:10px}
+    .btn:hover{border-color:#3a445a} .btn-primary{background:var(--accent);border-color:transparent;color:#0b1220}
+    .wrap{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;padding:16px}
+    .panel{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:12px}
+    .panel h2{margin:6px 0 10px;font-size:15px;color:var(--muted)}
+    .videos{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    video{width:100%;background:#000;border-radius:10px;border:1px solid var(--border)}
+    .status{font-size:12px;color:var(--muted)} .status b{color:#cdd9e5}
+    .ok{color:var(--ok)} .warn{color:var(--warn)} .err{color:var(--err)}
+    .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace; font-size:12px;color:#9fb0c6}
+    @media (max-width: 1024px){ .wrap{grid-template-columns:1fr} .videos{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+<header>
+  <div class="pill"><label>当前用户</label><input id="me" value="alice"/></div>
+  <div class="pill"><label>对方用户</label><input id="peer" value="bob"/></div>
+  <button id="apply" class="btn">应用</button>
+  <button id="swap" class="btn">互换</button>
+  <span class="mono" id="roomShow"></span>
+
+  <button id="btnOpen" class="btn">打开摄像头麦克风</button>
+  <button id="btnCall" class="btn btn-primary">发起呼叫</button>
+  <button id="btnHangup" class="btn">挂断</button>
+
+  <span class="status">设备：<b id="mediaState">未开启</b> ｜ 连接：<b id="connState">未连接</b></span>
+</header>
+
+<main class="wrap">
+  <section class="panel">
+    <h2>视频</h2>
+    <div class="videos">
+      <div>
+        <div class="status">本地 Local</div>
+        <video id="local" autoplay playsinline muted></video>
+      </div>
+      <div>
+        <div class="status">远端 Remote</div>
+        <video id="remote" autoplay playsinline></video>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>日志</h2>
+    <pre id="log" class="mono" style="height:420px;overflow:auto;margin:0"></pre>
+    <div class="status warn" style="margin-top:8px">
+      提示：WebRTC 采集要求安全上下文（HTTPS）或 <code>localhost</code>。若在局域网 IP 打开，请使用 HTTPS 或把页面放到本机 <code>http://localhost</code> 下访问。
+    </div>
+    <div class="status" style="margin-top:6px">
+      STUN/TURN：默认仅使用 Google STUN。若内网/NAT 失败，请配置自己的 TURN 并替换脚本中的 <code>ICE_SERVERS</code>。
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  // ======== 配置区域（按需修改） ========
+  // 后端 REST 信令接口（已按你的后端规划好前缀）
+  const API = {
+    OFFER:  '/dev-api/system/rtc/offer',
+    ANSWER: '/dev-api/system/rtc/answer',
+    ICE:    '/dev-api/system/rtc/ice',
+    POLL:   '/dev-api/system/rtc/poll',
+    HANGUP: '/dev-api/system/rtc/hangup',
+    PING:   '/dev-api/system/rtc/ping'
+  };
+  // ICE 服务器：先用 Google STUN；如需 TURN，把下行替换为自己的。
+  const ICE_SERVERS = [
+    { urls: 'stun:stun.l.google.com:19302' }
+    // { urls:'turn:你的公网IP:3478', username:'turnuser', credential:'turnpass' }
+  ];
+  const POLL_INTERVAL = 1500; // 1.5秒轮询一次信令
+
+  // ======== DOM 缓存 ========
+  const els = {
+    me: document.getElementById('me'),
+    peer: document.getElementById('peer'),
+    apply: document.getElementById('apply'),
+    swap: document.getElementById('swap'),
+    roomShow: document.getElementById('roomShow'),
+    local: document.getElementById('local'),
+    remote: document.getElementById('remote'),
+    btnOpen: document.getElementById('btnOpen'),
+    btnCall: document.getElementById('btnCall'),
+    btnHangup: document.getElementById('btnHangup'),
+    mediaState: document.getElementById('mediaState'),
+    connState: document.getElementById('connState'),
+    log: document.getElementById('log')
+  };
+
+  // ======== 状态 ========
+  let state = {
+    me: 'alice',
+    peer: 'bob',
+    roomId: '',
+    lastId: 0,
+    timer: null,
+    pc: null,
+    localStream: null,
+    remoteStream: null,
+    makingOffer: false
+  };
+
+  // ======== 工具 ========
+  function roomOf(a,b){ const x=(a||'')+'';const y=(b||'')+'';return 'u:'+(x.localeCompare(y)<=0?(x+'_'+y):(y+'_'+x)); }
+  function log(...args){ const s=args.map(v=> (typeof v==='string'? v: JSON.stringify(v)) ).join(' '); els.log.textContent += s + '\\n'; els.log.scrollTop = els.log.scrollHeight + 9999; }
+  function setMediaState(txt, cls){ els.mediaState.textContent=txt; els.mediaState.className=cls||''; }
+  function setConnState(txt, cls){ els.connState.textContent=txt; els.connState.className=cls||''; }
+  function authHeaders(){ const t=localStorage.getItem('ruoyi_token'); return t? {'Authorization': t}: {}; }
+  function fullUrl(path){ return path.startsWith('http')? path : (location.origin + path); }
+
+  function applyUsers(a,b){
+    state.me=(a||'').trim()||'alice';
+    state.peer=(b||'').trim()||'bob';
+    state.roomId=roomOf(state.me,state.peer);
+    els.roomShow.textContent='roomId = '+state.roomId;
+    localStorage.setItem('webrtc_me', state.me);
+    localStorage.setItem('webrtc_peer', state.peer);
+    state.lastId = 0;
+    startPolling();
+    log('[APPLY]', state.me, '↔', state.peer, 'room:', state.roomId);
+  }
+
+  function swap(){ const a=els.me.value; els.me.value=els.peer.value; els.peer.value=a; applyUsers(els.me.value, els.peer.value); }
+
+  // ======== 媒体与 PeerConnection ========
+  async function openMedia(){
+    try{
+      if(state.localStream){ setMediaState('已开启', 'ok'); return; }
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      state.localStream = stream;
+      els.local.srcObject = stream;
+      setMediaState('已开启', 'ok');
+      log('[MEDIA] got stream');
+    }catch(e){
+      setMediaState('失败', 'err');
+      log('[MEDIA] error', e.message);
+      alert('无法获取摄像头/麦克风：' + e.message);
+    }
+  }
+
+  function ensurePC(){
+    if(state.pc) return state.pc;
+    const pc = new RTCPeerConnection({ iceServers: ICE_SERVERS });
+    state.pc = pc;
+    setConnState('新建中', 'warn');
+
+    // 本地轨道
+    if(state.localStream){
+      for(const track of state.localStream.getTracks()){
+        pc.addTrack(track, state.localStream);
+      }
+    }
+
+    // 远端轨道
+    state.remoteStream = new MediaStream();
+    els.remote.srcObject = state.remoteStream;
+    pc.ontrack = (ev)=>{
+      for(const track of ev.streams[0].getTracks()){
+        state.remoteStream.addTrack(track);
+      }
+      log('[PC] got remote track');
+    };
+
+    // ICE回调
+    pc.onicecandidate = (ev)=>{
+      if(ev.candidate){
+        post(API.ICE, {
+          roomId: state.roomId,
+          from: state.me, to: state.peer,
+          candidate: ev.candidate.candidate,
+          sdpMid: ev.candidate.sdpMid,
+          sdpMLineIndex: ev.candidate.sdpMLineIndex
+        });
+      }
+    };
+
+    pc.onconnectionstatechange = ()=>{
+      const st = pc.connectionState;
+      const map = { 'connected':'ok', 'completed':'ok', 'failed':'err', 'disconnected':'warn', 'connecting':'warn' };
+      setConnState(st, map[st]||'');
+      log('[PC] state =', st);
+    };
+
+    return pc;
+  }
+
+  async function call(){
+    await openMedia();
+    const pc = ensurePC();
+    try{
+      state.makingOffer = true;
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+      log('[CALL] create & send offer');
+      await post(API.OFFER, { roomId: state.roomId, from: state.me, to: state.peer, sdp: offer.sdp });
+    }catch(e){
+      log('[CALL] error', e.message);
+      alert('发起呼叫失败：'+e.message);
+    }finally{
+      state.makingOffer = false;
+    }
+  }
+
+  async function handleOffer(msg){
+    await openMedia();
+    const pc = ensurePC();
+    try{
+      await pc.setRemoteDescription({ type:'offer', sdp: msg.sdp });
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+      log('[ANSWER] send answer');
+      await post(API.ANSWER, { roomId: state.roomId, from: state.me, to: state.peer, sdp: answer.sdp });
+    }catch(e){
+      log('[ANSWER] error', e.message);
+    }
+  }
+
+  async function handleAnswer(msg){
+    const pc = ensurePC();
+    if(!pc.currentRemoteDescription){
+      try{
+        await pc.setRemoteDescription({ type:'answer', sdp: msg.sdp });
+        log('[PC] remote answer set');
+      }catch(e){ log('[PC] setRemoteDescription(answer) error', e.message); }
+    }
+  }
+
+  async function handleIce(msg){
+    try{
+      const pc = ensurePC();
+      const ice = new RTCIceCandidate({
+        candidate: msg.candidate,
+        sdpMid: msg.sdpMid,
+        sdpMLineIndex: msg.sdpMLineIndex
+      });
+      await pc.addIceCandidate(ice);
+    }catch(e){ log('[PC] addIceCandidate error', e.message); }
+  }
+
+  function hangupLocal(){
+    if(state.pc){
+      state.pc.close();
+      state.pc=null;
+    }
+    setConnState('未连接', '');
+  }
+
+  async function hangup(){
+    hangupLocal();
+    await post(API.HANGUP, { roomId: state.roomId, from: state.me, to: state.peer });
+  }
+
+  // ======== 轮询信令 ========
+  function startPolling(){
+    if(state.timer) clearInterval(state.timer);
+    state.timer = setInterval(poll, POLL_INTERVAL);
+    poll();
+  }
+  async function poll(){
+    try{
+      const url = `${API.POLL}?roomId=${encodeURIComponent(state.roomId)}&userId=${encodeURIComponent(state.me)}&lastId=${state.lastId||0}`;
+      const res = await fetch(fullUrl(url), { headers: authHeaders() });
+      if(!res.ok){ return; }
+      const list = await res.json(); // [{id,type,from,to,sdp,candidate,...}]
+      if(!Array.isArray(list) || list.length===0) return;
+      for(const m of list){
+        state.lastId = Math.max(state.lastId||0, m.id||0);
+        if(m.type==='offer' && m.from!==state.me){ await handleOffer(m); }
+        else if(m.type==='answer' && m.from!==state.me){ await handleAnswer(m); }
+        else if(m.type==='ice' && m.from!==state.me){ await handleIce(m); }
+        else if(m.type==='hangup'){ hangupLocal(); }
+      }
+    }catch(e){ /* ignore */ }
+  }
+
+  // ======== HTTP 工具 ========
+  async function post(path, body){
+    const res = await fetch(fullUrl(path), {
+      method:'POST',
+      headers: { 'Content-Type':'application/json', ...authHeaders() },
+      body: JSON.stringify(body)
+    });
+    if(!res.ok){
+      const t = await res.text().catch(()=>String(res.status));
+      log('[HTTP] POST', path, '=>', res.status, t);
+      throw new Error(t||('HTTP '+res.status));
+    }
+    return res.json().catch(()=>({}));
+  }
+
+  // ======== 事件绑定 ========
+  els.apply.onclick = ()=> applyUsers(els.me.value, els.peer.value);
+  els.swap.onclick = ()=> swap();
+  els.btnOpen.onclick = openMedia;
+  els.btnCall.onclick = call;
+  els.btnHangup.onclick = hangup;
+
+  // ======== 初始化 ========
+  (function init(){
+    const me0 = localStorage.getItem('webrtc_me'); if(me0) els.me.value=me0;
+    const peer0 = localStorage.getItem('webrtc_peer'); if(peer0) els.peer.value=peer0;
+    // 允许直接以 ?me=&peer= 方式传参
+    const usp = new URLSearchParams(location.search);
+    if(usp.get('me')) els.me.value = usp.get('me');
+    if(usp.get('peer')) els.peer.value = usp.get('peer');
+    applyUsers(els.me.value, els.peer.value);
+  })();
+})();
+</script>
+</body>
+</html>

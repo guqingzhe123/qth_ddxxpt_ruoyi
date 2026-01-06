@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.work.WorkRoadwayRepairFaceDailyReportMapper">
+
+    <resultMap type="com.ruoyi.system.domain.work.WorkRoadwayRepairFaceDailyReport" id="WorkRoadwayRepairFaceDailyReportResult">
+        <result property="id"    column="id"    />
+        <result property="unit"    column="unit"    />
+        <result property="unitCode"    column="unit_code"    />
+        <result property="reportDate"    column="report_date"    />
+        <result property="section"    column="section"    />
+        <result property="plannedProject"    column="planned_project"    />
+        <result property="workLocation"    column="work_location"    />
+        <result property="shipmentMethod"    column="shipment_method"    />
+        <result property="completedWork"    column="completed_work"    />
+        <result property="reportingDate"    column="reporting_date"    />
+        <result property="oneAttendance"    column="one_attendance"    />
+        <result property="twoAttendance"    column="two_attendance"    />
+        <result property="threeAttendance"    column="three_attendance"    />
+        <result property="oneWorkload"    column="one_workload"    />
+        <result property="twoWorkload"    column="two_workload"    />
+        <result property="threeWorkload"    column="three_workload"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectWorkRoadwayRepairFaceDailyReportVo">
+        select id, unit, unit_code, section, planned_project, work_location, shipment_method, completed_work, one_attendance,
+            two_attendance, three_attendance, one_workload, two_workload, three_workload, status, create_time,report_date
+        from work_roadway_repair_face_daily_report
+    </sql>
+
+    <select id="selectWorkRoadwayRepairFaceDailyReportList" parameterType="com.ruoyi.system.domain.work.WorkRoadwayRepairFaceDailyReport" resultMap="WorkRoadwayRepairFaceDailyReportResult">
+        <include refid="selectWorkRoadwayRepairFaceDailyReportVo"/>
+        <where>
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="unitCode != null  and unitCode != ''"> and unit_code = #{unitCode}</if>
+            <if test="section != null "> and section = #{section}</if>
+            <if test="reportDate != null "> and report_date = #{reportDate}</if>
+            <if test="plannedProject != null  and plannedProject != ''"> and planned_project = #{plannedProject}</if>
+            <if test="workLocation != null  and workLocation != ''"> and work_location = #{workLocation}</if>
+            <if test="shipmentMethod != null  and shipmentMethod != ''"> and shipment_method = #{shipmentMethod}</if>
+            <if test="completedWork != null "> and completed_work = #{completedWork}</if>
+            <if test="oneAttendance != null "> and one_attendance = #{oneAttendance}</if>
+            <if test="twoAttendance != null "> and two_attendance = #{twoAttendance}</if>
+            <if test="threeAttendance != null "> and three_attendance = #{threeAttendance}</if>
+            <if test="oneWorkload != null  and oneWorkload != ''"> and one_workload = #{oneWorkload}</if>
+            <if test="twoWorkload != null  and twoWorkload != ''"> and two_workload = #{twoWorkload}</if>
+            <if test="threeWorkload != null  and threeWorkload != ''"> and three_workload = #{threeWorkload}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+        order by unit_code asc
+    </select>
+
+    <select id="selectWorkRoadwayRepairFaceDailyReportById" parameterType="java.lang.Integer" resultMap="WorkRoadwayRepairFaceDailyReportResult">
+        <include refid="selectWorkRoadwayRepairFaceDailyReportVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWorkRoadwayRepairFaceDailyReport" parameterType="com.ruoyi.system.domain.work.WorkRoadwayRepairFaceDailyReport" useGeneratedKeys="true" keyProperty="id">
+        insert into work_roadway_repair_face_daily_report
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="unit != null and unit != ''">unit,</if>
+            <if test="unitCode != null and unitCode != ''">unit_code,</if>
+            <if test="reportDate != null">report_date,</if>
+            <if test="section != null">section,</if>
+            <if test="plannedProject != null and plannedProject != ''">planned_project,</if>
+            <if test="workLocation != null and workLocation != ''">work_location,</if>
+            <if test="shipmentMethod != null and shipmentMethod != ''">shipment_method,</if>
+            <if test="completedWork != null">completed_work,</if>
+            <if test="oneAttendance != null">one_attendance,</if>
+            <if test="twoAttendance != null">two_attendance,</if>
+            <if test="threeAttendance != null">three_attendance,</if>
+            <if test="oneWorkload != null and oneWorkload != ''">one_workload,</if>
+            <if test="twoWorkload != null and twoWorkload != ''">two_workload,</if>
+            <if test="threeWorkload != null and threeWorkload != ''">three_workload,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="unit != null and unit != ''">#{unit},</if>
+            <if test="unitCode != null and unitCode != ''">#{unitCode},</if>
+            <if test="reportDate != null">#{reportDate},</if>
+            <if test="section != null">#{section},</if>
+            <if test="plannedProject != null and plannedProject != ''">#{plannedProject},</if>
+            <if test="workLocation != null and workLocation != ''">#{workLocation},</if>
+            <if test="shipmentMethod != null and shipmentMethod != ''">#{shipmentMethod},</if>
+            <if test="completedWork != null">#{completedWork},</if>
+            <if test="oneAttendance != null">#{oneAttendance},</if>
+            <if test="twoAttendance != null">#{twoAttendance},</if>
+            <if test="threeAttendance != null">#{threeAttendance},</if>
+            <if test="oneWorkload != null and oneWorkload != ''">#{oneWorkload},</if>
+            <if test="twoWorkload != null and twoWorkload != ''">#{twoWorkload},</if>
+            <if test="threeWorkload != null and threeWorkload != ''">#{threeWorkload},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateWorkRoadwayRepairFaceDailyReport" parameterType="com.ruoyi.system.domain.work.WorkRoadwayRepairFaceDailyReport">
+        update work_roadway_repair_face_daily_report
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="unit != null and unit != ''">unit = #{unit},</if>
+            <if test="unitCode != null and unitCode != ''">unit_code = #{unitCode},</if>
+            <if test="reportDate != null">report_date = #{reportDate},</if>
+            <if test="section != null">section = #{section},</if>
+            <if test="plannedProject != null and plannedProject != ''">planned_project = #{plannedProject},</if>
+            <if test="workLocation != null and workLocation != ''">work_location = #{workLocation},</if>
+            <if test="shipmentMethod != null and shipmentMethod != ''">shipment_method = #{shipmentMethod},</if>
+            <if test="completedWork != null">completed_work = #{completedWork},</if>
+            <if test="oneAttendance != null">one_attendance = #{oneAttendance},</if>
+            <if test="twoAttendance != null">two_attendance = #{twoAttendance},</if>
+            <if test="threeAttendance != null">three_attendance = #{threeAttendance},</if>
+            <if test="oneWorkload != null and oneWorkload != ''">one_workload = #{oneWorkload},</if>
+            <if test="twoWorkload != null and twoWorkload != ''">two_workload = #{twoWorkload},</if>
+            <if test="threeWorkload != null and threeWorkload != ''">three_workload = #{threeWorkload},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWorkRoadwayRepairFaceDailyReportById" parameterType="java.lang.Integer">
+        delete from work_roadway_repair_face_daily_report where id = #{id}
+    </delete>
+
+    <delete id="deleteWorkRoadwayRepairFaceDailyReportByIds" parameterType="java.lang.String">
+        delete from work_roadway_repair_face_daily_report where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

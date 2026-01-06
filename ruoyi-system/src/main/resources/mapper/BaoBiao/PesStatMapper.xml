@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BaoBiao.PesStatMapper">
+
+    <!-- 统一 resultMap，避免别名冲突 -->
+    <resultMap id="PesDateAggRowMap" type="com.ruoyi.system.domain.PesDateAggRow">
+        <result column="day"    property="day"    />
+        <result column="total"  property="total"  />
+    </resultMap>
+
+    <!-- 车次合计：total_cars -->
+    <select id="selectDailyCarTotals" resultMap="PesDateAggRowMap">
+        SELECT
+            stats_date AS day,
+            COALESCE(SUM(total_sales_cars), 0) AS total
+        FROM comprehensive_production_stats
+        WHERE
+            stats_date BETWEEN #{start} AND #{end}
+        GROUP BY stats_date
+        ORDER BY stats_date ASC
+    </select>
+
+    <!-- 吨数合计：total_tonnage -->
+    <select id="selectDailyTonnageTotals" resultMap="PesDateAggRowMap">
+        SELECT
+            stats_date AS day,
+            COALESCE(SUM(total_sales_tonnage), 0) AS total
+        FROM comprehensive_production_stats
+        WHERE
+            stats_date BETWEEN #{start} AND #{end}
+        GROUP BY stats_date
+        ORDER BY stats_date ASC
+
+
+    </select>
+
+</mapper>

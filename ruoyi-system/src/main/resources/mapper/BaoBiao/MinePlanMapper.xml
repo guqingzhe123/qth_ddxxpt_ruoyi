@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BaoBiao.MinePlanMapper">
+
+    <resultMap id="MinePlanMap" type="com.ruoyi.system.domain.BaoBiao.po.MinePlanPO">
+        <id     column="id"                   property="id"/>
+        <result column="plan_type"            property="planType"/>
+        <result column="unit_code"            property="unitCode"/>
+        <result column="unit_name"            property="unitName"/>
+        <result column="plan_month"           property="planMonth"/>
+        <result column="work_days_in_month"   property="workDaysInMonth"/>
+
+        <result column="company_wide_plan"    property="companyWidePlan"/>
+        <result column="branch_plan"          property="branchPlan"/>
+        <result column="seventh_company_plan" property="seventhCompanyPlan"/>
+
+        <result column="company_wide_goals"   property="companyWideGoals"/>
+        <result column="branch_company_goals" property="branchCompanyGoals"/>
+        <result column="seventh_coal_company" property="seventhCoalCompany"/>
+
+        <result column="create_time"          property="createTime"/>
+        <result column="update_time"          property="updateTime"/>
+        <result column="user_id"              property="userId"/>
+        <result column="is_deleted"           property="isDeleted"/>
+        <result column="mine_category"        property="mineCategory"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.ruoyi.system.domain.BaoBiao.po.MinePlanPO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO mine_plan(
+            plan_type, unit_code, unit_name, plan_month, work_days_in_month,
+            company_wide_plan, branch_plan, seventh_company_plan,
+            company_wide_goals, branch_company_goals, seventh_coal_company,
+            user_id, is_deleted, mine_category, create_time, update_time
+        ) VALUES (
+                     #{planType}, #{unitCode}, #{unitName}, #{planMonth}, #{workDaysInMonth},
+                     #{companyWidePlan}, #{branchPlan}, #{seventhCompanyPlan},
+                     #{companyWideGoals}, #{branchCompanyGoals}, #{seventhCoalCompany},
+                     #{userId}, 0, #{mineCategory}, NOW(), NOW()
+                 )
+    </insert>
+
+    <update id="update" parameterType="com.ruoyi.system.domain.BaoBiao.po.MinePlanPO">
+        UPDATE mine_plan
+        SET
+            plan_type = #{planType},
+            unit_code = #{unitCode},
+            unit_name = #{unitName},
+            plan_month = #{planMonth},
+            work_days_in_month = #{workDaysInMonth},
+
+            company_wide_plan = #{companyWidePlan},
+            Branch_plan = #{branchPlan},
+            seventh_company_plan = #{seventhCompanyPlan},
+
+            company_wide_goals = #{companyWideGoals},
+            branch_company_goals = #{branchCompanyGoals},
+            seventh_coal_company = #{seventhCoalCompany},
+
+            user_id = #{userId},
+            mine_category = #{mineCategory},
+            update_time = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <update id="softDeleteById">
+        UPDATE mine_plan SET is_deleted = 1, update_time = NOW() WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultMap="MinePlanMap">
+        SELECT * FROM mine_plan WHERE id = #{id} AND is_deleted = 0
+    </select>
+
+    <select id="selectList" resultMap="MinePlanMap" parameterType="com.ruoyi.system.domain.BaoBiao.po.MinePlanPO">
+        SELECT * FROM mine_plan
+        <where>
+            <if test="planType != null and planType != ''">
+                AND plan_type = #{planType}
+            </if>
+            <if test="planMonth != null">
+                AND plan_month = #{planMonth}
+            </if>
+            <if test="mineCategory != null and mineCategory != ''">
+                AND mine_category = #{mineCategory}
+            </if>
+            <if test="userId != null and userId != ''">
+                AND user_id = #{userId}
+            </if>
+            <if test="unitCode != null and unitCode != ''">
+                AND unit_code = #{unitCode}
+            </if>
+            <if test="isDeleted != null">
+                AND is_deleted = #{isDeleted}
+            </if>
+            <if test="isDeleted == null">
+                AND is_deleted = 0
+            </if>
+        </where>
+        ORDER BY plan_month DESC, id DESC
+    </select>
+    <select id="selectMine" resultMap="MinePlanMap" parameterType="com.ruoyi.system.domain.BaoBiao.po.MinePlanPO">
+        SELECT * FROM mine_plan
+        <where>
+            <if test="planType != null and planType != ''">
+                AND plan_type = #{planType}
+            </if>
+            <if test="planMonth != null">
+                AND plan_month = #{planMonth}
+            </if>
+            <if test="mineCategory != null and mineCategory != ''">
+                AND mine_category = #{mineCategory}
+            </if>
+            <if test="userId != null and userId != ''">
+                AND user_id = #{userId}
+            </if>
+            <if test="unitCode != null and unitCode != ''">
+                AND unit_code = #{unitCode}
+            </if>
+            <if test="isDeleted != null">
+                AND is_deleted = #{isDeleted}
+            </if>
+            <if test="isDeleted == null">
+                AND is_deleted = 0
+            </if>
+        </where>
+         and is_deleted=0
+        ORDER BY plan_month DESC, id DESC limit 1
+    </select>
+
+
+
+
+
+</mapper>

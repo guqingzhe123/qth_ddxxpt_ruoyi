@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BaoBiao.SubCoalWashingProductionMapper">
+
+    <resultMap id="SubMap" type="com.ruoyi.system.domain.BaoBiao.po.SubCoalWashingProductionPO">
+        <id     column="id"                          property="id"/>
+        <result column="coal_washing_productionID"   property="coalWashingProductionID"/>
+        <result column="drop_in"                     property="dropIn"/>
+        <result column="wash_in"                     property="washIn"/>
+        <result column="clean_coal"                  property="cleanCoal"/>
+        <result column="lump_coal"                   property="lumpCoal"/>
+        <result column="slack_coal"                  property="slackCoal"/>
+        <result column="sludge_coal"                 property="sludgeCoal"/>
+        <result column="available_gangue"            property="availableGangue"/>
+        <result column="waste"                       property="waste"/>
+        <result column="total"                       property="total"/>
+        <result column="self_use"                    property="selfUse"/>
+        <result column="car_count"                   property="carCount"/>
+        <result column="sales_volume"                property="salesVolume"/>
+        <result column="clean_coal_yield"            property="cleanCoalYield"/>
+        <result column="comprehensive_yield"         property="comprehensiveYield"/>
+        <result column="daily_stock"                 property="dailyStock"/>
+    </resultMap>
+
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT INTO sub_coal_washing_production(
+        coal_washing_productionID, drop_in, wash_in, clean_coal, lump_coal, slack_coal,
+        sludge_coal, available_gangue, waste, total, self_use, car_count,
+        sales_volume, clean_coal_yield, comprehensive_yield, daily_stock
+        ) VALUES
+        <foreach collection="list" item="it" separator=",">
+            (#{it.coalWashingProductionID}, #{it.dropIn}, #{it.washIn}, #{it.cleanCoal}, #{it.lumpCoal}, #{it.slackCoal},
+            #{it.sludgeCoal}, #{it.availableGangue}, #{it.waste}, #{it.total}, #{it.selfUse}, #{it.carCount},
+            #{it.salesVolume}, #{it.cleanCoalYield}, #{it.comprehensiveYield}, #{it.dailyStock})
+        </foreach>
+    </insert>
+
+    <delete id="deleteByParentId">
+        DELETE FROM sub_coal_washing_production WHERE coal_washing_productionID = #{parentId}
+    </delete>
+
+    <select id="selectByParentId" resultMap="SubMap">
+        SELECT * FROM sub_coal_washing_production
+        WHERE coal_washing_productionID = #{parentId}
+        ORDER BY id ASC
+    </select>
+
+    <select id="selectByParentIds" parameterType="java.util.List" resultMap="SubMap">
+        SELECT * FROM sub_coal_washing_production
+        WHERE coal_washing_productionID IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">#{id}</foreach>
+        ORDER BY coal_washing_productionID ASC, id ASC
+    </select>
+
+</mapper>

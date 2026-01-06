@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.work.WorkRoadwayRepairFaceMapper">
+    
+    <resultMap type="com.ruoyi.system.domain.work.WorkRoadwayRepairFace" id="WorkRoadwayRepairFaceResult">
+        <result property="id"    column="id"    />
+        <result property="unit"    column="unit"    />
+        <result property="unitCode"    column="unit_code"    />
+        <result property="section"    column="section"    />
+        <result property="plannedProject"    column="planned_project"    />
+        <result property="workLocation"    column="work_location"    />
+        <result property="shipmentMethod"    column="shipment_method"    />
+        <result property="completedWork"    column="completed_work"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectWorkRoadwayRepairFaceVo">
+        select id, unit, unit_code, section, planned_project, work_location, shipment_method, completed_work, status, create_time from work_roadway_repair_face
+    </sql>
+
+    <select id="selectWorkRoadwayRepairFaceList" parameterType="com.ruoyi.system.domain.work.WorkRoadwayRepairFace" resultMap="WorkRoadwayRepairFaceResult">
+        <include refid="selectWorkRoadwayRepairFaceVo"/>
+        <where>  
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="unitCode != null  and unitCode != ''"> and unit_code = #{unitCode}</if>
+            <if test="section != null "> and section = #{section}</if>
+            <if test="plannedProject != null  and plannedProject != ''"> and planned_project = #{plannedProject}</if>
+            <if test="workLocation != null  and workLocation != ''"> and work_location = #{workLocation}</if>
+            <if test="shipmentMethod != null  and shipmentMethod != ''"> and shipment_method = #{shipmentMethod}</if>
+            <if test="completedWork != null "> and completed_work = #{completedWork}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectWorkRoadwayRepairFaceById" parameterType="java.lang.String" resultMap="WorkRoadwayRepairFaceResult">
+        <include refid="selectWorkRoadwayRepairFaceVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWorkRoadwayRepairFace" parameterType="com.ruoyi.system.domain.work.WorkRoadwayRepairFace" useGeneratedKeys="true" keyProperty="id">
+        insert into work_roadway_repair_face
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="unit != null and unit != ''">unit,</if>
+            <if test="unitCode != null and unitCode != ''">unit_code,</if>
+            <if test="section != null">section,</if>
+            <if test="plannedProject != null and plannedProject != ''">planned_project,</if>
+            <if test="workLocation != null and workLocation != ''">work_location,</if>
+            <if test="shipmentMethod != null and shipmentMethod != ''">shipment_method,</if>
+            <if test="completedWork != null">completed_work,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="unit != null and unit != ''">#{unit},</if>
+            <if test="unitCode != null and unitCode != ''">#{unitCode},</if>
+            <if test="section != null">#{section},</if>
+            <if test="plannedProject != null and plannedProject != ''">#{plannedProject},</if>
+            <if test="workLocation != null and workLocation != ''">#{workLocation},</if>
+            <if test="shipmentMethod != null and shipmentMethod != ''">#{shipmentMethod},</if>
+            <if test="completedWork != null">#{completedWork},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWorkRoadwayRepairFace" parameterType="com.ruoyi.system.domain.work.WorkRoadwayRepairFace">
+        update work_roadway_repair_face
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="unit != null and unit != ''">unit = #{unit},</if>
+            <if test="unitCode != null and unitCode != ''">unit_code = #{unitCode},</if>
+            <if test="section != null">section = #{section},</if>
+            <if test="plannedProject != null and plannedProject != ''">planned_project = #{plannedProject},</if>
+            <if test="workLocation != null and workLocation != ''">work_location = #{workLocation},</if>
+            <if test="shipmentMethod != null and shipmentMethod != ''">shipment_method = #{shipmentMethod},</if>
+            <if test="completedWork != null">completed_work = #{completedWork},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWorkRoadwayRepairFaceById" parameterType="java.lang.String">
+        delete from work_roadway_repair_face where id = #{id}
+    </delete>
+
+    <delete id="deleteWorkRoadwayRepairFaceByIds" parameterType="java.lang.String">
+        delete from work_roadway_repair_face where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

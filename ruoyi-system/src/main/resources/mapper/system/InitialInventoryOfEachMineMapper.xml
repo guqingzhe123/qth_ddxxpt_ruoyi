@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.InitialInventoryOfEachMineMapper">
+    
+    <resultMap type="com.ruoyi.system.domain.InitialInventoryOfEachMine" id="InitialInventoryOfEachMineResult">
+        <result property="id"    column="id"    />
+        <result property="unitType"    column="unit_type"    />
+        <result property="recordDate"    column="record_date"    />
+        <result property="branchCompany"    column="branch_company"    />
+        <result property="sevenCoalCompany"    column="seven_coal_company"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="userId"    column="user_id"    />
+        <result property="isDeleted"    column="is_deleted"    />
+    </resultMap>
+
+    <sql id="selectInitialInventoryOfEachMineVo">
+        select id, unit_type, record_date, branch_company, seven_coal_company, create_time, update_time, user_id, is_deleted from initial_inventory_of_each_mine
+    </sql>
+
+    <select id="selectInitialInventoryOfEachMineList" parameterType="com.ruoyi.system.domain.InitialInventoryOfEachMine" resultMap="InitialInventoryOfEachMineResult">
+        <include refid="selectInitialInventoryOfEachMineVo"/>
+        <where>  
+            <if test="unitType != null  and unitType != ''"> and unit_type = #{unitType}</if>
+            <if test="recordDate != null "> and record_date = #{recordDate}</if>
+            <if test="branchCompany != null "> and branch_company = #{branchCompany}</if>
+            <if test="sevenCoalCompany != null "> and seven_coal_company = #{sevenCoalCompany}</if>
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+            <if test="isDeleted != null "> and is_deleted = #{isDeleted}</if>
+        </where>
+    </select>
+    <select id="selectInitialInventoryOfEachMine" parameterType="com.ruoyi.system.domain.InitialInventoryOfEachMine" resultMap="InitialInventoryOfEachMineResult">
+        <include refid="selectInitialInventoryOfEachMineVo"/>
+        <where>
+            <if test="unitType != null  and unitType != ''"> and unit_type = #{unitType}</if>
+            <if test="recordDate != null "> and record_date = #{recordDate}</if>
+            <if test="branchCompany != null "> and branch_company = #{branchCompany}</if>
+            <if test="sevenCoalCompany != null "> and seven_coal_company = #{sevenCoalCompany}</if>
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+            <if test="isDeleted != null "> and is_deleted = #{isDeleted}</if>
+        </where>
+    </select>
+    <select id="selectInitialInventoryOfEachMineById" parameterType="java.lang.Long" resultMap="InitialInventoryOfEachMineResult">
+        <include refid="selectInitialInventoryOfEachMineVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertInitialInventoryOfEachMine" parameterType="com.ruoyi.system.domain.InitialInventoryOfEachMine" useGeneratedKeys="true" keyProperty="id">
+        insert into initial_inventory_of_each_mine
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="unitType != null and unitType != ''">unit_type,</if>
+            <if test="recordDate != null">record_date,</if>
+            <if test="branchCompany != null">branch_company,</if>
+            <if test="sevenCoalCompany != null">seven_coal_company,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="isDeleted != null">is_deleted,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="unitType != null and unitType != ''">#{unitType},</if>
+            <if test="recordDate != null">#{recordDate},</if>
+            <if test="branchCompany != null">#{branchCompany},</if>
+            <if test="sevenCoalCompany != null">#{sevenCoalCompany},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="isDeleted != null">#{isDeleted},</if>
+         </trim>
+    </insert>
+
+    <update id="updateInitialInventoryOfEachMine" parameterType="com.ruoyi.system.domain.InitialInventoryOfEachMine">
+        update initial_inventory_of_each_mine
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="unitType != null and unitType != ''">unit_type = #{unitType},</if>
+            <if test="recordDate != null">record_date = #{recordDate},</if>
+            <if test="branchCompany != null">branch_company = #{branchCompany},</if>
+            <if test="sevenCoalCompany != null">seven_coal_company = #{sevenCoalCompany},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteInitialInventoryOfEachMineById" parameterType="java.lang.Long">
+        delete from initial_inventory_of_each_mine where id = #{id}
+    </delete>
+
+    <delete id="deleteInitialInventoryOfEachMineByIds" parameterType="java.lang.String">
+        delete from initial_inventory_of_each_mine where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

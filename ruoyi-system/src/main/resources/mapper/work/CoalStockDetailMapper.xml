@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.work.CoalStockDetailMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.domain.work.CoalStockDetail">
+        <id property="id" column="id"/>
+        <result property="unitName" column="unit_name"/>
+        <result property="newJianMineStock" column="new_jian_mine_stock"/>
+        <result property="xinXingMineStock" column="xin_xing_mine_stock"/>
+        <result property="rawCoalMineStock" column="raw_coal_mine_stock"/>
+        <result property="oversizeMaterialMineStock" column="oversize_material_mine_stock"/>
+        <result property="xinLiMineStock" column="xin_li_mine_stock"/>
+        <result property="xinTieMineStock" column="xin_tie_mine_stock"/>
+        <result property="longXuanCargoStock" column="long_xuan_cargo_stock"/>
+        <result property="longHuMineStock" column="long_hu_mine_stock"/>
+        <result property="xiangYangMineStock" column="xiang_yang_mine_stock"/>
+        <result property="shengLiMineStock" column="sheng_li_mine_stock"/>
+        <result property="oneCaiOneWellStock" column="one_cai_one_well_stock"/>
+        <result property="oneCaiSixWellStock" column="one_cai_six_well_stock"/>
+        <result property="jianSheMineStock" column="jian_she_mine_stock"/>
+        <result property="subtotal" column="subtotal"/>
+        <result property="total" column="total"/>
+        <result property="reportDate" column="report_date"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,unit_name,
+        new_jian_mine_stock, xin_xing_mine_stock,raw_coal_mine_stock, oversize_material_mine_stock, xin_li_mine_stock,
+        xin_tie_mine_stock, long_xuan_cargo_stock, long_hu_mine_stock,
+        xiang_yang_mine_stock, sheng_li_mine_stock, one_cai_one_well_stock,
+        one_cai_six_well_stock, jian_she_mine_stock, subtotal, total, report_date
+    </sql>
+
+    <select id="selectCoalStockDetailList" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM coal_stock_detail
+        WHERE 1=1
+        <if test="reportDate != null and reportDate != ''">
+            AND report_date = #{reportDate}
+        </if>
+    </select>
+
+    <select id="selectCoalStockDetailById" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM coal_stock_detail
+        WHERE id = #{id}
+    </select>
+
+    <insert id="insertCoalStockDetail">
+        INSERT INTO coal_stock_detail (id,unit_name,
+                                       new_jian_mine_stock, xin_xing_mine_stock, raw_coal_mine_stock,
+                                       oversize_material_mine_stock, xin_li_mine_stock,
+                                       xin_tie_mine_stock, long_xuan_cargo_stock, long_hu_mine_stock,
+                                       xiang_yang_mine_stock, sheng_li_mine_stock, one_cai_one_well_stock,
+                                       one_cai_six_well_stock, jian_she_mine_stock, subtotal, total, report_date)
+        VALUES (#{id},#{unitName},
+                #{newJianMineStock}, #{xinXingMineStock}, #{rawCoalMineStock}, #{oversizeMaterialMineStock}
+                   , #{xinLiMineStock},
+                #{xinTieMineStock}, #{longXuanCargoStock}, #{longHuMineStock},
+                #{xiangYangMineStock}, #{shengLiMineStock}, #{oneCaiOneWellStock},
+                #{oneCaiSixWellStock}, #{jianSheMineStock}, #{subtotal}, #{total}, #{reportDate})
+    </insert>
+
+    <insert id="insertCoalStockDetails">
+        INSERT INTO coal_stock_detail (id,unit_name,
+        new_jian_mine_stock, xin_xing_mine_stock, raw_coal_mine_stock,
+        oversize_material_mine_stock, xin_li_mine_stock,
+        xin_tie_mine_stock, long_xuan_cargo_stock, long_hu_mine_stock,
+        xiang_yang_mine_stock, sheng_li_mine_stock, one_cai_one_well_stock,
+        one_cai_six_well_stock, jian_she_mine_stock, subtotal, total, report_date)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id},#{item.unitName},
+            #{item.newJianMineStock}, #{item.xinXingMineStock}, #{item.rawCoalMineStock},
+            #{item.oversizeMaterialMineStock}, #{item.xinLiMineStock},
+            #{item.xinTieMineStock}, #{item.longXuanCargoStock}, #{item.longHuMineStock},
+            #{item.xiangYangMineStock}, #{item.shengLiMineStock}, #{item.oneCaiOneWellStock},
+            #{item.oneCaiSixWellStock}, #{item.jianSheMineStock}, #{item.subtotal}, #{item.total}, #{item.reportDate})
+        </foreach>
+    </insert>
+
+
+    <update id="updateCoalStockDetail">
+        UPDATE coal_stock_detail
+        SET
+            unit_name = #{unitName},
+            new_jian_mine_stock = #{newJianMineStock},
+            xin_xing_mine_stock = #{xinXingMineStock},
+            raw_coal_mine_stock = #{rawCoalMineStock},
+            oversize_material_mine_stock = #{oversizeMaterialMineStock},
+            xin_li_mine_stock = #{xinLiMineStock},
+            xin_tie_mine_stock = #{xinTieMineStock},
+            long_xuan_cargo_stock = #{longXuanCargoStock},
+            long_hu_mine_stock = #{longHuMineStock},
+            xiang_yang_mine_stock = #{xiangYangMineStock},
+            sheng_li_mine_stock = #{shengLiMineStock},
+            one_cai_one_well_stock = #{oneCaiOneWellStock},
+            one_cai_six_well_stock = #{oneCaiSixWellStock},
+            jian_she_mine_stock = #{jianSheMineStock},
+            subtotal = #{subtotal},
+            total = #{total},
+            report_date = #{reportDate}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteCoalStockDetailByIds">
+        DELETE FROM coal_stock_detail
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

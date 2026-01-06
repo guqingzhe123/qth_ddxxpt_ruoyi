@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ruoyi.system.mapper.BaoBiao.ChatMessageMapper">
+
+    <resultMap id="ChatMap" type="com.ruoyi.system.domain.BaoBiao.ChatMessage">
+        <id     column="id"           property="id"/>
+        <result column="room_id"      property="roomId"/>
+        <result column="sender_id"    property="senderId"/>
+        <result column="receiver_id"  property="receiverId"/>
+        <result column="msg_type"     property="msgType"/>
+        <result column="content"      property="content"/>
+        <result column="file_url"     property="fileUrl"/>
+        <result column="file_name"    property="fileName"/>
+        <result column="file_size"    property="fileSize"/>
+        <result column="mime_type"    property="mimeType"/>
+        <result column="width"        property="width"/>
+        <result column="height"       property="height"/>
+        <result column="duration_ms"  property="durationMs"/>
+        <result column="is_read"      property="isRead"/>
+        <result column="read_time"    property="readTime"/>
+        <result column="create_time"  property="createTime"/>
+        <result column="update_time"  property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Columns">
+        id, room_id, sender_id, receiver_id, msg_type, content,
+        file_url, file_name, file_size, mime_type, width, height, duration_ms,
+        is_read, read_time, create_time, update_time
+    </sql>
+
+    <select id="selectById" resultMap="ChatMap">
+        SELECT <include refid="Base_Columns"/>
+        FROM chat_message
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectList" resultMap="ChatMap">
+        SELECT <include refid="Base_Columns"/>
+        FROM chat_message
+        <where>
+            <if test="roomId != null and roomId != ''">
+                AND room_id = #{roomId}
+            </if>
+            <if test="senderId != null and senderId != ''">
+                AND sender_id = #{senderId}
+            </if>
+            <if test="receiverId != null and receiverId != ''">
+                AND receiver_id = #{receiverId}
+            </if>
+            <if test="msgType != null and msgType != ''">
+                AND msg_type = #{msgType}
+            </if>
+        </where>
+        ORDER BY create_time DESC, id DESC
+    </select>
+
+    <insert id="insert" parameterType="com.ruoyi.system.domain.BaoBiao.ChatMessage" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO chat_message
+        (room_id, sender_id, receiver_id, msg_type, content,
+         file_url, file_name, file_size, mime_type, width, height, duration_ms, is_read, read_time)
+        VALUES
+            (#{roomId}, #{senderId}, #{receiverId}, #{msgType}, #{content},
+             #{fileUrl}, #{fileName}, #{fileSize}, #{mimeType}, #{width}, #{height}, #{durationMs}, #{isRead}, #{readTime})
+    </insert>
+
+    <update id="markRead">
+        UPDATE chat_message
+        SET is_read = 1, read_time = NOW()
+        WHERE room_id = #{roomId}
+        AND receiver_id = #{receiverId}
+        <if test="untilId != null">
+            AND id &lt;= #{untilId}
+        </if>
+        AND is_read = 0
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM chat_message WHERE id = #{id}
+    </delete>
+</mapper>

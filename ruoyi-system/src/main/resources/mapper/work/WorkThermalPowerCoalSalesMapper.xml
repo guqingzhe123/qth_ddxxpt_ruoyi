@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.work.WorkThermalPowerCoalSalesMapper">
+
+    <resultMap type="com.ruoyi.system.domain.work.WorkThermalPowerCoalSales" id="WorkThermalPowerCoalSalesResult">
+        <result property="id"    column="id"    />
+        <result property="recordDate"    column="record_date"    />
+        <result property="coalType"    column="coal_type"    />
+        <result property="inferiorCoalInitialStock"    column="inferior_coal_initial_stock"    />
+        <result property="inferiorCoalPreviousStock"    column="inferior_coal_previous_stock"    />
+        <result property="inferiorCoalDailySales"    column="inferior_coal_daily_sales"    />
+        <result property="inferiorCoalCumulativeSales"    column="inferior_coal_cumulative_sales"    />
+        <result property="inferiorCoalOffBookQuantity"    column="inferior_coal_off_book_quantity"    />
+        <result property="inferiorCoalCurrentStock"    column="inferior_coal_current_stock"    />
+        <result property="threeSelectedCoalInitialStock"    column="three_selected_coal_initial_stock"    />
+        <result property="threeSelectedCoalPreviousStock"    column="three_selected_coal_previous_stock"    />
+        <result property="threeSelectedCoalDailySales"    column="three_selected_coal_daily_sales"    />
+        <result property="threeSelectedCoalCumulativeSales"    column="three_selected_coal_cumulative_sales"    />
+        <result property="threeSelectedCoalCurrentStock"    column="three_selected_coal_current_stock"    />
+        <result property="washedLeanCoalInitialStock"    column="washed_lean_coal_initial_stock"    />
+        <result property="washedLeanCoalPreviousStock"    column="washed_lean_coal_previous_stock"    />
+        <result property="washedLeanCoalDailySales"    column="washed_lean_coal_daily_sales"    />
+        <result property="washedLeanCoalCumulativeSales"    column="washed_lean_coal_cumulative_sales"    />
+        <result property="washedLeanCoalCurrentStock"    column="washed_lean_coal_current_stock"    />
+        <result property="totalCoalInitialStock"    column="total_coal_initial_stock"    />
+        <result property="totalCoalPreviousStock"    column="total_coal_previous_stock"    />
+        <result property="totalCoalDailySales"    column="total_coal_daily_sales"    />
+        <result property="totalCoalCumulativeSales"    column="total_coal_cumulative_sales"    />
+        <result property="totalCoalBookQuantity"    column="total_coal_book_quantity"    />
+        <result property="totalCurrentStock"    column="total_current_stock"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectWorkThermalPowerCoalSalesVo">
+        select id, record_date, coal_type, inferior_coal_initial_stock, inferior_coal_previous_stock, inferior_coal_daily_sales, inferior_coal_cumulative_sales, inferior_coal_off_book_quantity, inferior_coal_current_stock, three_selected_coal_initial_stock, three_selected_coal_previous_stock, three_selected_coal_daily_sales, three_selected_coal_cumulative_sales, three_selected_coal_current_stock, washed_lean_coal_initial_stock, washed_lean_coal_previous_stock, washed_lean_coal_daily_sales, washed_lean_coal_cumulative_sales, washed_lean_coal_current_stock, total_coal_initial_stock, total_coal_previous_stock, total_coal_daily_sales, total_coal_cumulative_sales, total_coal_book_quantity, total_current_stock, create_time from work_thermal_power_coal_sales
+    </sql>
+
+    <select id="selectWorkThermalPowerCoalSalesList" parameterType="com.ruoyi.system.domain.work.WorkThermalPowerCoalSales" resultMap="WorkThermalPowerCoalSalesResult">
+        <include refid="selectWorkThermalPowerCoalSalesVo"/>
+        <where>
+            <if test="recordDate != null "> and record_date = #{recordDate}</if>
+            <if test="coalType != null  and coalType != ''"> and coal_type = #{coalType}</if>
+            <if test="inferiorCoalInitialStock != null "> and inferior_coal_initial_stock = #{inferiorCoalInitialStock}</if>
+            <if test="inferiorCoalPreviousStock != null "> and inferior_coal_previous_stock = #{inferiorCoalPreviousStock}</if>
+            <if test="inferiorCoalDailySales != null "> and inferior_coal_daily_sales = #{inferiorCoalDailySales}</if>
+            <if test="inferiorCoalCumulativeSales != null "> and inferior_coal_cumulative_sales = #{inferiorCoalCumulativeSales}</if>
+            <if test="inferiorCoalOffBookQuantity != null "> and inferior_coal_off_book_quantity = #{inferiorCoalOffBookQuantity}</if>
+            <if test="inferiorCoalCurrentStock != null "> and inferior_coal_current_stock = #{inferiorCoalCurrentStock}</if>
+            <if test="threeSelectedCoalInitialStock != null "> and three_selected_coal_initial_stock = #{threeSelectedCoalInitialStock}</if>
+            <if test="threeSelectedCoalPreviousStock != null "> and three_selected_coal_previous_stock = #{threeSelectedCoalPreviousStock}</if>
+            <if test="threeSelectedCoalDailySales != null "> and three_selected_coal_daily_sales = #{threeSelectedCoalDailySales}</if>
+            <if test="threeSelectedCoalCumulativeSales != null "> and three_selected_coal_cumulative_sales = #{threeSelectedCoalCumulativeSales}</if>
+            <if test="threeSelectedCoalCurrentStock != null "> and three_selected_coal_current_stock = #{threeSelectedCoalCurrentStock}</if>
+            <if test="washedLeanCoalInitialStock != null "> and washed_lean_coal_initial_stock = #{washedLeanCoalInitialStock}</if>
+            <if test="washedLeanCoalPreviousStock != null "> and washed_lean_coal_previous_stock = #{washedLeanCoalPreviousStock}</if>
+            <if test="washedLeanCoalDailySales != null "> and washed_lean_coal_daily_sales = #{washedLeanCoalDailySales}</if>
+            <if test="washedLeanCoalCumulativeSales != null "> and washed_lean_coal_cumulative_sales = #{washedLeanCoalCumulativeSales}</if>
+            <if test="washedLeanCoalCurrentStock != null "> and washed_lean_coal_current_stock = #{washedLeanCoalCurrentStock}</if>
+            <if test="totalCoalInitialStock != null "> and total_coal_initial_stock = #{totalCoalInitialStock}</if>
+            <if test="totalCoalPreviousStock != null "> and total_coal_previous_stock = #{totalCoalPreviousStock}</if>
+            <if test="totalCoalDailySales != null "> and total_coal_daily_sales = #{totalCoalDailySales}</if>
+            <if test="totalCoalCumulativeSales != null "> and total_coal_cumulative_sales = #{totalCoalCumulativeSales}</if>
+            <if test="totalCoalBookQuantity != null "> and total_coal_book_quantity = #{totalCoalBookQuantity}</if>
+            <if test="totalCurrentStock != null "> and total_current_stock = #{totalCurrentStock}</if>
+        </where>
+    </select>
+
+    <select id="selectWorkThermalPowerCoalSalesById" parameterType="java.lang.String" resultMap="WorkThermalPowerCoalSalesResult">
+        <include refid="selectWorkThermalPowerCoalSalesVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWorkThermalPowerCoalSales" parameterType="com.ruoyi.system.domain.work.WorkThermalPowerCoalSales" useGeneratedKeys="true" keyProperty="id">
+        insert into work_thermal_power_coal_sales
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="recordDate != null">record_date,</if>
+            <if test="coalType != null and coalType != ''">coal_type,</if>
+            <if test="inferiorCoalInitialStock != null">inferior_coal_initial_stock,</if>
+            <if test="inferiorCoalPreviousStock != null">inferior_coal_previous_stock,</if>
+            <if test="inferiorCoalDailySales != null">inferior_coal_daily_sales,</if>
+            <if test="inferiorCoalCumulativeSales != null">inferior_coal_cumulative_sales,</if>
+            <if test="inferiorCoalOffBookQuantity != null">inferior_coal_off_book_quantity,</if>
+            <if test="inferiorCoalCurrentStock != null">inferior_coal_current_stock,</if>
+            <if test="threeSelectedCoalInitialStock != null">three_selected_coal_initial_stock,</if>
+            <if test="threeSelectedCoalPreviousStock != null">three_selected_coal_previous_stock,</if>
+            <if test="threeSelectedCoalDailySales != null">three_selected_coal_daily_sales,</if>
+            <if test="threeSelectedCoalCumulativeSales != null">three_selected_coal_cumulative_sales,</if>
+            <if test="threeSelectedCoalCurrentStock != null">three_selected_coal_current_stock,</if>
+            <if test="washedLeanCoalInitialStock != null">washed_lean_coal_initial_stock,</if>
+            <if test="washedLeanCoalPreviousStock != null">washed_lean_coal_previous_stock,</if>
+            <if test="washedLeanCoalDailySales != null">washed_lean_coal_daily_sales,</if>
+            <if test="washedLeanCoalCumulativeSales != null">washed_lean_coal_cumulative_sales,</if>
+            <if test="washedLeanCoalCurrentStock != null">washed_lean_coal_current_stock,</if>
+            <if test="totalCoalInitialStock != null">total_coal_initial_stock,</if>
+            <if test="totalCoalPreviousStock != null">total_coal_previous_stock,</if>
+            <if test="totalCoalDailySales != null">total_coal_daily_sales,</if>
+            <if test="totalCoalCumulativeSales != null">total_coal_cumulative_sales,</if>
+            <if test="totalCoalBookQuantity != null">total_coal_book_quantity,</if>
+            <if test="totalCurrentStock != null">total_current_stock,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="recordDate != null">#{recordDate},</if>
+            <if test="coalType != null and coalType != ''">#{coalType},</if>
+            <if test="inferiorCoalInitialStock != null">#{inferiorCoalInitialStock},</if>
+            <if test="inferiorCoalPreviousStock != null">#{inferiorCoalPreviousStock},</if>
+            <if test="inferiorCoalDailySales != null">#{inferiorCoalDailySales},</if>
+            <if test="inferiorCoalCumulativeSales != null">#{inferiorCoalCumulativeSales},</if>
+            <if test="inferiorCoalOffBookQuantity != null">#{inferiorCoalOffBookQuantity},</if>
+            <if test="inferiorCoalCurrentStock != null">#{inferiorCoalCurrentStock},</if>
+            <if test="threeSelectedCoalInitialStock != null">#{threeSelectedCoalInitialStock},</if>
+            <if test="threeSelectedCoalPreviousStock != null">#{threeSelectedCoalPreviousStock},</if>
+            <if test="threeSelectedCoalDailySales != null">#{threeSelectedCoalDailySales},</if>
+            <if test="threeSelectedCoalCumulativeSales != null">#{threeSelectedCoalCumulativeSales},</if>
+            <if test="threeSelectedCoalCurrentStock != null">#{threeSelectedCoalCurrentStock},</if>
+            <if test="washedLeanCoalInitialStock != null">#{washedLeanCoalInitialStock},</if>
+            <if test="washedLeanCoalPreviousStock != null">#{washedLeanCoalPreviousStock},</if>
+            <if test="washedLeanCoalDailySales != null">#{washedLeanCoalDailySales},</if>
+            <if test="washedLeanCoalCumulativeSales != null">#{washedLeanCoalCumulativeSales},</if>
+            <if test="washedLeanCoalCurrentStock != null">#{washedLeanCoalCurrentStock},</if>
+            <if test="totalCoalInitialStock != null">#{totalCoalInitialStock},</if>
+            <if test="totalCoalPreviousStock != null">#{totalCoalPreviousStock},</if>
+            <if test="totalCoalDailySales != null">#{totalCoalDailySales},</if>
+            <if test="totalCoalCumulativeSales != null">#{totalCoalCumulativeSales},</if>
+            <if test="totalCoalBookQuantity != null">#{totalCoalBookQuantity},</if>
+            <if test="totalCurrentStock != null">#{totalCurrentStock},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateWorkThermalPowerCoalSales" parameterType="com.ruoyi.system.domain.work.WorkThermalPowerCoalSales">
+        update work_thermal_power_coal_sales
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="recordDate != null">record_date = #{recordDate},</if>
+            <if test="coalType != null and coalType != ''">coal_type = #{coalType},</if>
+            <if test="inferiorCoalInitialStock != null">inferior_coal_initial_stock = #{inferiorCoalInitialStock},</if>
+            <if test="inferiorCoalPreviousStock != null">inferior_coal_previous_stock = #{inferiorCoalPreviousStock},</if>
+            <if test="inferiorCoalDailySales != null">inferior_coal_daily_sales = #{inferiorCoalDailySales},</if>
+            <if test="inferiorCoalCumulativeSales != null">inferior_coal_cumulative_sales = #{inferiorCoalCumulativeSales},</if>
+            <if test="inferiorCoalOffBookQuantity != null">inferior_coal_off_book_quantity = #{inferiorCoalOffBookQuantity},</if>
+            <if test="inferiorCoalCurrentStock != null">inferior_coal_current_stock = #{inferiorCoalCurrentStock},</if>
+            <if test="threeSelectedCoalInitialStock != null">three_selected_coal_initial_stock = #{threeSelectedCoalInitialStock},</if>
+            <if test="threeSelectedCoalPreviousStock != null">three_selected_coal_previous_stock = #{threeSelectedCoalPreviousStock},</if>
+            <if test="threeSelectedCoalDailySales != null">three_selected_coal_daily_sales = #{threeSelectedCoalDailySales},</if>
+            <if test="threeSelectedCoalCumulativeSales != null">three_selected_coal_cumulative_sales = #{threeSelectedCoalCumulativeSales},</if>
+            <if test="threeSelectedCoalCurrentStock != null">three_selected_coal_current_stock = #{threeSelectedCoalCurrentStock},</if>
+            <if test="washedLeanCoalInitialStock != null">washed_lean_coal_initial_stock = #{washedLeanCoalInitialStock},</if>
+            <if test="washedLeanCoalPreviousStock != null">washed_lean_coal_previous_stock = #{washedLeanCoalPreviousStock},</if>
+            <if test="washedLeanCoalDailySales != null">washed_lean_coal_daily_sales = #{washedLeanCoalDailySales},</if>
+            <if test="washedLeanCoalCumulativeSales != null">washed_lean_coal_cumulative_sales = #{washedLeanCoalCumulativeSales},</if>
+            <if test="washedLeanCoalCurrentStock != null">washed_lean_coal_current_stock = #{washedLeanCoalCurrentStock},</if>
+            <if test="totalCoalInitialStock != null">total_coal_initial_stock = #{totalCoalInitialStock},</if>
+            <if test="totalCoalPreviousStock != null">total_coal_previous_stock = #{totalCoalPreviousStock},</if>
+            <if test="totalCoalDailySales != null">total_coal_daily_sales = #{totalCoalDailySales},</if>
+            <if test="totalCoalCumulativeSales != null">total_coal_cumulative_sales = #{totalCoalCumulativeSales},</if>
+            <if test="totalCoalBookQuantity != null">total_coal_book_quantity = #{totalCoalBookQuantity},</if>
+            <if test="totalCurrentStock != null">total_current_stock = #{totalCurrentStock},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWorkThermalPowerCoalSalesById" parameterType="java.lang.String">
+        delete from work_thermal_power_coal_sales where id = #{id}
+    </delete>
+
+    <delete id="deleteWorkThermalPowerCoalSalesByIds" parameterType="java.lang.String">
+        delete from work_thermal_power_coal_sales where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

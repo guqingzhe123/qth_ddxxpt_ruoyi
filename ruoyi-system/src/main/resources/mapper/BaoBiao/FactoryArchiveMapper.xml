@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ruoyi.system.mapper.BaoBiao.FactoryArchiveMapper">
+
+    <resultMap id="FactoryArchiveMap" type="com.ruoyi.system.domain.BaoBiao.FactoryArchive">
+        <id     property="id"           column="id"/>
+        <result property="factoryType"  column="factory_type"/>
+        <result property="factoryCode"  column="factory_code"/>
+        <result property="factoryName"  column="factory_name"/>
+        <result property="isSealed"     column="is_sealed"/>
+        <result property="sortOrder"    column="sort_order"/>
+        <result property="createTime"   column="create_time"/>
+        <result property="updateTime"   column="update_time"/>
+        <result property="userid"       column="userid"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, factory_type, factory_code, factory_name, is_sealed, sort_order, create_time, update_time,userid
+    </sql>
+
+    <select id="selectById" resultMap="FactoryArchiveMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM factory_archive
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectList" resultMap="FactoryArchiveMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM factory_archive
+        <where>
+            <if test="factoryType != null and factoryType != ''">
+                AND factory_type = #{factoryType}
+            </if>
+            <if test="factoryCode != null and factoryCode != ''">
+                AND factory_code = #{factoryCode}
+            </if>
+            <if test="factoryName != null and factoryName != ''">
+                AND factory_name LIKE CONCAT('%', #{factoryName}, '%')
+            </if>
+            <if test="isSealed != null">
+                AND is_sealed = #{isSealed}
+            </if>
+        </where>
+        ORDER BY sort_order ASC, id DESC
+    </select>
+
+    <insert id="insert" parameterType="com.ruoyi.system.domain.BaoBiao.FactoryArchive" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO factory_archive (
+            factory_type, factory_code, factory_name, is_sealed, sort_order
+        ) VALUES (
+                     #{factoryType}, #{factoryCode}, #{factoryName}, #{isSealed}, #{sortOrder}
+                 )
+    </insert>
+
+    <update id="update" parameterType="com.ruoyi.system.domain.BaoBiao.FactoryArchive">
+        UPDATE factory_archive
+        SET factory_type = #{factoryType},
+            factory_code = #{factoryCode},
+            factory_name = #{factoryName},
+            is_sealed = #{isSealed},
+            sort_order = #{sortOrder}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM factory_archive WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteByIds">
+        DELETE FROM factory_archive WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="getName" resultMap="FactoryArchiveMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM factory_archive
+        WHERE factory_name = #{name}  order by id asc
+    </select>
+</mapper>

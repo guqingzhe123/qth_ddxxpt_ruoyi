@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BaoBiao.WashCoalPlanMapper">
+
+    <resultMap id="WashCoalPlanMap" type="com.ruoyi.system.domain.BaoBiao.po.WashCoalPlanPO">
+        <id     column="id"                property="id"/>
+        <result column="plan_month"        property="planMonth"/>
+        <result column="work_days_in_month" property="workDaysInMonth"/>
+        <result column="create_time"       property="createTime"/>
+        <result column="update_time"       property="updateTime"/>
+        <result column="user_id"           property="userId"/>
+        <result column="is_deleted"        property="isDeleted"/>
+        <result column="mine_category"     property="mineCategory"/>
+    </resultMap>
+
+    <sql id="Base_Columns">
+        id, plan_month, work_days_in_month, create_time, update_time, user_id, is_deleted, mine_category
+    </sql>
+
+    <insert id="insert" parameterType="com.ruoyi.system.domain.BaoBiao.po.WashCoalPlanPO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO wash_coal_plan
+            (plan_month, work_days_in_month, user_id, is_deleted, mine_category)
+        VALUES
+            (#{planMonth}, #{workDaysInMonth}, #{userId}, 0, #{mineCategory})
+    </insert>
+
+    <update id="update" parameterType="com.ruoyi.system.domain.BaoBiao.po.WashCoalPlanPO">
+        UPDATE wash_coal_plan
+        SET plan_month = #{planMonth},
+            work_days_in_month = #{workDaysInMonth},
+            user_id = #{userId},
+            mine_category = #{mineCategory}
+        WHERE id = #{id} AND is_deleted = 0
+    </update>
+
+    <update id="softDeleteById">
+        UPDATE wash_coal_plan SET is_deleted = 1 WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultMap="WashCoalPlanMap">
+        SELECT <include refid="Base_Columns"/> FROM wash_coal_plan
+        WHERE id = #{id} AND is_deleted = 0
+        LIMIT 1
+    </select>
+
+    <select id="selectList" resultMap="WashCoalPlanMap" parameterType="com.ruoyi.system.domain.BaoBiao.po.WashCoalPlanPO">
+        SELECT <include refid="Base_Columns"/> FROM wash_coal_plan
+        <where>
+            <if test="isDeleted != null">AND is_deleted = #{isDeleted}</if>
+            <if test="isDeleted == null">AND is_deleted = 0</if>
+            <if test="mineCategory != null and mineCategory != ''">AND mine_category = #{mineCategory}</if>
+            <if test="userId != null and userId != ''">AND user_id = #{userId}</if>
+            <if test="planMonth != null">AND plan_month = #{planMonth}</if>
+        </where>
+        ORDER BY plan_month DESC, id DESC
+    </select>
+    <select id="selectByPlan" resultMap="WashCoalPlanMap">
+        SELECT <include refid="Base_Columns"/> FROM wash_coal_plan
+        WHERE plan_month = #{planMonth} AND is_deleted = 0
+        LIMIT 1
+    </select>
+</mapper>
+
+        <!--<?xml version="1.0" encoding="UTF-8" ?>-->
+<!--<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"-->
+<!--        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">-->
+<!--<mapper namespace="com.ruoyi.system.mapper.BaoBiao.WashCoalPlanMapper">-->
+
+<!--    &lt;!&ndash; ========== Row 映射：分页列表（列式 JSON 以字符串返回） ========== &ndash;&gt;-->
+<!--    <resultMap id="RowMap" type="com.ruoyi.system.domain.BaoBiao.entity.WashCoalPlanRow">-->
+<!--        <id     column="id"                    property="id"/>-->
+<!--        <result column="plan_month"            property="planMonth"/>-->
+<!--        <result column="work_days_in_month"    property="workDaysInMonth"/>-->
+
+<!--        <result column="unit_code_json"                 property="unitCodeJson"/>-->
+<!--        <result column="unit_name_json"                 property="unitNameJson"/>-->
+<!--        <result column="wash_in_month_plan_json"        property="washInMonthPlanJson"/>-->
+<!--        <result column="wash_in_day_plan_json"          property="washInDayPlanJson"/>-->
+<!--        <result column="clean_coal_month_plan_json"     property="cleanCoalMonthPlanJson"/>-->
+<!--        <result column="clean_coal_day_plan_json"       property="cleanCoalDayPlanJson"/>-->
+<!--        <result column="clean_coal_month_car_plan_json" property="cleanCoalMonthCarPlanJson"/>-->
+<!--        <result column="clean_coal_day_car_plan_json"   property="cleanCoalDayCarPlanJson"/>-->
+<!--        <result column="slack_coal_month_plan_json"     property="slackCoalMonthPlanJson"/>-->
+<!--        <result column="slack_coal_day_plan_json"       property="slackCoalDayPlanJson"/>-->
+<!--        <result column="slack_coal_month_car_plan_json" property="slackCoalMonthCarPlanJson"/>-->
+<!--        <result column="slack_coal_day_car_plan_json"   property="slackCoalDayCarPlanJson"/>-->
+
+<!--        <result column="user_id"               property="userId"/>-->
+<!--        <result column="is_deleted"            property="isDeleted"/>-->
+<!--        <result column="mine_category"         property="mineCategory"/>-->
+<!--        <result column="create_time"           property="createTime"/>-->
+<!--        <result column="update_time"           property="updateTime"/>-->
+<!--    </resultMap>-->
+
+<!--    <sql id="BaseColumns_ForRow">-->
+<!--        id,-->
+<!--        plan_month,-->
+<!--        work_days_in_month,-->
+
+<!--        CAST(unit_code                 AS CHAR) AS unit_code_json,-->
+<!--        CAST(unit_name                 AS CHAR) AS unit_name_json,-->
+<!--        CAST(wash_in_month_plan        AS CHAR) AS wash_in_month_plan_json,-->
+<!--        CAST(wash_in_day_plan          AS CHAR) AS wash_in_day_plan_json,-->
+<!--        CAST(clean_coal_month_plan     AS CHAR) AS clean_coal_month_plan_json,-->
+<!--        CAST(clean_coal_day_plan       AS CHAR) AS clean_coal_day_plan_json,-->
+<!--        CAST(clean_coal_month_car_plan AS CHAR) AS clean_coal_month_car_plan_json,-->
+<!--        CAST(clean_coal_day_car_plan   AS CHAR) AS clean_coal_day_car_plan_json,-->
+<!--        CAST(slack_coal_month_plan     AS CHAR) AS slack_coal_month_plan_json,-->
+<!--        CAST(slack_coal_day_plan       AS CHAR) AS slack_coal_day_plan_json,-->
+<!--        CAST(slack_coal_month_car_plan AS CHAR) AS slack_coal_month_car_plan_json,-->
+<!--        CAST(slack_coal_day_car_plan   AS CHAR) AS slack_coal_day_car_plan_json,-->
+
+<!--        user_id,-->
+<!--        is_deleted,-->
+<!--        mine_category,-->
+<!--        create_time,-->
+<!--        update_time-->
+<!--    </sql>-->
+
+<!--    &lt;!&ndash; 分页/条件查询（你的接口是 @Param("q")，所以这里用 #{q.xxx}；parameterType 用 map 更安全） &ndash;&gt;-->
+<!--    <select id="selectPage" parameterType="map" resultMap="RowMap">-->
+<!--        SELECT-->
+<!--        <include refid="BaseColumns_ForRow"/>-->
+<!--        FROM wash_coal_plan-->
+<!--        <where>-->
+<!--            is_deleted = 0-->
+<!--            <if test="q != null and q.userId != null and q.userId != ''">-->
+<!--                AND user_id = #{q.userId}-->
+<!--            </if>-->
+<!--            <if test="q != null and q.mineCategory != null and q.mineCategory != ''">-->
+<!--                AND mine_category = #{q.mineCategory}-->
+<!--            </if>-->
+<!--            <if test="q != null and q.beginDate != null">-->
+<!--                AND plan_month &gt;= #{q.beginDate}-->
+<!--            </if>-->
+<!--            <if test="q != null and q.endDate != null">-->
+<!--                AND plan_month &lt;= #{q.endDate}-->
+<!--            </if>-->
+<!--            <if test="q != null and q.unitCode != null and q.unitCode != ''">-->
+<!--                AND JSON_CONTAINS(unit_code, JSON_QUOTE(#{q.unitCode}), '$')-->
+<!--            </if>-->
+<!--            <if test="q != null and q.keyword != null and q.keyword != ''">-->
+<!--                AND (JSON_SEARCH(unit_name, 'one', CONCAT('%', #{q.keyword}, '%')) IS NOT NULL)-->
+<!--            </if>-->
+<!--        </where>-->
+
+<!--        <choose>-->
+<!--            <when test="q != null and q.orderByColumn != null and q.orderByColumn != ''">-->
+<!--                ORDER BY ${q.orderByColumn} ${q.isAsc != null ? q.isAsc : 'desc'}-->
+<!--            </when>-->
+<!--            <otherwise>-->
+<!--                ORDER BY plan_month DESC, id DESC-->
+<!--            </otherwise>-->
+<!--        </choose>-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash; ========== Entity 映射：针对 WashCoalPlan（非 Row） ========== &ndash;&gt;-->
+<!--    <resultMap id="EntityMap" type="com.ruoyi.system.domain.BaoBiao.WashCoalPlan">-->
+<!--        <id     column="id"                    property="id"/>-->
+<!--        <result column="plan_month"            property="planMonth"/>-->
+<!--        <result column="work_days_in_month"    property="workDaysInMonth"/>-->
+
+<!--        &lt;!&ndash; 视你实体而定：如果实体是“非 JSON 列式”的老字段，请在此完整对齐；下方 SQL 也要对应 &ndash;&gt;-->
+<!--        <result column="user_id"               property="userId"/>-->
+<!--        <result column="mine_category"         property="mineCategory"/>-->
+<!--        <result column="create_time"           property="createTime"/>-->
+<!--        <result column="update_time"           property="updateTime"/>-->
+<!--        <result column="is_deleted"            property="isDeleted"/>-->
+<!--    </resultMap>-->
+
+<!--    <sql id="BaseColumns_ForEntity">-->
+<!--        id, plan_month, work_days_in_month, user_id, mine_category, create_time, update_time, is_deleted-->
+<!--    </sql>-->
+
+<!--    &lt;!&ndash; 按 ID 查询（Entity） &ndash;&gt;-->
+<!--    <select id="selectById" resultMap="EntityMap">-->
+<!--        SELECT <include refid="BaseColumns_ForEntity"/>-->
+<!--        FROM wash_coal_plan-->
+<!--        WHERE id = #{id}-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash; 按 yyyy-MM + 矿类 + 可选 userId 查询（Entity） &ndash;&gt;-->
+<!--    <select id="selectByMonthAndCategory" resultMap="EntityMap">-->
+<!--        SELECT <include refid="BaseColumns_ForEntity"/>-->
+<!--        FROM wash_coal_plan-->
+<!--        <where>-->
+<!--            1 = 1-->
+<!--            <if test="planMonth != null and planMonth != ''">-->
+<!--                AND DATE_FORMAT(plan_month, '%Y-%m') = #{planMonth}-->
+<!--            </if>-->
+<!--            <if test="mineCategory != null and mineCategory != ''">-->
+<!--                AND mine_category = #{mineCategory}-->
+<!--            </if>-->
+<!--            <if test="userId != null and userId != ''">-->
+<!--                AND user_id = #{userId}-->
+<!--            </if>-->
+<!--            AND is_deleted = 0-->
+<!--        </where>-->
+<!--        ORDER BY id DESC-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash; 摘要分页列表（VO）：你 VO 里有哪些字段，就在这里挑选哪些列 &ndash;&gt;-->
+<!--    <select id="selectPageList" resultType="com.ruoyi.system.vo.WashCoalPlanPageVO">-->
+<!--        SELECT-->
+<!--        id,-->
+<!--        plan_month,-->
+<!--        work_days_in_month,-->
+<!--        mine_category,-->
+<!--        user_id,-->
+<!--        create_time,-->
+<!--        update_time-->
+<!--        FROM wash_coal_plan-->
+<!--        <where>-->
+<!--            is_deleted = 0-->
+<!--            <if test="planMonth != null and planMonth != ''">-->
+<!--                AND DATE_FORMAT(plan_month, '%Y-%m') = #{planMonth}-->
+<!--            </if>-->
+<!--            <if test="mineCategory != null and mineCategory != ''">-->
+<!--                AND mine_category = #{mineCategory}-->
+<!--            </if>-->
+<!--            <if test="userId != null and userId != ''">-->
+<!--                AND user_id = #{userId}-->
+<!--            </if>-->
+<!--        </where>-->
+<!--        ORDER BY plan_month DESC, id DESC-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash; 新增（Entity）：这里给出一个保守版，只写公共字段；你若是“列式 JSON”存储，请把 JSON 列也补上 &ndash;&gt;-->
+<!--    <insert id="insert" parameterType="com.ruoyi.system.domain.BaoBiao.WashCoalPlan"-->
+<!--            useGeneratedKeys="true" keyProperty="id">-->
+<!--        INSERT INTO wash_coal_plan (-->
+<!--            plan_month,-->
+<!--            work_days_in_month,-->
+<!--            user_id,-->
+<!--            mine_category,-->
+<!--            is_deleted,-->
+<!--            create_time,-->
+<!--            update_time-->
+<!--        ) VALUES (-->
+<!--                     #{planMonth},-->
+<!--                     #{workDaysInMonth},-->
+<!--                     #{userId},-->
+<!--                     #{mineCategory},-->
+<!--                     0,-->
+<!--                     NOW(),-->
+<!--                     NOW()-->
+<!--                 )-->
+<!--    </insert>-->
+
+<!--    &lt;!&ndash; 按 ID 更新（Entity）：同理，根据你实体实际字段自行追加 set 子句 &ndash;&gt;-->
+<!--    <update id="updateById" parameterType="com.ruoyi.system.domain.BaoBiao.WashCoalPlan">-->
+<!--        UPDATE wash_coal_plan-->
+<!--        <set>-->
+<!--            <if test="planMonth != null">plan_month = #{planMonth},</if>-->
+<!--            <if test="workDaysInMonth != null">work_days_in_month = #{workDaysInMonth},</if>-->
+<!--            <if test="userId != null and userId != ''">user_id = #{userId},</if>-->
+<!--            <if test="mineCategory != null and mineCategory != ''">mine_category = #{mineCategory},</if>-->
+<!--            update_time = NOW()-->
+<!--        </set>-->
+<!--        WHERE id = #{id}-->
+<!--    </update>-->
+
+<!--</mapper>-->

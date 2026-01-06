@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.LongmeiPlanInputMapper">
+
+    <resultMap type="com.ruoyi.system.domain.LongmeiPlanInput" id="LongmeiPlanInputResult">
+        <result property="id"    column="id"    />
+        <result property="planMonth"    column="plan_month"    />
+        <result property="workDaysInMonth"    column="work_days_in_month"    />
+        <result property="isDeleted"    column="is_deleted"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateUser"    column="update_user"    />
+    </resultMap>
+
+    <sql id="selectLongmeiPlanInputVo">
+        select id, plan_month, work_days_in_month, is_deleted, create_time, create_user, update_time, update_user from longmei_plan_input
+    </sql>
+
+    <select id="selectLongmeiPlanInputList" parameterType="com.ruoyi.system.domain.LongmeiPlanInput" resultMap="LongmeiPlanInputResult">
+        <include refid="selectLongmeiPlanInputVo"/>
+        <where>
+            <if test="planMonth != null  and planMonth != ''"> and plan_month = #{planMonth}</if>
+            <if test="workDaysInMonth != null "> and work_days_in_month = #{workDaysInMonth}</if>
+            <if test="isDeleted != null "> and is_deleted = #{isDeleted}</if>
+            <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
+            <if test="updateUser != null "> and update_user = #{updateUser}</if>
+        </where>
+    </select>
+
+    <select id="selectLongmeiPlanInputById" parameterType="java.lang.Long" resultMap="LongmeiPlanInputResult">
+        <include refid="selectLongmeiPlanInputVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertLongmeiPlanInput" parameterType="com.ruoyi.system.domain.LongmeiPlanInput" useGeneratedKeys="true" keyProperty="id">
+        insert into longmei_plan_input
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="planMonth != null">plan_month,</if>
+            <if test="workDaysInMonth != null">work_days_in_month,</if>
+            <if test="isDeleted != null">is_deleted,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createUser != null">create_user,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateUser != null">update_user,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="planMonth != null">#{planMonth},</if>
+            <if test="workDaysInMonth != null">#{workDaysInMonth},</if>
+            <if test="isDeleted != null">#{isDeleted},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+        </trim>
+    </insert>
+
+    <update id="updateLongmeiPlanInput" parameterType="com.ruoyi.system.domain.LongmeiPlanInput">
+        update longmei_plan_input
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="planMonth != null">plan_month = #{planMonth},</if>
+            <if test="workDaysInMonth != null">work_days_in_month = #{workDaysInMonth},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createUser != null">create_user = #{createUser},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLongmeiPlanInputById" parameterType="java.lang.Long">
+        delete from longmei_plan_input where id = #{id}
+    </delete>
+
+    <delete id="deleteLongmeiPlanInputByIds" parameterType="java.lang.String">
+        delete from longmei_plan_input where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

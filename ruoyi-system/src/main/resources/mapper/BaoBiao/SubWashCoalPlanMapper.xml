@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BaoBiao.SubWashCoalPlanMapper">
+
+    <resultMap id="SubMap" type="com.ruoyi.system.domain.BaoBiao.po.SubWashCoalPlanPO">
+        <id column="id" property="id"/>
+        <result column="wash_coal_plan_id" property="washCoalPlanId"/>
+        <result column="unit_code" property="unitCode"/>
+        <result column="unit_name" property="unitName"/>
+
+        <result column="wash_in_month_plan" property="washInMonthPlan"/>
+        <result column="wash_in_day_plan" property="washInDayPlan"/>
+
+        <result column="clean_coal_month_plan" property="cleanCoalMonthPlan"/>
+        <result column="clean_coal_day_plan" property="cleanCoalDayPlan"/>
+        <result column="clean_coal_month_car_plan" property="cleanCoalMonthCarPlan"/>
+        <result column="clean_coal_day_car_plan" property="cleanCoalDayCarPlan"/>
+
+        <result column="slack_coal_month_plan" property="slackCoalMonthPlan"/>
+        <result column="slack_coal_day_plan" property="slackCoalDayPlan"/>
+        <result column="slack_coal_month_car_plan" property="slackCoalMonthCarPlan"/>
+        <result column="slack_coal_day_car_plan" property="slackCoalDayCarPlan"/>
+        <result column="is_deleted" property="isDeleted"/>
+
+    </resultMap>
+
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT INTO sub_wash_coal_plan(
+        wash_coal_plan_id, unit_code, unit_name,
+        wash_in_month_plan, wash_in_day_plan,
+        clean_coal_month_plan, clean_coal_day_plan, clean_coal_month_car_plan, clean_coal_day_car_plan,
+        slack_coal_month_plan, slack_coal_day_plan, slack_coal_month_car_plan, slack_coal_day_car_plan, is_deleted
+        ) VALUES
+        <foreach collection="list" item="it" separator=",">
+            (
+            #{it.washCoalPlanId}, #{it.unitCode}, #{it.unitName},
+            #{it.washInMonthPlan}, #{it.washInDayPlan},
+            #{it.cleanCoalMonthPlan}, #{it.cleanCoalDayPlan}, #{it.cleanCoalMonthCarPlan}, #{it.cleanCoalDayCarPlan},
+            #{it.slackCoalMonthPlan}, #{it.slackCoalDayPlan}, #{it.slackCoalMonthCarPlan}, #{it.slackCoalDayCarPlan},
+            #{it.isDeleted}
+
+            )
+        </foreach>
+    </insert>
+    <update id="uopDate" >
+        update sub_wash_coal_plan set wash_in_month_plan = #{washInMonthPlan}, wash_in_day_plan = #{washInDayPlan},
+                              clean_coal_month_plan = #{cleanCoalMonthPlan}, clean_coal_day_plan = #{cleanCoalDayPlan},
+                              clean_coal_month_car_plan = #{cleanCoalMonthCarPlan}, clean_coal_day_car_plan = #{cleanCoalDayCarPlan},
+                              slack_coal_month_plan = #{slackCoalMonthPlan}, slack_coal_day_plan = #{slackCoalDayPlan},
+                              slack_coal_month_car_plan = #{slackCoalMonthCarPlan}, slack_coal_day_car_plan = #{slackCoalDayCarPlan}
+                , is_deleted = #{isDeleted}
+                               where wash_coal_plan_id = #{washCoalPlanId} and unit_name = #{unitName}
+    </update>
+    <delete id="deleteByPlanId">
+        DELETE FROM sub_wash_coal_plan WHERE wash_coal_plan_id = #{planId}
+    </delete>
+    <delete id="deleteByMddIdAll">
+        update sub_wash_coal_plan
+        set is_deleted = 2
+        where
+            wash_coal_plan_id = #{washCoalPlanId}
+          and unit_name = #{unitName}
+
+    </delete>
+
+    <select id="selectByPlanId" resultMap="SubMap">
+        SELECT * FROM sub_wash_coal_plan WHERE wash_coal_plan_id = #{planId}
+        ORDER BY id ASC
+    </select>
+    <select id="selectByPlanIdUnitName" resultMap="SubMap">
+        SELECT * FROM sub_wash_coal_plan WHERE wash_coal_plan_id = #{planId} and unit_name=#{unitName}
+        ORDER BY id ASC
+    </select>
+    <select id="selectByPlanIds" parameterType="java.util.List" resultMap="SubMap">
+        SELECT * FROM sub_wash_coal_plan
+        WHERE wash_coal_plan_id IN
+        <foreach collection="list" item="pid" open="(" separator="," close=")">#{pid}</foreach>
+        ORDER BY wash_coal_plan_id ASC, id ASC
+    </select>
+
+    <select id="selectByPlanMonth" parameterType="java.util.List" resultMap="SubMap">
+        SELECT SUM(wash_in_month_plan) AS wash_in_month_plan,
+               SUM(wash_in_day_plan) AS  wash_in_day_plan,
+               SUM(clean_coal_month_plan) as clean_coal_month_plan,
+               SUM(clean_coal_day_plan) as clean_coal_day_plan,
+               SUM(clean_coal_month_car_plan) as clean_coal_month_car_plan,
+               SUM(clean_coal_day_car_plan) as clean_coal_day_car_plan,
+               SUM(slack_coal_month_plan) as slack_coal_month_plan,
+               SUM(slack_coal_day_plan) as slack_coal_day_plan,
+               SUM(slack_coal_month_car_plan) as slack_coal_month_car_plan,
+               SUM(slack_coal_day_car_plan) as slack_coal_day_car_plan
+        FROM sub_wash_coal_plan WHERE
+        wash_coal_plan_id IN (SELECT id from wash_coal_plan where YEAR(plan_month)=YEAR(#{statsDate}) AND MONTH(plan_month)=MONTH(#{statsDate}))
+        and unit_code=#{unitCode} GROUP BY unit_code
+
+    </select>
+    <select id="selectByPlanYear" parameterType="java.util.List" resultMap="SubMap">
+        SELECT SUM(wash_in_month_plan) AS wash_in_month_plan,
+               SUM(clean_coal_month_plan) as clean_coal_month_plan
+        FROM sub_wash_coal_plan WHERE
+            wash_coal_plan_id IN (SELECT id from wash_coal_plan where YEAR(plan_month)=YEAR(#{statsDate}) )
+                                  and unit_code=#{unitCode} GROUP BY unit_code
+    </select>
+
+    <select id="selectByPlanDayUnitCode" parameterType="java.util.List" resultMap="SubMap">
+        SELECT unit_code,unit_name,SUM(wash_in_month_plan) AS wash_in_month_plan,
+               SUM(wash_in_day_plan) AS  wash_in_day_plan,
+               SUM(clean_coal_month_plan) as clean_coal_month_plan,
+               SUM(clean_coal_day_plan) as clean_coal_day_plan
+        FROM sub_wash_coal_plan WHERE
+            wash_coal_plan_id IN (SELECT id from wash_coal_plan where plan_month=#{statsDate})
+        GROUP BY unit_code,unit_name
+
+    </select>
+    <select id="selectByPlanYearUnitCode" parameterType="java.util.List" resultMap="SubMap">
+        SELECT unit_code,unit_name,SUM(wash_in_month_plan) AS wash_in_month_plan,
+               SUM(clean_coal_month_plan) as clean_coal_month_plan
+        FROM sub_wash_coal_plan WHERE
+            wash_coal_plan_id IN (SELECT id from wash_coal_plan where YEAR(plan_month)=YEAR(#{statsDate}) and plan_month &lt;= #{statsDate})
+             GROUP BY unit_code,unit_name
+    </select>
+</mapper>

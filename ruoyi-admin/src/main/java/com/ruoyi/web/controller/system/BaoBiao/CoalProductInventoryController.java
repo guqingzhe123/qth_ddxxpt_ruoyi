@@ -1,0 +1,118 @@
+package com.ruoyi.web.controller.system.BaoBiao;
+
+import com.ruoyi.common.annotation.Anonymous;
+import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.domain.entity.SysRole;
+import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.system.domain.BaoBiao.FactoryArchive;
+import com.ruoyi.system.domain.BaoBiao.dto.cpi.SubCoalProductInventory;
+import com.ruoyi.system.domain.SysUserRole;
+import com.ruoyi.system.domain.UserMessage;
+import com.ruoyi.system.mapper.SysRoleMapper;
+import com.ruoyi.system.mapper.SysUserMapper;
+import com.ruoyi.system.mapper.SysUserRoleMapper;
+import com.ruoyi.system.mapper.UserMessageMapper;
+import com.ruoyi.system.service.BaoBiao.ICoalProductInventoryService;
+import com.ruoyi.system.service.BaoBiao.IFactoryArchiveService;
+import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+@Api(tags = "洗煤产品库存及自用")
+@RestController
+@RequestMapping("/dev-api/system/coalProductInventory")
+public class CoalProductInventoryController extends BaseController {
+
+    @Resource
+    private ICoalProductInventoryService service;
+    @Resource
+    private IFactoryArchiveService factoryArchiveService;//洗煤厂列表
+
+    @Resource
+    private SysUserMapper sysUserMapper;//查找用户id
+    @Resource
+    private SysRoleMapper sysRoleMapper;
+    @Resource
+    private SysUserRoleMapper sysUserRoleMapper;
+    @Resource
+    private UserMessageMapper messageMapper;
+
+    @Anonymous
+    @Operation(summary = "新增洗煤产品库存及自用煤（入参含 data_JSON）")
+    @PostMapping
+    public AjaxResult add(@RequestBody List<SubCoalProductInventory> dto) {
+        SysRole 七煤集团权限 = sysRoleMapper.checkRoleNameUnique("七煤集团权限");
+        List<SysUserRole> sysUserRoles = sysUserRoleMapper.selectRoleUserInfos(Arrays.asList(七煤集团权限.getRoleId()));
+        for (SysUserRole userRole:sysUserRoles) {
+            String message=dto.get(0).getUnitName()+"提交了洗煤产品库存及自用煤录入";
+            messageMapper.insertUserMessage(new UserMessage(SecurityUtils.getUserId(),userRole.getUserId(),message,new Date()));
+        }
+        return AjaxResult.success(service.saveSubCoalProductInventory(dto));
+    }
+
+    @Anonymous
+    @Operation(summary = "修改（全量替换子表 data_JSON）")
+    @PutMapping
+    public AjaxResult edit(@RequestBody SubCoalProductInventory dto) {
+        return AjaxResult.toAjax(service.updateSubCoalProductInventory(dto));
+    }
+
+    @Anonymous
+    @Operation(summary = "删除（软删主表）")
+    @DeleteMapping("/{id}")
+    public AjaxResult remove(@PathVariable Long id) {
+        return AjaxResult.toAjax(service.deleteSubCoalProductInventoryById(id));
+    }
+
+    @Anonymous
+    @Operation(summary = "按ID查询详情（含 data_JSON）")
+    @GetMapping("/{id}")
+    public AjaxResult get(@PathVariable Long id) {
+        return AjaxResult.success(service.getSubCoalProductInventoryById(id));
+    }
+
+    @Anonymous
+    @Operation(summary = "分页列表（含 data_JSON；支持子表条件过滤）")
+    @PostMapping("/page")
+    public TableDataInfo page(@RequestBody SubCoalProductInventory query) {
+        //startPage();
+        List<SubCoalProductInventory> list = service.listSubCoalProductInventory(query);
+        if(query.getUnitName() ==null){
+            FactoryArchive factoryArchive=new FactoryArchive();
+            factoryArchive.setFactoryType("所属厂档案");
+            factoryArchive.setIsSealed(0);
+            if(query.getUnitName()!=null){
+                factoryArchive.setFactoryName(query.getUnitName());
+            }
+            List<FactoryArchive> list1 = factoryArchiveService.list(factoryArchive);
+            List<SubCoalProductInventory> month = service.selectProductMonth(DateUtils.getFirstDayOfMonth(query.getRecordDate()));
+            if(month.size()>0){
+                for (FactoryArchive fact :list1) {
+                    for (SubCoalProductInventory subC:month){
+                        if(fact.getFactoryCode()==subC.getUnitCode()){
+                            subC.setUnitCode(fact.getFactoryCode());
+                            subC.setUnitName(fact.getFactoryName());
+                            list.add(subC);
+                        }
+                    }
+                }
+            }else {
+                for (FactoryArchive fact :list1) {
+                    SubCoalProductInventory subc=new SubCoalProductInventory();
+                    subc.setUnitCode(fact.getFactoryCode());
+                    subc.setUnitName(fact.getFactoryName());
+                    list.add(subc);
+                }
+            }
+        }
+        return getDataTable(list);
+    }
+}

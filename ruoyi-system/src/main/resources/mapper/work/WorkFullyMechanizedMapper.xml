@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.work.WorkFullyMechanizedMapper">
+
+    <resultMap type="com.ruoyi.system.domain.work.WorkFullyMechanized" id="WorkFullyMechanizedResult">
+        <result property="id"    column="id"    />
+        <result property="statsType"    column="stats_type"    />
+        <result property="unitName"    column="unit_name"    />
+        <result property="unitCode"    column="unit_code"    />
+        <result property="teamName"    column="team_name"    />
+    </resultMap>
+
+    <sql id="selectWorkFullyMechanizedVo">
+        select id, stats_type, unit_name, unit_code, team_name from work_fully_mechanized
+    </sql>
+
+    <select id="selectWorkFullyMechanizedList" parameterType="com.ruoyi.system.domain.work.WorkFullyMechanized" resultMap="WorkFullyMechanizedResult">
+        <include refid="selectWorkFullyMechanizedVo"/>
+        <where>
+            <if test="statsType != null  and statsType != ''"> and stats_type = #{statsType}</if>
+            <if test="unitName != null  and unitName != ''"> and unit_name like concat('%', #{unitName}, '%')</if>
+            <if test="unitCode != null  and unitCode != ''"> and unit_code = #{unitCode}</if>
+            <if test="teamName != null  and teamName != ''"> and team_name like concat('%', #{teamName}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectWorkFullyMechanizedById" parameterType="java.lang.Long" resultMap="WorkFullyMechanizedResult">
+        <include refid="selectWorkFullyMechanizedVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWorkFullyMechanized" parameterType="com.ruoyi.system.domain.work.WorkFullyMechanized" useGeneratedKeys="true" keyProperty="id">
+        insert into work_fully_mechanized
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="statsType != null">stats_type,</if>
+            <if test="unitName != null">unit_name,</if>
+            <if test="unitCode != null">unit_code,</if>
+            <if test="teamName != null">team_name,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="statsType != null">#{statsType},</if>
+            <if test="unitName != null">#{unitName},</if>
+            <if test="unitCode != null">#{unitCode},</if>
+            <if test="teamName != null">#{teamName},</if>
+        </trim>
+    </insert>
+
+    <update id="updateWorkFullyMechanized" parameterType="com.ruoyi.system.domain.work.WorkFullyMechanized">
+        update work_fully_mechanized
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="statsType != null">stats_type = #{statsType},</if>
+            <if test="unitName != null">unit_name = #{unitName},</if>
+            <if test="unitCode != null">unit_code = #{unitCode},</if>
+            <if test="teamName != null">team_name = #{teamName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWorkFullyMechanizedById" parameterType="java.lang.Long">
+        delete from work_fully_mechanized where id = #{id}
+    </delete>
+
+    <delete id="deleteWorkFullyMechanizedByIds" parameterType="java.lang.String">
+        delete from work_fully_mechanized where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

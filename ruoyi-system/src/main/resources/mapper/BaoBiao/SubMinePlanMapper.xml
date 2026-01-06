@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BaoBiao.SubMinePlanMapper">
+
+    <resultMap id="SubMap" type="com.ruoyi.system.domain.BaoBiao.po.SubMinePlanPO">
+        <id     column="id"             property="id"/>
+        <result column="mine_plan_id"   property="minePlanId"/>
+        <result column="month_plan"     property="monthPlan"/>
+        <result column="day_plan"       property="dayPlan"/>
+        <result column="month_target"   property="monthTarget"/>
+        <result column="day_target"     property="dayTarget"/>
+        <result column="unit_name"     property="unitName"/>
+        <result column="unit_code"     property="unitCode"/>
+        <result column="is_deleted"     property="isDeleted"/>
+    </resultMap>
+    <resultMap id="SubMap1" type="com.ruoyi.system.domain.BaoBiao.po.SubMinePlanP1">
+        <result column="day_plan"       property="dayPlan"/>
+        <result column="month_plan"     property="monthPlan"/>
+        <result column="year_plan"       property="yearPlan"/>
+        <result column="day_target"     property="dayTarget"/>
+        <result column="month_target"   property="monthTarget"/>
+        <result column="year_target"       property="yearTarget"/>
+    </resultMap>
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT INTO sub_mine_plan(
+        mine_plan_id, month_plan, day_plan, month_target, day_target, unit_name, unit_code, is_deleted
+        ) VALUES
+        <foreach collection="list" item="it" separator=",">
+            (#{it.minePlanId},#{it.monthPlan}, #{it.dayPlan}, #{it.monthTarget}, #{it.dayTarget}, #{it.unitName}, #{it.unitCode}, #{it.isDeleted})
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPlanId">
+        DELETE FROM sub_mine_plan WHERE mine_plan_id = #{planId}
+    </delete>
+    <delete id="deleteById">
+        DELETE FROM sub_mine_plan WHERE id = #{id}
+    </delete>
+    <update id="update">
+        UPDATE sub_mine_plan SET is_deleted = #{isDeleted} WHERE id = #{id}
+    </update>
+    <update id="updateDell">
+        UPDATE sub_mine_plan SET is_deleted = #{isDeleted},month_plan=0,day_plan=0,month_target=0,day_target=0 WHERE id = #{id}
+    </update>
+
+    <update id="updateDay" parameterType="com.ruoyi.system.domain.BaoBiao.po.SubMinePlanPO"  >
+        UPDATE sub_mine_plan SET day_plan= #{isDeleted},day_target= #{isDeleted} WHERE id = #{id}
+    </update>
+    <select id="selectByPlanId" resultMap="SubMap">
+        SELECT * FROM sub_mine_plan WHERE mine_plan_id = #{planId}
+        ORDER BY id ASC
+    </select>
+    <select id="selectById" resultMap="SubMap">
+        SELECT * FROM sub_mine_plan WHERE id = #{id}
+        ORDER BY id ASC
+    </select>
+    <select id="selectByPlanIds" parameterType="java.util.List" resultMap="SubMap">
+        SELECT * FROM sub_mine_plan
+        WHERE mine_plan_id IN
+        <foreach collection="list" item="pid" open="(" separator="," close=")">#{pid}</foreach>
+        ORDER BY mine_plan_id ASC, id ASC
+    </select>
+<!--    <select id="selectByPlanYear" resultMap="SubMap">-->
+<!--        SELECT t2.unit_name,sum(t2.month_plan) as month_plan-->
+<!--        from sub_mine_plan  t2-->
+<!--                 LEFT join mine_plan t1 on t1.id=t2.mine_plan_id-->
+<!--        where YEAR(t1.plan_month) =YEAR(#{statsDate}) and t1.plan_type= #{planType}GROUP BY t2.unit_name-->
+<!--    </select>-->
+    <select id="selectByPlanYear" resultMap="SubMap">  <!-- 明确指定返回Map类型 -->
+        SELECT
+        t2.unit_name,t2.unit_code,
+        sum(t2.month_plan) as month_plan,
+        sum(t2.month_target) as month_target
+        FROM sub_mine_plan t2
+        INNER JOIN mine_plan t1 ON t1.id = t2.mine_plan_id
+        WHERE
+        YEAR(t1.plan_month) = YEAR(#{statsDate})
+        and t1.mine_category='全矿'
+        AND t1.plan_type = #{planType}
+        AND t1.plan_month &lt;= #{statsDate}
+        and t2.is_deleted=0
+        GROUP BY t2.unit_name,t2.unit_code
+    </select>
+
+    <select id="selectByPlanOneYear" resultMap="SubMap">  <!-- 明确指定返回Map类型 -->
+        SELECT
+        t2.unit_name,t2.unit_code,
+        sum(t2.month_plan) as month_plan,
+        sum(t2.month_target) as month_target
+        FROM sub_mine_plan t2
+        INNER JOIN mine_plan t1 ON t1.id = t2.mine_plan_id
+        WHERE
+        YEAR(t1.plan_month) = YEAR(#{statsDate})
+        and t1.mine_category='单矿'
+        and t1.unit_name=#{unitName}
+        AND t1.plan_type = #{planType}
+        AND t1.plan_month &lt;= #{statsDate}
+        and t2.is_deleted=0
+        GROUP BY t2.unit_name,t2.unit_code
+    </select>
+    <select id="selectByPlanMonth" resultMap="SubMap">  <!-- 明确指定返回Map类型 -->
+        SELECT
+        t2.unit_name,t2.unit_code,
+        sum(t2.month_plan) as month_plan,
+        sum(t2.month_target) as month_target
+        FROM sub_mine_plan t2
+        INNER JOIN mine_plan t1 ON t1.id = t2.mine_plan_id
+        WHERE
+        YEAR(t1.plan_month) = YEAR(#{statsDate})
+        AND MONTH(t1.plan_month) = MONTH(#{statsDate})
+        and t1.mine_category='全矿'
+        AND t1.plan_type = #{planType}
+        AND t1.plan_month &lt;= #{statsDate}
+        GROUP BY t2.unit_name,t2.unit_code
+    </select>
+    <select id="selectAllJiHua" parameterType="com.ruoyi.system.domain.BaoBiao.po.MinePlanPO" resultMap="SubMap1">  <!-- 明确指定返回Map类型 -->
+        SELECT sum(day_plan) as day_plan,sum(month_plan) as month_plan,
+        sum(day_target) as day_target ,sum(month_target) as month_target
+        from sub_mine_plan t1 left join  mine_plan t2 on t2.id =t1.mine_plan_id
+        where t2.plan_type= #{planType}  and t2.mine_category= #{mineCategory} and plan_month=#{planMonth}  and t1.is_deleted=0
+    </select>
+
+    <select id="selectAllJiHuaYear" parameterType="com.ruoyi.system.domain.BaoBiao.po.MinePlanPO" resultMap="SubMap1">  <!-- 明确指定返回Map类型 -->
+        SELECT sum(month_plan) as year_plan,
+        sum(month_target) as year_target
+        from sub_mine_plan t1 left join  mine_plan t2 on t2.id =t1.mine_plan_id
+        where t2.plan_type= #{planType}  and t2.mine_category= #{mineCategory} and year(plan_month)=year(#{planMonth})  and t1.is_deleted=0
+    </select>
+
+</mapper>

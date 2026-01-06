@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.work.WorkProductionFaceMapper">
+    <resultMap type="com.ruoyi.system.domain.work.WorkProductionFace" id="WorkProductionFaceResult">
+        <result property="id" column="id"/>
+        <result property="unit" column="unit"/>
+        <result property="unitCode" column="unit_code"/>
+        <result property="teamId" column="team_id"/>
+        <result property="workLocation" column="work_location"/>
+        <result property="miningTechnology" column="mining_technology"/>
+        <result property="unitModel" column="unit_model"/>
+        <result property="scraperConveyorModel" column="scraper_conveyor_model"/>
+        <result property="supportForm" column="support_form"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <sql id="selectWorkProductionFaceVo">
+        select id,
+               unit,
+               unit_code,
+               team_id,
+               work_location,
+               mining_technology,
+               unit_model,
+               scraper_conveyor_model,
+               support_form,
+               status,
+               create_time
+        from work_production_face
+    </sql>
+
+    <select id="selectWorkProductionFaceList" parameterType="com.ruoyi.system.domain.work.WorkProductionFace"
+            resultMap="WorkProductionFaceResult">
+        <include refid="selectWorkProductionFaceVo"/>
+        <where>
+            <if test="unit != null  and unit != ''">
+                and unit = #{unit}
+            </if>
+            <if test="unitCode != null  and unitCode != ''">
+                and unit_code = #{unitCode}
+            </if>
+            <if test="teamId != null  and teamId != ''">
+                and team_id = #{teamId}
+            </if>
+            <if test="workLocation != null  and workLocation != ''">
+                and work_location = #{workLocation}
+            </if>
+            <if test="miningTechnology != null  and miningTechnology != ''">
+                and mining_technology = #{miningTechnology}
+            </if>
+            <if test="unitModel != null  and unitModel != ''">
+                and unit_model = #{unitModel}
+            </if>
+            <if test="scraperConveyorModel != null  and scraperConveyorModel != ''">
+                and scraper_conveyor_model = #{scraperConveyorModel}
+            </if>
+            <if test="supportForm != null  and supportForm != ''">
+                and support_form = #{supportForm}
+            </if>
+            <if test="status != null  and status != ''">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectWorkProductionFaceById" parameterType="java.lang.String" resultMap="WorkProductionFaceResult">
+        <include refid="selectWorkProductionFaceVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWorkProductionFace" parameterType="com.ruoyi.system.domain.work.WorkProductionFace"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into work_production_face
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="unit != null and unit != ''">
+                unit,
+            </if>
+            <if test="unitCode != null and unitCode != ''">
+                unit_code,
+            </if>
+            <if test="teamId != null and teamId != ''">
+                team_id,
+            </if>
+            <if test="workLocation != null and workLocation != ''">
+                work_location,
+            </if>
+            <if test="miningTechnology != null and miningTechnology != ''">
+                mining_technology,
+            </if>
+            <if test="unitModel != null">
+                unit_model,
+            </if>
+            <if test="scraperConveyorModel != null">
+                scraper_conveyor_model,
+            </if>
+            <if test="supportForm != null and supportForm != ''">
+                support_form,
+            </if>
+            <if test="status != null and status != ''">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="unit != null and unit != ''">
+                #{unit},
+            </if>
+            <if test="unitCode != null and unitCode != ''">
+                #{unitCode},
+            </if>
+            <if test="teamId != null and teamId != ''">
+                #{teamId},
+            </if>
+            <if test="workLocation != null and workLocation != ''">
+                #{workLocation},
+            </if>
+            <if test="miningTechnology != null and miningTechnology != ''">
+                #{miningTechnology},
+            </if>
+            <if test="unitModel != null">
+                #{unitModel},
+            </if>
+            <if test="scraperConveyorModel != null">
+                #{scraperConveyorModel},
+            </if>
+            <if test="supportForm != null and supportForm != ''">
+                #{supportForm},
+            </if>
+            <if test="status != null and status != ''">
+                #{status},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateWorkProductionFace" parameterType="com.ruoyi.system.domain.work.WorkProductionFace">
+        update work_production_face
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="unit != null and unit != ''">
+                unit = #{unit},
+            </if>
+            <if test="unitCode != null and unitCode != ''">
+                unit_code = #{unitCode},
+            </if>
+            <if test="teamId != null and teamId != ''">
+                team_id = #{teamId},
+            </if>
+            <if test="workLocation != null and workLocation != ''">
+                work_location = #{workLocation},
+            </if>
+            <if test="miningTechnology != null and miningTechnology != ''">
+                mining_technology = #{miningTechnology},
+            </if>
+            <if test="unitModel != null">
+                unit_model = #{unitModel},
+            </if>
+            <if test="scraperConveyorModel != null">
+                scraper_conveyor_model = #{scraperConveyorModel},
+            </if>
+            <if test="supportForm != null and supportForm != ''">
+                support_form = #{supportForm},
+            </if>
+            <if test="status != null and status != ''">
+                status = #{status},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWorkProductionFaceById" parameterType="java.lang.String">
+        delete
+        from work_production_face
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteWorkProductionFaceByIds" parameterType="java.lang.String">
+        delete from work_production_face where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

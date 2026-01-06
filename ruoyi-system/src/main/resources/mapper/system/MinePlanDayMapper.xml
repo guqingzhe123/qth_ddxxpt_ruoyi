@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MinePlanDayMapper">
+    <resultMap type="com.ruoyi.system.domain.MinePlanDay" id="MinePlanDayResult">
+        <result property="id"    column="id"    />
+        <result property="planType"    column="plan_type"    />
+        <result property="areaName"    column="area_name"    />
+        <result property="planMonth"    column="plan_month"    />
+        <result property="planDay"    column="plan_day"    />
+        <result property="unitCode"    column="unit_code"    />
+        <result property="unitName"    column="unit_name"    />
+        <result property="dayPlan"    column="day_plan"    />
+        <result property="dayTarget"    column="day_target"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectMinePlanDayVo">
+        select id,status, plan_type, area_name, plan_month, plan_day, unit_code, unit_name, day_plan, day_target from mine_plan_day
+    </sql>
+
+    <select id="selectMinePlanDayList" parameterType="com.ruoyi.system.domain.MinePlanDay" resultMap="MinePlanDayResult">
+        <include refid="selectMinePlanDayVo"/>
+        <where>
+            <if test="planType != null  and planType != ''"> and plan_type = #{planType}</if>
+            <if test="areaName != null  and areaName != ''"> and area_name = #{areaName}</if>
+            <if test="planMonth != null  and planMonth != ''"> and plan_month = #{planMonth}</if>
+            <if test="planDay != null  and planDay != ''"> and plan_day = #{planDay}</if>
+            <if test="unitCode != null  and unitCode != ''"> and unit_code = #{unitCode}</if>
+            <if test="unitName != null  and unitName != ''"> and unit_name =#{unitName}</if>
+            <if test="dayPlan != null "> and day_plan = #{dayPlan}</if>
+            <if test="dayTarget != null "> and day_target = #{dayTarget}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    <select id="selectMinePlanCumulativeDayList" parameterType="com.ruoyi.system.domain.MinePlanDay" resultMap="MinePlanDayResult">
+        select  plan_type, area_name, plan_month, unit_name, sum(day_plan) as day_plan, sum(day_target) as day_target from mine_plan_day
+        <where>
+            <if test="planType != null  and planType != ''"> and plan_type = #{planType}</if>
+            <if test="areaName != null  and areaName != ''"> and area_name = #{areaName}</if>
+            <if test="planMonth != null  and planMonth != ''"> and plan_month = #{planMonth}</if>
+            <if test="planDay != null  and planDay != ''"> and plan_day &lt;= #{planDay}</if>
+            <if test="unitCode != null  and unitCode != ''"> and unit_code = #{unitCode}</if>
+            <if test="unitName != null  and unitName != ''"> and unit_name =#{unitName}</if>
+            <if test="dayPlan != null "> and day_plan = #{dayPlan}</if>
+            <if test="dayTarget != null "> and day_target = #{dayTarget}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+group by area_name, plan_month, unit_name
+    </select>
+
+    <select id="selectMinePlanMonth" parameterType="com.ruoyi.system.domain.MinePlanDay" resultMap="MinePlanDayResult">
+        select area_name,plan_month,unit_name, sum(day_plan) as day_plan, sum(day_target) as day_target from mine_plan_day
+        <where>
+            <if test="planType != null  and planType != ''"> and plan_type = #{planType}</if>
+            <if test="areaName != null  and areaName != ''"> and area_name = #{areaName}</if>
+            <if test="planMonth != null  and planMonth != ''"> and plan_month = #{planMonth}</if>
+            <if test="planDay != null  and planDay != ''"> and plan_day = #{planDay}</if>
+            <if test="unitCode != null  and unitCode != ''"> and unit_code = #{unitCode}</if>
+            <if test="unitName != null  and unitName != ''"> and unit_name = #{unitName}</if>
+            <if test="dayPlan != null "> and day_plan = #{dayPlan}</if>
+            <if test="dayTarget != null "> and day_target = #{dayTarget}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+group by area_name,plan_month,unit_name
+    </select>
+
+    <select id="selectMinePlanDayById" parameterType="java.lang.Long" resultMap="MinePlanDayResult">
+        <include refid="selectMinePlanDayVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertMinePlanDay" parameterType="com.ruoyi.system.domain.MinePlanDay" useGeneratedKeys="true" keyProperty="id">
+        insert into mine_plan_day
+        (plan_type,area_name,plan_month,plan_day,unit_code,unit_name,day_plan,day_target,status)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.planType}, #{item.areaName}, #{item.planMonth}, #{item.planDay}, #{item.unitCode}, #{item.unitName}, #{item.dayPlan}, #{item.dayTarget}, #{item.status})
+        </foreach>
+    </insert>
+
+    <update id="updateMinePlanDay" parameterType="com.ruoyi.system.domain.MinePlanDay">
+        update mine_plan_day
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="planType != null">plan_type = #{planType},</if>
+            <if test="areaName != null">area_name = #{areaName},</if>
+            <if test="planMonth != null">plan_month = #{planMonth},</if>
+            <if test="planDay != null">plan_day = #{planDay},</if>
+            <if test="unitCode != null">unit_code = #{unitCode},</if>
+            <if test="unitName != null">unit_name = #{unitName},</if>
+            <if test="dayPlan != null">day_plan = #{dayPlan},</if>
+            <if test="dayTarget != null">day_target = #{dayTarget},</if>
+            <if test="dayTarget != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="batchUpdateMinePlanDay" parameterType="java.util.List">
+        UPDATE mine_plan_day
+        <trim prefix="SET" suffixOverrides=",">
+            day_plan = CASE
+            <foreach collection="list" item="item">
+                WHEN id = #{item.id} THEN #{item.dayPlan}
+            </foreach>
+            ELSE day_plan END,
+
+            day_target = CASE
+            <foreach collection="list" item="item">
+                WHEN id = #{item.id} THEN #{item.dayTarget}
+            </foreach>
+            ELSE day_target END,
+
+            status = CASE
+            <foreach collection="list" item="item">
+                WHEN id = #{item.id} THEN #{item.status}
+            </foreach>
+            ELSE status END
+        </trim>
+        WHERE id IN
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
+    <update id="updateStatePlanDay" parameterType="com.ruoyi.system.domain.MinePlanDay">
+        update mine_plan_day set status = #{status}
+        where plan_type = #{planType} and area_name = #{areaName} and plan_month = #{planMonth}
+    </update>
+    <delete id="deleteMinePlanDayById" parameterType="java.lang.Long">
+        delete from mine_plan_day where id = #{id}
+    </delete>
+
+    <delete id="deleteMinePlanDayByIds" parameterType="java.lang.String">
+        delete from mine_plan_day where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

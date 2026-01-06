@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BaoBiao.SubMineDevelopmentDataMapper">
+
+    <resultMap id="SubMap" type="com.ruoyi.system.domain.BaoBiao.po.SubMineDevelopmentDataPO">
+        <id     column="id"                        property="id"/>
+        <result column="mine_development_dataID"   property="mineDevelopmentDataID"/>
+        <result column="unit_nameJSON"             property="unitNameJSON"/>
+        <result column="unit_code"             property="unitCode"/>
+        <result column="production_data"                    property="productionData"/>
+        <result column="expand_data"          property="expandData"/>
+        <result column="footage_data"          property="footageData"/>
+        <result column="enter_well_num"          property="enterWellNum"/>
+        <result column="come_out_well_num"          property="comeOutWellNum"/>
+    </resultMap>
+    <resultMap id="SubMap1" type="com.ruoyi.system.domain.BaoBiao.vo.plan.MineData">
+        <result column="unit_name"               property="unitName"/>
+        <result column="data_type"               property="dataType"/>
+        <result column="current_shift"               property="currentShift"/>
+        <result column="production_data"                    property="productionData"/>
+        <result column="expand_data"          property="expandData"/>
+        <result column="footage_data"          property="footageData"/>
+        <result column="enter_well_num"          property="enterWellNum"/>
+        <result column="come_out_well_num"          property="comeOutWellNum"/>
+        <result column="total_down_count"          property="totalDownCount"/>
+        <result column="total_up_count"          property="totalUpCount"/>
+
+
+        <result column="is_deleted"             property="isDeleted"/>
+    </resultMap>
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT INTO sub_mine_development_data(
+        mine_development_dataID, unit_nameJSON,unit_code, production_data, expand_data, footage_data, enter_well_num, come_out_well_num
+        ) VALUES
+        <foreach collection="list" item="it" separator=",">
+            (#{it.mineDevelopmentDataID}, #{it.unitNameJSON}, #{it.unitCode}, #{it.productionData}, #{it.expandData}, #{it.footageData}, #{it.enterWellNum}, #{it.comeOutWellNum})
+        </foreach>
+    </insert>
+    <delete id="deleteByMddId">
+        DELETE FROM sub_mine_development_data WHERE mine_development_dataID = #{mddId}
+    </delete>
+
+    <select id="selectByMddId" resultMap="SubMap">
+        SELECT * FROM sub_mine_development_data
+        WHERE mine_development_dataID = #{mddId}
+        ORDER BY id ASC
+    </select>
+
+    <select id="selectByMddIds" parameterType="java.util.List" resultMap="SubMap">
+        SELECT * FROM sub_mine_development_data
+        WHERE mine_development_dataID IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">#{id}</foreach>
+        ORDER BY mine_development_dataID ASC, id ASC
+    </select>
+
+    <select id="selectDay" resultMap="SubMap">
+        <![CDATA[ SELECT t2.unit_nameJSON,t2.unit_code,sum(t2.production_data) as production_data
+                       ,sum(t2.expand_data) as expand_data,sum(t2.footage_data) as footage_data,sum(t2.enter_well_num) as enter_well_num
+                       ,sum(t2.come_out_well_num) as come_out_well_num
+                  FROM mine_development_data t1
+                           left join sub_mine_development_data t2 on t1.id =t2.mine_development_dataID
+                  where  t1.unit_code=#{unitCode}  and t1.is_deleted=0 and t2.unit_nameJSON !=''
+                    and t1.record_date=#{recordDate}
+                  GROUP BY t2.unit_nameJSON,t2.unit_code  ]]>
+</select>
+    <select id="selectMonth" resultMap="SubMap">
+        <![CDATA[ SELECT t2.unit_nameJSON,t2.unit_code,sum(t2.production_data) as production_data
+                                         ,sum(t2.expand_data) as expand_data,sum(t2.footage_data) as footage_data,sum(t2.enter_well_num) as enter_well_num
+                                         ,sum(t2.come_out_well_num) as come_out_well_num
+                  FROM mine_development_data t1
+            left join sub_mine_development_data t2 on t1.id =t2.mine_development_dataID
+        where  t1.unit_code=#{unitCode}  and t1.is_deleted=0  and t2.unit_nameJSON !=''
+       and YEAR(t1.record_date) =YEAR(#{recordDate}) and MONTH(t1.record_date) =  MONTH(#{recordDate})
+        AND t1.record_date <= #{recordDate}
+        GROUP BY t2.unit_nameJSON,t2.unit_code  ]]>
+    </select>
+
+    <select id="selectYear"  resultMap="SubMap">
+        <![CDATA[ SELECT t2.unit_nameJSON,t2.unit_code,sum(t2.production_data) as production_data
+                                         ,sum(t2.expand_data) as expand_data,sum(t2.footage_data) as footage_data,sum(t2.enter_well_num) as enter_well_num
+                                         ,sum(t2.come_out_well_num) as come_out_well_num FROM mine_development_data t1
+            left join sub_mine_development_data t2 on t1.id =t2.mine_development_dataID
+        where  t1.unit_code=#{unitCode}  and t1.is_deleted=0  and t2.unit_nameJSON !=''
+        AND t1.record_date <= #{recordDate}
+          and YEAR(t1.record_date) =YEAR(#{recordDate})   GROUP BY t2.unit_nameJSON,t2.unit_code
+        ]]>
+    </select>
+
+
+    <select id="selectAllDay"  resultMap="SubMap">
+        <![CDATA[
+        SELECT
+            t1.data_type AS unit_nameJSON,sum(t2.production_data) as production_data
+                                         ,sum(t2.expand_data) as expand_data,sum(t2.footage_data) as footage_data,sum(t2.enter_well_num) as enter_well_num
+                                         ,sum(t2.come_out_well_num) as come_out_well_num
+        FROM
+            mine_development_data t1
+            LEFT JOIN
+            sub_mine_development_data t2 ON t1.id = t2.mine_development_dataID
+        WHERE
+            t1.is_deleted = 0
+          and t2.unit_nameJSON='合计'
+          AND t1.record_date = #{recordDate} -- 替换别名，使用原字段t1.data_type
+        GROUP BY
+            t1.data_type  -- 与SELECT非聚合列保持一致
+        ]]>
+    </select>
+
+    <select id="selectAllMonth" resultMap="SubMap">
+    <![CDATA[
+        SELECT
+            t1.data_type AS unit_nameJSON,sum(t2.production_data) as production_data
+                                         ,sum(t2.expand_data) as expand_data,sum(t2.footage_data) as footage_data,sum(t2.enter_well_num) as enter_well_num
+                                         ,sum(t2.come_out_well_num) as come_out_well_num
+      ,sum(t2.come_out_well_num) as comeOutWellNum
+        FROM
+            mine_development_data t1
+            LEFT JOIN
+            sub_mine_development_data t2 ON t1.id = t2.mine_development_dataID
+        WHERE
+            t1.is_deleted = 0
+          and t2.unit_nameJSON='合计'
+          AND YEAR(t1.record_date) = YEAR(#{recordDate})
+          AND MONTH(t1.record_date) = MONTH(#{recordDate})
+          AND t1.record_date <= #{recordDate} -- 替换别名，使用原字段t1.data_type
+        GROUP BY
+            t1.data_type  -- 与SELECT中的非聚合列保持一致
+        ]]>
+</select>
+    <select id="selectAllYear"  resultMap="SubMap">
+       <![CDATA[
+        SELECT
+            t1.data_type AS unit_nameJSON,sum(t2.production_data) as production_data
+                                         ,sum(t2.expand_data) as expand_data,sum(t2.footage_data) as footage_data,sum(t2.enter_well_num) as enter_well_num
+                                         ,sum(t2.come_out_well_num) as come_out_well_num
+      ,sum(t2.come_out_well_num) as comeOutWellNum
+        FROM
+            mine_development_data t1
+            LEFT JOIN
+            sub_mine_development_data t2 ON t1.id = t2.mine_development_dataID
+        WHERE
+            t1.is_deleted = 0
+          and t2.unit_nameJSON='合计'
+          AND YEAR(t1.record_date) = YEAR(#{recordDate})
+          AND t1.record_date <= #{recordDate}  -- 替换别名，使用原字段t1.data_type
+        GROUP BY
+            t1.data_type  -- 与SELECT中的非聚合列保持一致
+        ]]>
+    </select>
+
+
+    <select id="selectDayDate"  resultMap="SubMap1">
+        SELECT t1.data_type,t1.unit_name,t1.is_deleted,t1.current_shift,sum(t1.total_up_count) as total_up_count,sum(t1.total_down_count) as total_down_count,sum(t2.production_data) as production_data
+                           ,sum(t2.expand_data) as expand_data,sum(t2.footage_data) as footage_data,sum(t2.enter_well_num) as enter_well_num
+                           ,sum(t2.come_out_well_num) as come_out_well_num FROM mine_development_data t1
+            left join sub_mine_development_data t2 on t1.id =t2.mine_development_dataID
+        where   t1.record_date =#{recordDate}
+          and t1.is_deleted =0
+and unit_nameJSON='合计' GROUP BY t1.data_type,t1.current_shift,t1.is_deleted,t1.unit_name
+    </select>
+
+    <select id="selectMonthDate"  resultMap="SubMap1">
+        SELECT t1.data_type,t1.unit_name,t1.is_deleted,t1.current_shift,sum(t1.total_up_count) as total_up_count,sum(t1.total_down_count) as total_down_count
+             ,sum(t2.production_data) as production_data
+                           ,sum(t2.expand_data) as expand_data,sum(t2.footage_data) as footage_data,sum(t2.enter_well_num) as enter_well_num
+                           ,sum(t2.come_out_well_num) as come_out_well_num FROM mine_development_data t1
+            left join sub_mine_development_data t2 on t1.id =t2.mine_development_dataID
+        where   YEAR(t1.record_date) = YEAR(#{recordDate})
+          AND MONTH(t1.record_date) = MONTH(#{recordDate})
+          and t1.record_date &lt;= #{recordDate}
+          and t1.is_deleted =0
+          and unit_nameJSON='合计' GROUP BY t1.data_type,t1.current_shift,t1.is_deleted,t1.unit_name
+    </select>
+    <select id="selectYearDate"  resultMap="SubMap1">
+        SELECT t1.data_type,t1.unit_name,t1.is_deleted,t1.current_shift,sum(t1.total_up_count) as total_up_count,sum(t1.total_down_count) as total_down_count
+             ,sum(t2.production_data) as production_data
+             ,sum(t2.expand_data) as expand_data,sum(t2.footage_data) as footage_data,sum(t2.enter_well_num) as enter_well_num
+             ,sum(t2.come_out_well_num) as come_out_well_num FROM mine_development_data t1
+                                                                      left join sub_mine_development_data t2 on t1.id =t2.mine_development_dataID
+        where   YEAR(t1.record_date) = YEAR(#{recordDate})
+        and t1.record_date &lt;= #{recordDate}
+          and t1.is_deleted =0
+          and unit_nameJSON='合计' GROUP BY t1.data_type,t1.current_shift,t1.is_deleted,t1.unit_name
+    </select>
+
+    <update id="deleteByMddIdAll" parameterType="map">
+        update mine_development_data
+        set is_deleted = 1
+        where
+            unit_name = #{unitName}
+          and record_date = #{recordDate}
+    </update>
+</mapper>

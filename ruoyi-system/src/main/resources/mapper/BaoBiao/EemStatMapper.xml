@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BaoBiao.EemStatMapper">
+
+    <resultMap id="EemDateAggRowMap" type="com.ruoyi.system.domain.EemDateAggRow">
+        <result column="day"   property="day"   jdbcType="DATE" javaType="java.time.LocalDate"/>
+        <result column="total" property="total"/>
+    </resultMap>
+
+    <!-- 入井人数合计：total_down_count -->
+    <select id="selectDailyDownTotals" resultMap="EemDateAggRowMap">
+        <![CDATA[
+        SELECT
+            DATE(record_date) AS day,
+            COALESCE(SUM(total_down_count), 0) AS total
+        FROM entering_and_exiting_the_mine
+        WHERE record_date >= #{startTs}
+          AND record_date <  #{endExclusiveTs}
+        GROUP BY DATE(record_date)
+        ORDER BY DATE(record_date) ASC
+        ]]>
+    </select>
+
+    <!-- 升井人数合计：total_up_count -->
+    <select id="selectDailyUpTotals" resultMap="EemDateAggRowMap">
+        <![CDATA[
+        SELECT
+            DATE(record_date) AS day,
+            COALESCE(SUM(total_up_count), 0) AS total
+        FROM entering_and_exiting_the_mine
+        WHERE record_date >= #{startTs}
+          AND record_date <  #{endExclusiveTs}
+        GROUP BY DATE(record_date)
+        ORDER BY DATE(record_date) ASC
+        ]]>
+    </select>
+
+</mapper>

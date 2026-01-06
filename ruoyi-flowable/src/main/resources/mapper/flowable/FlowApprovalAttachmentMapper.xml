@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 必须与 Mapper 接口全类名完全一致 -->
+<mapper namespace="com.ruoyi.flowable.mapper.FlowApprovalAttachmentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.flowable.domain.FlowApprovalAttachment">
+        <id column="id" property="id"/>
+        <result column="proc_ins_id" property="procInsId"/>
+        <result column="file_id" property="fileId"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, proc_ins_id, file_id, create_by, create_time, update_by, update_time
+    </sql>
+
+    <!-- 插入方法（对应 BaseMapper 的 insert 方法，显式定义避免自动生成失败） -->
+    <insert id="insert" parameterType="com.ruoyi.flowable.domain.FlowApprovalAttachment">
+        INSERT INTO flow_approval_attachment (
+            id, proc_ins_id, file_id, create_by, create_time, update_by, update_time
+        ) VALUES (
+                     #{id}, #{procInsId}, #{fileId}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}
+                 )
+    </insert>
+
+    <!-- 根据流程实例ID查询附件关联记录（自定义方法） -->
+    <select id="selectByProcInsId" parameterType="com.ruoyi.flowable.domain.FlowApprovalAttachment" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM flow_approval_attachment
+        WHERE proc_ins_id = #{procInsId} and create_by = #{createBy}
+        ORDER BY create_time DESC
+    </select>
+
+</mapper>
