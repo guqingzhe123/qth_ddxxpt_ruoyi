@@ -60,7 +60,10 @@ public class WorkLeaderOnDutyController extends BaseController {
         List<WorkLeaderOnDuty> workLeaderOnDuties = workLeaderOnDutyService.selectWorkLeaderOnDutyALLList(workLeaderOnDuty);
         List<WorkLeaderOnDutyList> 矿场=new ArrayList<>();
         int day = DateUtils.getDayFromString(DateUtils.returnDateRange(DateUtils.getLastDayOfMonth(workLeaderOnDuty.getDutyDate())), "yyyy-MM-dd");
-        String dateDay = DateUtils.returnDateDay(workLeaderOnDuty.getDutyDate());
+        String 月份 = DateUtils.returnDateDay(workLeaderOnDuty.getDutyDate());
+
+
+
         MiningAreaCategory fac=new MiningAreaCategory();
         fac.setLevel(1);
         fac.setIsSealed(0);
@@ -72,7 +75,7 @@ public class WorkLeaderOnDutyController extends BaseController {
             List<String> three=new ArrayList<>();
             work.setUnitName(mining.getAreaName());
             for (int i = 1; i <= day; i++) {
-                String 日期 = DateUtils.returnDateRange(DateUtils.parseDate(dateDay+"-"+i));
+                String 日期 = DateUtils.returnDateRange(DateUtils.parseDate(月份+"-"+i));
                 WorkLeaderOnDuty 入井人员 = workLeaderOnDuties.stream().filter(item -> mining.getAreaName().equals(item.getUnit()))
                         .filter(item -> {
                             String 人员值班日期 = DateUtils.returnDateRange(item.getDutyDate());
