@@ -61,9 +61,6 @@ public class WorkLeaderOnDutyController extends BaseController {
         List<WorkLeaderOnDutyList> 矿场=new ArrayList<>();
         int day = DateUtils.getDayFromString(DateUtils.returnDateRange(DateUtils.getLastDayOfMonth(workLeaderOnDuty.getDutyDate())), "yyyy-MM-dd");
         String 月份 = DateUtils.returnDateDay(workLeaderOnDuty.getDutyDate());
-
-
-
         MiningAreaCategory fac=new MiningAreaCategory();
         fac.setLevel(1);
         fac.setIsSealed(0);
