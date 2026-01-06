@@ -64,7 +64,7 @@ public class WorkLeaderOnDutyController extends BaseController {
         MiningAreaCategory fac=new MiningAreaCategory();
         fac.setLevel(1);
         fac.setIsSealed(0);
-        List<MiningAreaCategory> miningAreaCategories = miningAreaCategoryService.list(fac);//有效矿的
+        List<MiningAreaCategory> miningAreaCategories = miningAreaCategoryService.list(fac);
         for (MiningAreaCategory mining:miningAreaCategories) {
             WorkLeaderOnDutyList work=new WorkLeaderOnDutyList();
             List<String> one=new ArrayList<>();
