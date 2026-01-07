@@ -74,26 +74,6 @@ public class MiningAreaCategoryController extends BaseController {
         if (add==0){
             AjaxResult.error("采区编码重复");
         }
-//        if(add>0 &&entity.getLevel()==2){
-//
-//            MiningAreaCategory min=miningAreaCategoryService.get((long)entity.getParentId());
-//            UnitManagement unit=new UnitManagement();
-//            unit.setUnitCode(entity.getAreaCode());
-//            unit.setUnitName(entity.getAreaName());
-//            unit.setLevel(0);
-//            unit.setMiningAreaInfo(min.getAreaCode());
-//            unit.setSortOrder(0);
-//            unit.setCreateTime(new Date());
-//            unit.setParentId(0L);
-//            unit.setIsSealed(0);
-//            unit.setUnitType("原煤生产单位管理");
-//            unitManagementService.add(unit);
-//            unit.setUnitType("开拓单位管理");
-//            unitManagementService.add(unit);
-//            unit.setUnitType("进尺单位管理");
-//            unitManagementService.add(unit);
-//        }
-
         return AjaxResult.toAjax(add);
     }
 

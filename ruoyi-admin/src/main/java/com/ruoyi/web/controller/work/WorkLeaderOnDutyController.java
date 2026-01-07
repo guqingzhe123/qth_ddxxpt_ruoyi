@@ -43,9 +43,6 @@ public class WorkLeaderOnDutyController extends BaseController {
         return getDataTable(list);
     }
 
-    /**
-     * 新增领导带班信息（按日期记录各单位三个班次的带班领导及排班状态）
-     */
     @Log(title = "领导带班信息（按日期记录各单位三个班次的带班领导及排班状态）", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody WorkLeaderOnDuty workLeaderOnDuty) {

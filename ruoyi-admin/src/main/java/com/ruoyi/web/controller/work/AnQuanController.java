@@ -36,7 +36,6 @@ import java.util.List;
 public class AnQuanController extends BaseController {
     @Autowired
     private IWorkProductionStatusService workProductionStatusService;//子表 生产情况
-
     @Autowired
     private IWorkProductionDailyReportService workProductionDailyReportService;//主表情况
     @Autowired
