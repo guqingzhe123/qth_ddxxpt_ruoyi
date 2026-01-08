@@ -675,14 +675,14 @@ public class IShengChanRiBaoService {
             渠道.setMonthTarget(原煤月计划.stream().filter(po -> po != null && po.getUnitName().equals(mining.getAreaName())).mapToInt(po -> toInt(po.getMonthTarget())).sum());
             渠道.setProductionData(月完成.stream().filter(po -> po != null && po.getUnitName().equals(mining.getAreaName())).mapToInt(po -> toInt(po.getProductionData())).sum());
             渠道.setComparedToPlan(渠道.getProductionData() - 渠道.getMonthPlan());
-            if(渠道.getMonthPlan() !=null ){
+            if(渠道.getMonthPlan() !=null  && 渠道.getMonthPlan() > 0){
                 渠道.setComparedToPlanPercentage(String.format("%.1f", (double) 渠道.getProductionData() / 渠道.getMonthPlan() * 100) + "%");
             }else {
                 渠道.setComparedToPlanPercentage(null);
             }
             渠道.setComparedToPlanRank(null);
             渠道.setComparedToTarget(渠道.getProductionData() - 渠道.getMonthTarget());
-            if(渠道.getMonthTarget() !=null){
+            if(渠道.getMonthTarget() !=null  && 渠道.getMonthTarget() > 0){
                 渠道.setComparedToTargetPlan(String.format("%.1f", (double) 渠道.getProductionData() / 渠道.getMonthTarget() * 100) + "%");
             }else {
                 渠道.setComparedToTargetPlan(null);

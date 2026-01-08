@@ -127,11 +127,18 @@
         FROM mining_area_category
         WHERE area_code = #{areaCode}  order by sequence asc
     </select>
+<!--    <select id="QueryTeamName" resultMap="MiningAreaCategoryMap">-->
+<!--        WITH RECURSIVE department_hierarchy AS (-->
+<!--        SELECT id,area_code,area_name,parent_id,1 AS level FROM mining_area_category WHERE area_code = #{areaCode} UNION ALL-->
+<!--        SELECT d.id,d.area_code,d.area_name,d.parent_id,dh.level + 1 AS level FROM mining_area_category d INNER JOIN-->
+<!--        department_hierarchy dh ON d.parent_id = dh.id WHERE dh.level &lt; 3 )-->
+<!--        SELECT * FROM department_hierarchy WHERE level = 3;-->
+<!--    </select>-->
     <select id="QueryTeamName" resultMap="MiningAreaCategoryMap">
         WITH RECURSIVE department_hierarchy AS (
-        SELECT id,area_code,area_name,parent_id,1 AS level FROM mining_area_category WHERE area_code = #{areaCode} UNION ALL
-        SELECT d.id,d.area_code,d.area_name,d.parent_id,dh.level + 1 AS level FROM mining_area_category d INNER JOIN
-        department_hierarchy dh ON d.parent_id = dh.id WHERE dh.level &lt; 3 )
+            SELECT id,area_code,area_name,parent_id,1 AS level FROM mining_area_category WHERE area_code = #{areaCode} AND is_sealed = 0 UNION ALL
+            SELECT d.id,d.area_code,d.area_name,d.parent_id,dh.level + 1 AS level FROM mining_area_category d INNER JOIN
+           department_hierarchy dh ON d.parent_id = dh.id WHERE dh.level &lt; 3 AND d.is_sealed = 0)
         SELECT * FROM department_hierarchy WHERE level = 3;
     </select>
 
