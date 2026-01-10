@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.template.mapper.TemplateAttachmentMapper">
     
-    <resultMap type="TemplateAttachment" id="TemplateAttachmentResult">
+    <resultMap type="com.ruoyi.template.domain.TemplateAttachment" id="TemplateAttachmentResult">
         <result property="id"    column="id"    />
         <result property="name"    column="name"    />
         <result property="limitSize"    column="limit_size"    />
@@ -22,7 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from t_template_attachment
     </sql>
 
-    <select id="selectTemplateAttachmentList" parameterType="TemplateAttachment" resultMap="TemplateAttachmentResult">
+    <select id="selectTemplateAttachmentList" parameterType="com.ruoyi.template.domain.TemplateAttachment" resultMap="TemplateAttachmentResult">
         <include refid="selectTemplateAttachmentVo"/>
         <where>  
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
@@ -35,7 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
-    <select id="selectTemplateAttachmentById" parameterType="String" resultMap="TemplateAttachmentResult">
+    <select id="selectTemplateAttachmentById" parameterType="java.lang.String" resultMap="TemplateAttachmentResult">
         <include refid="selectTemplateAttachmentVo"/>
         where id = #{id}
     </select>
@@ -45,7 +45,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where template_id = #{templateId}
     </select>
 
-    <insert id="insertTemplateAttachment" parameterType="TemplateAttachment">
+    <insert id="insertTemplateAttachment" parameterType="com.ruoyi.template.domain.TemplateAttachment">
         insert into t_template_attachment
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null and id != ''">id,</if>
@@ -73,7 +73,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
-    <update id="updateTemplateAttachment" parameterType="TemplateAttachment">
+    <update id="updateTemplateAttachment" parameterType="com.ruoyi.template.domain.TemplateAttachment">
         update t_template_attachment
         <trim prefix="SET" suffixOverrides=",">
             <if test="name != null">name = #{name},</if>
@@ -89,18 +89,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deleteTemplateAttachmentById" parameterType="String">
+    <delete id="deleteTemplateAttachmentById" parameterType="java.lang.String">
         delete from t_template_attachment where id = #{id}
     </delete>
 
-    <delete id="deleteTemplateAttachmentByIds" parameterType="String">
+    <delete id="deleteTemplateAttachmentByIds" parameterType="java.lang.String">
         delete from t_template_attachment where id in 
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
 
-    <delete id="deleteAttachmentByTemplateIds" parameterType="String">
+    <delete id="deleteAttachmentByTemplateIds" parameterType="java.lang.String">
         delete from t_template_attachment where template_id in
         <foreach item="templateId" collection="array" open="(" separator="," close=")">
             #{templateId}

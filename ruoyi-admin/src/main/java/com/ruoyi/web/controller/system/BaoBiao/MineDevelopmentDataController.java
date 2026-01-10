@@ -113,7 +113,8 @@ public class MineDevelopmentDataController extends BaseController {
     @GetMapping("/classThreestatus")
     public AjaxResult classThreestatus(MddPageQueryDTO query) {
         ///数据从2026-01-01开始
-        if(parseDate(query.getRecord_date()).before(java.sql.Date.valueOf("2026-01-01"))){
+        if(parseDate(query.getRecord_date())
+                .before(java.sql.Date.valueOf("2026-01-07"))){
             MinePlanThree ju=new MinePlanThree();
             ju.setPlanType(query.getData_type());
             ju.setOneClass(0);

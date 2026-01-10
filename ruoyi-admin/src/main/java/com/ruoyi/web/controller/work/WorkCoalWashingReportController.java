@@ -7,7 +7,6 @@ import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.system.domain.BaoBiao.FactoryArchive;
-import com.ruoyi.system.domain.BaoBiao.MiningAreaCategory;
 import com.ruoyi.system.domain.work.WorkCoalStockSalesStat;
 import com.ruoyi.system.domain.work.WorkCoalWashingReport;
 import com.ruoyi.system.domain.work.WorkCoalWashingReportList;
@@ -85,29 +84,33 @@ public class WorkCoalWashingReportController extends BaseController {
         sub.setReportTime(workCoalWashingReport.getReportTime());
         WorkCoalWashingReportSub workCoalWashingReportSub = workCoalWashingReportSubService.WorkCoalWashingReportSub(sub);
         WorkCoalWashingReportList quankuang=new WorkCoalWashingReportList();
-        MiningAreaCategory fac = new MiningAreaCategory();
-        fac.setLevel(1);
-        fac.setIsSealed(0);
-        List<MiningAreaCategory> miningAreaCategories = miningAreaCategoryMapper.selectList(fac);
+//        MiningAreaCategory fac = new MiningAreaCategory();
+//        fac.setLevel(1);
+//        fac.setIsSealed(0);
+//        List<MiningAreaCategory> miningAreaCategories = miningAreaCategoryMapper.selectList(fac);
+
+        FactoryArchive factoryArch = new FactoryArchive();
+        factoryArch.setIsSealed(0);
+        List<FactoryArchive> factoryArchives = factoryArchiveMapper.selectList(factoryArch);
         List<WorkCoalWashingReport> 当日数据=new ArrayList<>();
         List<WorkCoalWashingReport> 当月数据=new ArrayList<>();
-        for (MiningAreaCategory mining : miningAreaCategories) {
-            WorkCoalWashingReport workCoalWashingReport1 = 当日.stream().filter(item -> mining.getAreaName().equals(item.getUnitName())).findFirst().orElse(new WorkCoalWashingReport());
-            WorkCoalWashingReport workCoalWashingReport2 = 当月.stream().filter(item -> mining.getAreaName().equals(item.getUnitName())).findFirst().orElse(new WorkCoalWashingReport());
+        for (FactoryArchive fact : factoryArchives) {
+            WorkCoalWashingReport workCoalWashingReport1 = 当日.stream().filter(item -> fact.getFactoryName().equals(item.getUnitName())).findFirst().orElse(new WorkCoalWashingReport());
+            WorkCoalWashingReport workCoalWashingReport2 = 当月.stream().filter(item -> fact.getFactoryName().equals(item.getUnitName())).findFirst().orElse(new WorkCoalWashingReport());
 
 
             if(workCoalWashingReport1.getUnitName() !=null){
                 当日数据.add(workCoalWashingReport1);
             }else {
                 WorkCoalWashingReport workCoalWashingReport1_1 = new WorkCoalWashingReport();
-                workCoalWashingReport1_1.setUnitName(mining.getAreaName());
+                workCoalWashingReport1_1.setUnitName(fact.getFactoryName());
                 当日数据.add(workCoalWashingReport1_1);
             }
             if(workCoalWashingReport2.getUnitName() !=null){
                 当月数据.add(workCoalWashingReport2);
             }else {
                 WorkCoalWashingReport workCoalWashingReport2_1 = new WorkCoalWashingReport();
-                workCoalWashingReport2_1.setUnitName(mining.getAreaName());
+                workCoalWashingReport2_1.setUnitName(fact.getFactoryName());
                 当月数据.add(workCoalWashingReport2_1);
             }
         }

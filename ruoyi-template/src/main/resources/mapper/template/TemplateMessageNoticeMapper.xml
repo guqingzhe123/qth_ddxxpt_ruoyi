@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.template.mapper.TemplateMessageNoticeMapper">
     
-    <resultMap type="TemplateMessageNotice" id="TemplateMessageNoticeResult">
+    <resultMap type="com.ruoyi.template.domain.TemplateMessageNotice" id="TemplateMessageNoticeResult">
         <result property="id"    column="id"    />
         <result property="type"    column="type"    />
         <result property="msgTemplate"    column="msg_template"    />
@@ -19,7 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, type, msg_template, template_id, create_id, create_time, update_id, update_time from t_template_message_notice
     </sql>
 
-    <select id="selectTemplateMessageNoticeList" parameterType="TemplateMessageNotice" resultMap="TemplateMessageNoticeResult">
+    <select id="selectTemplateMessageNoticeList" parameterType="com.ruoyi.template.domain.TemplateMessageNotice" resultMap="TemplateMessageNoticeResult">
         <include refid="selectTemplateMessageNoticeVo"/>
         <where>  
             <if test="type != null  and type != ''"> and type = #{type}</if>
@@ -28,12 +28,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
-    <select id="selectTemplateMessageNoticeById" parameterType="String" resultMap="TemplateMessageNoticeResult">
+    <select id="selectTemplateMessageNoticeById" parameterType="java.lang.String" resultMap="TemplateMessageNoticeResult">
         <include refid="selectTemplateMessageNoticeVo"/>
         where id = #{id}
     </select>
 
-    <insert id="insertTemplateMessageNotice" parameterType="TemplateMessageNotice">
+    <insert id="insertTemplateMessageNotice" parameterType="com.ruoyi.template.domain.TemplateMessageNotice">
         insert into t_template_message_notice
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null and id != ''">id,</if>
@@ -57,7 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
-    <update id="updateTemplateMessageNotice" parameterType="TemplateMessageNotice">
+    <update id="updateTemplateMessageNotice" parameterType="com.ruoyi.template.domain.TemplateMessageNotice">
         update t_template_message_notice
         <trim prefix="SET" suffixOverrides=",">
             <if test="type != null and type != ''">type = #{type},</if>
@@ -71,18 +71,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deleteTemplateMessageNoticeById" parameterType="String">
+    <delete id="deleteTemplateMessageNoticeById" parameterType="java.lang.String">
         delete from t_template_message_notice where id = #{id}
     </delete>
 
-    <delete id="deleteTemplateMessageNoticeByIds" parameterType="String">
+    <delete id="deleteTemplateMessageNoticeByIds" parameterType="java.lang.String">
         delete from t_template_message_notice where id in 
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
 
-    <select id="selectByTemplateId" parameterType="String" resultMap="TemplateMessageNoticeResult">
+    <select id="selectByTemplateId" parameterType="java.lang.String" resultMap="TemplateMessageNoticeResult">
         <include refid="selectTemplateMessageNoticeVo"/>
         <where>
             template_id = #{templateId}

@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.template.mapper.TemplateDynamicFormMapper">
     
-    <resultMap type="TemplateDynamicForm" id="TemplateDynamicFormResult">
+    <resultMap type="com.ruoyi.template.domain.TemplateDynamicForm" id="TemplateDynamicFormResult">
         <result property="id"    column="id"    />
         <result property="name"    column="name"    />
         <result property="content"    column="content"    />
@@ -24,7 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, name, content, enable_flag, del_flag, form_Key, remark, create_id, create_by, create_time, update_id, update_by, update_time from t_template_dynamic_form
     </sql>
 
-    <select id="selectTemplateDynamicFormList" parameterType="TemplateDynamicForm" resultMap="TemplateDynamicFormResult">
+    <select id="selectTemplateDynamicFormList" parameterType="com.ruoyi.template.domain.TemplateDynamicForm" resultMap="TemplateDynamicFormResult">
         <include refid="selectTemplateDynamicFormVo"/>
         <where>  
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
@@ -34,12 +34,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         order by create_time desc
     </select>
     
-    <select id="selectTemplateDynamicFormById" parameterType="String" resultMap="TemplateDynamicFormResult">
+    <select id="selectTemplateDynamicFormById" parameterType="java.lang.String" resultMap="TemplateDynamicFormResult">
         <include refid="selectTemplateDynamicFormVo"/>
         where id = #{id}
     </select>
 
-    <insert id="insertTemplateDynamicForm" parameterType="TemplateDynamicForm">
+    <insert id="insertTemplateDynamicForm" parameterType="com.ruoyi.template.domain.TemplateDynamicForm">
         insert into t_template_dynamic_form
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null and id != ''">id,</if>
@@ -73,7 +73,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
-    <update id="updateTemplateDynamicForm" parameterType="TemplateDynamicForm">
+    <update id="updateTemplateDynamicForm" parameterType="com.ruoyi.template.domain.TemplateDynamicForm">
         update t_template_dynamic_form
         <trim prefix="SET" suffixOverrides=",">
             <if test="name != null">name = #{name},</if>
@@ -92,11 +92,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deleteTemplateDynamicFormById" parameterType="String">
+    <delete id="deleteTemplateDynamicFormById" parameterType="java.lang.String">
         update t_template_dynamic_form set del_flag = '1' where id = #{id}
     </delete>
 
-    <delete id="deleteTemplateDynamicFormByIds" parameterType="String">
+    <delete id="deleteTemplateDynamicFormByIds" parameterType="java.lang.String">
         update t_template_dynamic_form set del_flag = '1' where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}

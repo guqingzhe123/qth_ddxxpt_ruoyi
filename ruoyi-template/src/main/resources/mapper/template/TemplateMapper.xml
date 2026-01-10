@@ -28,7 +28,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectTemplateVo">
-        select id, name, type, def_key, form_id, form_key, form_type, form_code, del_flag, sort, main_text_flag, attach_flag, message_notice_flag, enable_flag, create_id, create_by, create_time, update_id, update_by, update_time from t_template
+        select id, name, type, def_key, form_id, form_key, form_type, form_code, del_flag, sort, main_text_flag, attach_flag, message_notice_flag, enable_flag,
+               create_id, create_by, create_time, update_id, update_by, update_time from t_template
     </sql>
 
     <select id="selectTemplateList" parameterType="Template" resultMap="TemplateResult">

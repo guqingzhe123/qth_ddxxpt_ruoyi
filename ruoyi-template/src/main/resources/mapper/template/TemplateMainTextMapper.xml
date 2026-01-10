@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.template.mapper.TemplateMainTextMapper">
     
-    <resultMap type="TemplateMainText" id="TemplateMainTextResult">
+    <resultMap type="com.ruoyi.template.domain.TemplateMainText" id="TemplateMainTextResult">
         <result property="id"    column="id"    />
         <result property="templateId"    column="template_id"    />
         <result property="type"    column="type"    />
@@ -22,7 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, template_id, type, file_id, limit_size, limit_type, tip_content, create_id, create_time, update_id, update_time from t_template_main_text
     </sql>
 
-    <select id="selectTemplateMainTextList" parameterType="TemplateMainText" resultMap="TemplateMainTextResult">
+    <select id="selectTemplateMainTextList" parameterType="com.ruoyi.template.domain.TemplateMainText" resultMap="TemplateMainTextResult">
         <include refid="selectTemplateMainTextVo"/>
         <where>  
             <if test="templateId != null  and templateId != ''"> and template_id = #{templateId}</if>
@@ -36,7 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
-    <select id="selectTemplateMainTextById" parameterType="String" resultMap="TemplateMainTextResult">
+    <select id="selectTemplateMainTextById" parameterType="java.lang.String" resultMap="TemplateMainTextResult">
         <include refid="selectTemplateMainTextVo"/>
         where id = #{id}
     </select>
@@ -46,7 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where template_id = #{templateId}
     </select>
 
-    <insert id="insertTemplateMainText" parameterType="TemplateMainText">
+    <insert id="insertTemplateMainText" parameterType="com.ruoyi.template.domain.TemplateMainText">
         insert into t_template_main_text
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null and id != ''">id,</if>
@@ -76,7 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
-    <update id="updateTemplateMainText" parameterType="TemplateMainText">
+    <update id="updateTemplateMainText" parameterType="com.ruoyi.template.domain.TemplateMainText">
         update t_template_main_text
         <trim prefix="SET" suffixOverrides=",">
             <if test="templateId != null">template_id = #{templateId},</if>
@@ -93,11 +93,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deleteTemplateMainTextById" parameterType="String">
+    <delete id="deleteTemplateMainTextById" parameterType="java.lang.String">
         delete from t_template_main_text where id = #{id}
     </delete>
 
-    <delete id="deleteTemplateMainTextByIds" parameterType="String">
+    <delete id="deleteTemplateMainTextByIds" parameterType="java.lang.String">
         delete from t_template_main_text where id in 
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
