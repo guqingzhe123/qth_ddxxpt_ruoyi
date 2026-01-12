@@ -622,7 +622,7 @@ public class RiBaoController extends BaseController {
         //查询所有洗煤厂
         FactoryArchive fac = new FactoryArchive();
         List<FactoryArchive> factoryArchives = factoryArchiveMapper.selectList(fac);
-        List<xiMeiRiBaoBaoBiao> list = new ArrayList<>();
+//        List<xiMeiRiBaoBaoBiao> list = new ArrayList<>();
         for (FactoryArchive fact : factoryArchives) {
             xiMeiRiBaoBaoBiao 本日 = new xiMeiRiBaoBaoBiao();
             xiMeiRiBaoBaoBiao 本月 = new xiMeiRiBaoBaoBiao();
@@ -698,7 +698,7 @@ public class RiBaoController extends BaseController {
     @PostMapping("/YuanMeiALLlist")
     public TableDataInfo<BaseEntity> YuanMeiALLlist(@RequestBody riBao tiaojian) {
         Date statsDate = tiaojian.getStatsDate();
-        Date yue = DateUtils.getFirstDayOfMonth(statsDate);
+//        Date yue = DateUtils.getFirstDayOfMonth(statsDate);
         String yearMonth1 = DateUtils.getYearMonth1(statsDate);
         MiningAreaCategory fac = new MiningAreaCategory();
         fac.setLevel(1);
@@ -762,7 +762,6 @@ public class RiBaoController extends BaseController {
         List<CoalWashingProductionPO> 洗煤生产录入表 = coalWashingProductionMapper.selecList(statsDate);
         //洗煤计划录入主表
         WashCoalPlanPO washCoalPlanPO = washCoalPlanMapper.selectByPlan(yue);
-        //洗煤计划录入子表
         List<SubWashCoalPlanPO> subWashCoalPlanPOS = new ArrayList<>();
         if (washCoalPlanPO != null) {
             //洗煤计划录入子表
@@ -1376,11 +1375,11 @@ public class RiBaoController extends BaseController {
         minday.setPlanDay(day);
         List<MinePlanDay> 日计划 = minePlanDayMapper.selectMinePlanDayList(minday);
         for (MiningAreaCategory mining : miningAreaCategories) {
-            MinePlanPO mine = new MinePlanPO();
-            mine.setPlanMonth(yue);
-            mine.setUnitCode(mining.getAreaCode());
-            mine.setPlanType("生产");
-            MinePlanPO planPO = minePlanMapper.selectMine(mine);
+//            MinePlanPO mine = new MinePlanPO();
+//            mine.setPlanMonth(yue);
+//            mine.setUnitCode(mining.getAreaCode());
+//            mine.setPlanType("生产");
+//            MinePlanPO planPO = minePlanMapper.selectMine(mine);
             ProductExportSituation product = new ProductExportSituation();
             product.setExportDate(statsDate);
             product.setUnitCode(mining.getAreaCode());

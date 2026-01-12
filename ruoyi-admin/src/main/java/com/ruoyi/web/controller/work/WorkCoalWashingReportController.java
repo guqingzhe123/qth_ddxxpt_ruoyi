@@ -120,7 +120,7 @@ public class WorkCoalWashingReportController extends BaseController {
         if(workCoalWashingReportSub !=null){
             quankuang.setRemarks(workCoalWashingReportSub.getRemarks());
         }else{
-            String rateResult = 当日.stream().filter(plan -> plan != null && plan.getRemarks() != null).map(plan -> plan.getRemarks().toString()).collect(Collectors.joining(" "));
+            String rateResult = 当日.stream().filter(plan -> plan != null  && plan.getState() == 0 && plan.getRemarks() != null).map(plan -> plan.getRemarks().toString()).collect(Collectors.joining(" "));
             quankuang.setRemarks(rateResult);
         }
         return success(quankuang);
@@ -187,11 +187,10 @@ public class WorkCoalWashingReportController extends BaseController {
         try {
             WorkCoalWashingReport workCoalWashingReportById = workCoalWashingReportService.getWorkCoalWashingReportById(Integer.valueOf(Math.toIntExact(id)));
             workCoalWashingReportById.setState(2);
-            workCoalWashingReportService.updateWorkCoalWashingReport(workCoalWashingReportById);
+            return toAjax(workCoalWashingReportService.updateWorkCoalWashingReport(workCoalWashingReportById));
         }catch (Exception e){
             return toAjax(0);
         }
-        return toAjax(1);
     }
     /**
      * 新增洗煤数据填报备注
