@@ -43,8 +43,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/system/ribao")
 public class RiBaoController extends BaseController {
-    @Autowired
-    private MinePlanMapper minePlanMapper;//计划主表
+//    @Autowired
+//    private MinePlanMapper minePlanMapper;//计划主表
     @Autowired
     private SubMinePlanMapper subMinePlanMapper;//计划子表
     @Autowired
@@ -621,6 +621,7 @@ public class RiBaoController extends BaseController {
         List<SubWashCoalPlanPO> 年计划 = subWashCoalPlanMapper.selectByPlanYearUnitCode(statsDate);//洗煤计划子表  年
         //查询所有洗煤厂
         FactoryArchive fac = new FactoryArchive();
+        fac.setIsSealed(0);
         List<FactoryArchive> factoryArchives = factoryArchiveMapper.selectList(fac);
 //        List<xiMeiRiBaoBaoBiao> list = new ArrayList<>();
         for (FactoryArchive fact : factoryArchives) {
@@ -764,13 +765,13 @@ public class RiBaoController extends BaseController {
         WashCoalPlanPO washCoalPlanPO = washCoalPlanMapper.selectByPlan(yue);
         List<SubWashCoalPlanPO> subWashCoalPlanPOS = new ArrayList<>();
         if (washCoalPlanPO != null) {
-            //洗煤计划录入子表
-            subWashCoalPlanPOS = subWashCoalPlanMapper.selectByPlanId(washCoalPlanPO.getId());
+            subWashCoalPlanPOS = subWashCoalPlanMapper.selectByPlanId(washCoalPlanPO.getId());//洗煤计划录入子表
         }
         //洗煤产品库及自用煤录入
         List<SubCoalProductInventory> coal = subCoalProductInventoryMapper.selectProductInventoryDay(statsDate);
         //查询所有洗煤厂
         FactoryArchive fac = new FactoryArchive();
+        fac.setIsSealed(0);
         List<FactoryArchive> factoryArchives = factoryArchiveMapper.selectList(fac);
         for (FactoryArchive fact : factoryArchives) {
             xiMeiTwoRiBao ximei = new xiMeiTwoRiBao();
@@ -841,8 +842,6 @@ public class RiBaoController extends BaseController {
         minday.setStatus(0);
         minday.setPlanDay(day);
         List<MinePlanDay> 日计划 = minePlanDayMapper.selectMinePlanDayList(minday);
-
-
         chanXiaoCunQuXiang 合计 = new chanXiaoCunQuXiang();
         合计.setUnitName("合计");
         chanXiaoCunQuXiang 分公司 = new chanXiaoCunQuXiang();
@@ -851,9 +850,9 @@ public class RiBaoController extends BaseController {
         七煤公司.setUnitName("七煤公司");
         for (MiningAreaCategory mining : miningAreaCategories) {
             //销售量  当日和累计
-            ProductExportSituation product = new ProductExportSituation();
-            product.setExportDate(statsDate);
-            product.setUnitCode(mining.getAreaCode());
+//            ProductExportSituation product = new ProductExportSituation();
+//            product.setExportDate(statsDate);
+//            product.setUnitCode(mining.getAreaCode());
             //原煤去向录入表  日
             DestinationOfRawCoal dest = new DestinationOfRawCoal();
             dest.setRecordDate(statsDate);

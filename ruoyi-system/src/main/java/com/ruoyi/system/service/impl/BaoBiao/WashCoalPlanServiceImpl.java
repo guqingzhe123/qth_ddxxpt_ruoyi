@@ -544,7 +544,7 @@ public class WashCoalPlanServiceImpl implements IWashCoalPlanService {
         List<Long> 精煤量日计划车数 = NumUtils.splitAverageInterleaved(BigDecimal.valueOf(washCoalPlanUnitItem.getClean_coal_month_car_plan()), dto.getWork_days_in_month());
         List<Long> 末煤日计划 = NumUtils.splitAverageInterleaved(washCoalPlanUnitItem.getSlack_coal_month_plan(), dto.getWork_days_in_month());
         List<Long> 末煤日计划车数 = NumUtils.splitAverageInterleaved(BigDecimal.valueOf(washCoalPlanUnitItem.getSlack_coal_month_car_plan()), dto.getWork_days_in_month());
-        if (coalMineWorkingDays.size() > 入洗日计划.size()) {
+        if (coalMineWorkingDays.stream().filter(day -> day.getWhetherWorking() == 1).count()>入洗日计划.size() ) {
             throw new IllegalStateException("工作日数量超过计划数据长度");
         }
         int num = 0;
@@ -570,8 +570,6 @@ public class WashCoalPlanServiceImpl implements IWashCoalPlanService {
             coalDay.setWorkingDays((long) i + 1);
             coalMineWorkingDayMapper.updateCoalMineWorkingDays(coalDay);
         }
-
-
         if (planPO == null) {
             po.setIsDeleted(0);
             planMapper.insert(po);
@@ -579,18 +577,22 @@ public class WashCoalPlanServiceImpl implements IWashCoalPlanService {
             List<SubWashCoalPlanPO> subs = toSubPOList(planId, dto.getData_JSON());
             if (!subs.isEmpty()) subMapper.batchInsert(subs);
             return planId;
-        } else {
+        }
+        else {
             Long planId = planPO.getId();
             List<SubWashCoalPlanPO> subs = toSubPOList(planId, dto.getData_JSON());
             for (SubWashCoalPlanPO subpo : subs) {
-
                 SubWashCoalPlanPO subWashCoalPlanPO = subMapper.selectByPlanIdUnitName(subpo.getUnitName(), planId);
-
-                if (subWashCoalPlanPO.getIsDeleted() != 2) {
-                    return Long.valueOf(0);
+                if(subWashCoalPlanPO == null){
+                    if (!subs.isEmpty()) subMapper.batchInsert(subs);
+                }else {
+                    if (subWashCoalPlanPO.getIsDeleted() != 2) {
+                        return Long.valueOf(0);
+                    }
+                    subpo.setIsDeleted(0);
+                    subMapper.uopDate(subpo);
                 }
-                subpo.setIsDeleted(0);
-                subMapper.uopDate(subpo);
+
             }
             return planId;
         }

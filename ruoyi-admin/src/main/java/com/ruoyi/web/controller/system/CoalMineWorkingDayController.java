@@ -419,6 +419,16 @@ public class CoalMineWorkingDayController extends BaseController {
                     coalDay.setWorkingDays(coalDay1.getWorkingDays());
                     coalMineWorkingDayService.updateCoalMineWorkingDay(coalDay1);
                 }
+            }else {
+                for (CoalMineWorkingDay coalDay1 : coalMineWorkingDay) {
+                    coalDay1.setProductionPlan(0L);
+                    coalDay1.setProductionObjective(0L);
+                    coalDay1.setExplorationPlan(0L);
+                    coalDay1.setExplorationObjective(0L);
+                    coalDay1.setFootagePlan(0L);
+                    coalDay1.setFootageObjective(0L);
+                    coalMineWorkingDayService.updateCoalMineWorkingDay(coalDay1);
+                }
             }
         }
     }

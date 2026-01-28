@@ -928,8 +928,14 @@ public class IShengChanRiBaoService {
     private static int toInt(BigDecimal value) {
         // 1. null 转为 BigDecimal.ZERO，非 null 保留原值
         BigDecimal result = Optional.ofNullable(value).orElse(BigDecimal.ZERO);
-        // 2. 直接舍去小数（RoundingMode.DOWN），转为 int（超出范围抛异常）
-        return result.setScale(0, BigDecimal.ROUND_DOWN).intValueExact();
+        // 2. 检查数值是否在 int 范围内，如果超出范围则返回 Integer.MAX_VALUE 或 Integer.MIN_VALUE
+        if (result.compareTo(new BigDecimal(Integer.MAX_VALUE)) > 0) {
+            return Integer.MAX_VALUE;
+        } else if (result.compareTo(new BigDecimal(Integer.MIN_VALUE)) < 0) {
+            return Integer.MIN_VALUE;
+        }
+        // 3. 直接舍去小数（使用setScale的默认向下舍入模式），转为 int
+        return result.setScale(0, BigDecimal.ROUND_DOWN).intValue();
     }
 
 }
