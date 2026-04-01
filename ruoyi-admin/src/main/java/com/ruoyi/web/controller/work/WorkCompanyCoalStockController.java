@@ -9,23 +9,23 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.system.domain.BaoBiao.FactoryArchive;
 import com.ruoyi.system.domain.BaoBiao.MiningAreaCategory;
+import com.ruoyi.system.domain.BaoBiao.dto.cpi.SubCoalProductInventory;
 import com.ruoyi.system.domain.BaoBiao.vo.plan.MineData;
 import com.ruoyi.system.domain.DestinationOfRawCoal;
 import com.ruoyi.system.domain.InitialInventoryOfEachMine;
 import com.ruoyi.system.domain.SubInitialInventoryOfEachMine;
 import com.ruoyi.system.domain.ribaobaobiao.riBao;
-import com.ruoyi.system.domain.work.WorkCoalStock;
-import com.ruoyi.system.domain.work.WorkCoalStockSalesStat;
-import com.ruoyi.system.domain.work.WorkCompanyCoalStock;
-import com.ruoyi.system.domain.work.WorkThermalPowerCoalSales;
+import com.ruoyi.system.domain.work.*;
 import com.ruoyi.system.mapper.BaoBiao.FactoryArchiveMapper;
 import com.ruoyi.system.mapper.BaoBiao.SubMineDevelopmentDataMapper;
 import com.ruoyi.system.mapper.DestinationOfRawCoalMapper;
 import com.ruoyi.system.mapper.InitialInventoryOfEachMineMapper;
 import com.ruoyi.system.mapper.SubInitialInventoryOfEachMineMapper;
+import com.ruoyi.system.service.BaoBiao.ICoalProductInventoryService;
 import com.ruoyi.system.service.BaoBiao.IFactoryArchiveService;
 import com.ruoyi.system.service.BaoBiao.IMiningAreaCategoryService;
 import com.ruoyi.system.service.work.IWorkCoalStockSalesStatService;
+import com.ruoyi.system.service.work.IWorkCoalWashingReportService;
 import com.ruoyi.system.service.work.IWorkCompanyCoalStockService;
 import com.ruoyi.system.service.work.IWorkThermalPowerCoalSalesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +68,12 @@ public class WorkCompanyCoalStockController extends BaseController {
 
     @Resource
     private IFactoryArchiveService factoryArchiveService;//洗煤厂列表
+
+
+    @Autowired
+    private IWorkCoalWashingReportService workCoalWashingReportService;//洗煤生产录入
+    @Resource
+    private ICoalProductInventoryService  coalProductInventoryService ;//洗煤产品录入
     @GetMapping("/list")  //厂端获取
     public TableDataInfo<BaseEntity> list(WorkCoalStockSalesStat workStock) {
         List<WorkCoalStockSalesStat> list = workCoalStockSalesStatService.listWorkCoalStockSalesStat(workStock);
@@ -89,6 +95,43 @@ public class WorkCompanyCoalStockController extends BaseController {
             }
 
             return getDataTable(AllList);
+        }else{ 
+            if(list.size()==0){
+                WorkCoalStockSalesStat workCoalStockSalesStat1 = new WorkCoalStockSalesStat();
+
+                WorkCoalWashingReport workCoalWashingReport=new WorkCoalWashingReport();
+                workCoalWashingReport.setUnitName(workStock.getCoalType());
+                workCoalWashingReport.setReportTime(workStock.getRecordDate());
+                List<WorkCoalWashingReport> workCoalWashingReports = workCoalWashingReportService.listWorkCoalWashingReport(workCoalWashingReport);//洗煤生产录入
+
+                SubCoalProductInventory subCoalProductInventory=new SubCoalProductInventory();
+                subCoalProductInventory.setUnitName(workStock.getCoalType());
+                subCoalProductInventory.setRecordDate(workStock.getRecordDate());
+                List<SubCoalProductInventory> subCoalProductInventories = coalProductInventoryService.listSubCoalProductInventory(subCoalProductInventory);//洗煤产品录入里的
+//                    选煤厂库存煤量统计表  精煤当日生产（洗煤生成录入里的 精煤）
+//                    选煤厂库存煤量统计表  沫煤当日生产（洗煤生成录入里的 洗沫）
+//                    选煤厂库存煤量统计表  精煤现存（洗煤产品录入里的 精煤现存）
+//                    选煤厂库存煤量统计表  沫煤现存（洗煤产品录入里的 沫块煤现存）
+                if(workCoalWashingReports.size()>0){
+                    workCoalStockSalesStat1.setCleanCoalDailyProduction(workCoalWashingReports.get(0).getCleanCoal());//精煤当日生产
+                    workCoalStockSalesStat1.setLeanCoalDailyProduction(workCoalWashingReports.get(0).getWashedLumpCoal());//沫煤当日生产
+                }
+                if(subCoalProductInventories.size()>0){
+                    workCoalStockSalesStat1.setCleanCoalCurrentStock(subCoalProductInventories.get(0).getCleanCoalCurrentStock() != null ? subCoalProductInventories.get(0).getCleanCoalCurrentStock().longValue() : 0L);//精煤现存
+                    workCoalStockSalesStat1.setLeanCoalCurrentStock(subCoalProductInventories.get(0).getSlackLumpCurrentStock() != null ? subCoalProductInventories.get(0).getSlackLumpCurrentStock().longValue() : 0L);//沫煤现存
+                }
+                workStock.setRecordDate(getPreviousDay(workStock.getRecordDate()));
+                List<WorkCoalStockSalesStat> list1 = workCoalStockSalesStatService.listWorkCoalStockSalesStat(workStock);
+                for (WorkCoalStockSalesStat workCoalStockSalesStat:list1){
+                    workCoalStockSalesStat1.setRecordDate(workStock.getRecordDate());
+                    workCoalStockSalesStat1.setCoalType(workStock.getCoalType());
+                    workCoalStockSalesStat1.setRawCoalPreviousStock(workCoalStockSalesStat.getRawCoalCurrentStock());
+                    workCoalStockSalesStat1.setCleanCoalPreviousWarehouse(workCoalStockSalesStat.getCleanCoalCurrentWarehouse());
+                    workCoalStockSalesStat1.setLeanCoalPreviousWarehouse(workCoalStockSalesStat.getLeanCoalCurrentWarehouse());
+                    workCoalStockSalesStat1.setSlimePreviousWarehouse(workCoalStockSalesStat.getSlimeCurrentWarehouse());
+                }
+                list.add(workCoalStockSalesStat1);
+            }
         }
         return getDataTable(list);
     }

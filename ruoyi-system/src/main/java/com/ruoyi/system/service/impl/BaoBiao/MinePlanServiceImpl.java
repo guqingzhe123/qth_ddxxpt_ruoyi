@@ -822,6 +822,30 @@ public class MinePlanServiceImpl implements IMinePlanService {
 
         List<Long> ids = masters.stream().map(MinePlanPO::getId).collect(Collectors.toList());
         List<SubMinePlanPO> allSubs = subMapper.selectByPlanIds(ids);
+
+        List<MiningAreaCategory> miningAreaCategories = miningAreaCategoryService.QueryTeamName(query.getUnitCode());
+        // 如果 allSubs 不包含 miningAreaCategories 里的数据，则将 miningAreaCategories 加入到 allSubs 中
+        Set<String> existingUnitNames = allSubs.stream()
+                .map(SubMinePlanPO::getUnitName)
+                .collect(Collectors.toSet());
+
+        for (MiningAreaCategory category : miningAreaCategories) {
+            if (!existingUnitNames.contains(category.getAreaName())) {
+                SubMinePlanPO newSub = new SubMinePlanPO();
+                newSub.setMinePlanId(ids.get(0)); // 假设使用当前查询条件的ID作为关联
+                newSub.setUnitName(category.getAreaName());
+                newSub.setUnitCode(category.getAreaCode());
+                newSub.setIsDeleted(0); // 默认未删除状态
+                newSub.setMonthPlan(BigDecimal.ZERO);
+                newSub.setDayPlan(BigDecimal.ZERO);
+                newSub.setMonthTarget(BigDecimal.ZERO);
+                newSub.setDayTarget(BigDecimal.ZERO);
+                allSubs.add(newSub);
+            }
+        }
+
+
+
         Map<Long, List<SubMinePlanPO>> group = allSubs.stream()
                 .collect(Collectors.groupingBy(SubMinePlanPO::getMinePlanId, LinkedHashMap::new, Collectors.toList()));
 
@@ -918,8 +942,8 @@ public class MinePlanServiceImpl implements IMinePlanService {
             if (一班.getUnitName() != null) {
                 if (一班.getIsDeleted() == 1) {
                     ju.setOneProductionData(0);//生产数据
-                    ju.setOneExpandData(0);//开拓
-                    ju.setOneFootageData(0);//进尺
+                    ju.setOneExpandData(BigDecimal.valueOf(0));//开拓
+                    ju.setOneFootageData(BigDecimal.valueOf(0));//进尺
                     ju.setOneEnterWellNum(0);//入井人数
                     ju.setOneComeOutWellNum(0);//出境人数
                     ju.setOneTotalDownCount(0);//入井人数
@@ -939,8 +963,8 @@ public class MinePlanServiceImpl implements IMinePlanService {
             if (二班.getUnitName() != null) {
                 if (二班.getIsDeleted() == 1) {
                     ju.setTwoProductionData(0);//生产数据
-                    ju.setTwoExpandData(0);//开拓
-                    ju.setTwoFootageData(0);//进尺
+                    ju.setTwoExpandData(BigDecimal.valueOf(0));//开拓
+                    ju.setTwoFootageData(BigDecimal.valueOf(0));//进尺
                     ju.setTwoEnterWellNum(0);//入井人数
                     ju.setTwoComeOutWellNum(0);//出境人数
                     ju.setTwoTotalDownCount(0);//入井人数
@@ -960,8 +984,8 @@ public class MinePlanServiceImpl implements IMinePlanService {
             if (三班.getUnitName() != null) {
                 if (三班.getIsDeleted() == 1) {
                     ju.setThreeProductionData(0);//生产数据
-                    ju.setThreeExpandData(0);//开拓
-                    ju.setThreeFootageData(0);//进尺
+                    ju.setThreeExpandData(BigDecimal.valueOf(0));//开拓
+                    ju.setThreeFootageData(BigDecimal.valueOf(0));//进尺
                     ju.setThreeEnterWellNum(0);//入井人数
                     ju.setThreeComeOutWellNum(0);//出境人数
                     ju.setThreeTotalDownCount(0);//入井人数

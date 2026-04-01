@@ -4,6 +4,8 @@ import com.ruoyi.common.core.domain.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.math.BigDecimal;
+
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class StatisticsFootage extends BaseEntity {
@@ -18,7 +20,7 @@ public class StatisticsFootage extends BaseEntity {
     /** 本日计划 */
     private Integer dayTarget;
     /** 本日完成 */
-    private Integer dayComplete;
+    private BigDecimal dayComplete;
     /** 累计计划 */
     private Integer dayCumulativePlan;
     /** 累计目标 */

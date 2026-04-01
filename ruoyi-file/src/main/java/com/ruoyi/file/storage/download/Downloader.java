@@ -20,11 +20,15 @@ public abstract class Downloader {
 
     public void download(HttpServletResponse httpServletResponse, DownloadFile downloadFile) {
         InputStream inputStream = getInputStream(downloadFile);
+        if (inputStream == null) {
+            log.error("获取文件输入流为 null，文件路径：{}", downloadFile.getFileUrl());
+            throw new BaseException("无法获取文件内容，文件可能已损坏或被删除");
+        }
         try {
-            // 设置响应头优化下载64kb
+            // 设置响应头优化下载 64kb
             httpServletResponse.setBufferSize(65536);
             OutputStream outputStream = httpServletResponse.getOutputStream();
-//            nio方式，带宽不受限时，可以使用下面注释的方法
+//            nio 方式，带宽不受限时，可以使用下面注释的方法
 //            WritableByteChannel channel = Channels.newChannel(outputStream);
 //            ByteBuffer buffer = ByteBuffer.allocateDirect(65536);
 //            byte[] bytes = new byte[65536];
@@ -38,8 +42,8 @@ public abstract class Downloader {
             IOUtils.copyLarge(inputStream, outputStream, new byte[65536]);
             outputStream.flush();
         } catch (IOException e) {
-            log.error(e.getMessage(), e);
-            throw new BaseException("文件下载失败");
+            log.error("文件下载失败：{}", e.getMessage(), e);
+            throw new BaseException("文件下载失败：" + e.getMessage());
         } finally {
             IOUtils.closeQuietly(inputStream);
         }

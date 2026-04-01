@@ -55,8 +55,8 @@ public class MddStatServiceImpl implements IMddStatService {
         MineData mineData = mapper.sumOutputByDateAndType(day);
         if(mineData !=null){
             top.setCompanyProduction(mineData.getProductionData());//全公司生产
-            top.setCompanyAdvance(mineData.getFootageData());//全公司生产
-            top.setCompanyTunneling(mineData.getExpandData());//全公司开拓
+            top.setCompanyAdvance(mineData.getFootageData() != null ? mineData.getFootageData() : BigDecimal.ZERO);//全公司进尺
+            top.setCompanyTunneling(mineData.getExpandData() != null ? mineData.getExpandData() : BigDecimal.ZERO);//全公司开拓
         }
 //        CoalMineWorkingDay coalMineWorkingDay = coalMineWorkingDayMapper.selectCoalMineWorkingMonth(yearMonth, dayOfMonth);
 
@@ -98,8 +98,8 @@ public class MddStatServiceImpl implements IMddStatService {
         if (rows != null) {
             for (MineData r : rows) {
                 生产.put(r.getRecordDate(), r.getProductionData());
-                开拓.put(r.getRecordDate(), r.getExpandData());
-                进尺.put(r.getRecordDate(), r.getFootageData());
+                开拓.put(r.getRecordDate(), r.getExpandData() != null ? r.getExpandData().intValue() : 0);
+                进尺.put(r.getRecordDate(), r.getFootageData() != null ? r.getFootageData().intValue() : 0);
             }
         }
 

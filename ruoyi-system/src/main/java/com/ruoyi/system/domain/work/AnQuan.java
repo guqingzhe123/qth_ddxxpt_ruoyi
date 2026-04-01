@@ -6,6 +6,7 @@ import com.ruoyi.common.annotation.Excel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -37,19 +38,19 @@ public class AnQuan{
 
     /** 全矿进尺（单位：米） */
     @Excel(name = "全矿进尺", readConverterExp = "单=位：米")
-    private Long mineDailyAdvance;
+    private BigDecimal mineDailyAdvance;
 
     /** 全矿累计进尺（单位：米） */
     @Excel(name = "全矿累计进尺", readConverterExp = "单=位：米")
-    private Long mineTotalAdvance;
+    private BigDecimal mineTotalAdvance;
 
     /** 全矿开拓（单位：米） */
     @Excel(name = "全矿开拓", readConverterExp = "单=位：米")
-    private Long mineDailyDevelopment;
+    private BigDecimal mineDailyDevelopment;
 
     /** 全矿累计开拓（单位：米） */
     @Excel(name = "全矿累计开拓", readConverterExp = "单=位：米")
-    private Long mineTotalDevelopment;
+    private BigDecimal mineTotalDevelopment;
 
     /** 搬家情况 */
     @Excel(name = "搬家情况")

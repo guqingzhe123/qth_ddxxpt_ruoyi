@@ -86,12 +86,12 @@ public class MineDayCumReportV2ServiceImpl implements IMineDayCumReportV2Service
 // --- 进尺 ---
 // 当日进尺
             if (当日 != null && 当日.getFootageData() != null) {
-                vo.setAdvanceDaily(BigDecimal.valueOf(当日.getFootageData()));
+                vo.setAdvanceDaily(当日.getFootageData());
             }
 
 // 月累计完成进尺
             if (月累计完成 != null && 月累计完成.getFootageData() != null) {
-                vo.setAdvanceDoneCum(BigDecimal.valueOf(月累计完成.getFootageData()));
+                vo.setAdvanceDoneCum(月累计完成.getFootageData());
             }
 
 // 月累计计划进尺
@@ -102,12 +102,12 @@ public class MineDayCumReportV2ServiceImpl implements IMineDayCumReportV2Service
 // --- 开拓 ---
 // 当日开拓
             if (当日 != null && 当日.getExpandData() != null) {
-                vo.setDevelopDaily(BigDecimal.valueOf(当日.getExpandData()));
+                vo.setDevelopDaily(当日.getExpandData());
             }
 
 // 月累计完成开拓
             if (月累计完成 != null && 月累计完成.getExpandData() != null) {
-                vo.setDevelopDoneCum(BigDecimal.valueOf(月累计完成.getExpandData()));
+                vo.setDevelopDoneCum(月累计完成.getExpandData());
             }
 
 // 月累计计划开拓（注意：原方法名可能存在拼写错误，ExploratioPlan 应为 ExplorationPlan，需确认）

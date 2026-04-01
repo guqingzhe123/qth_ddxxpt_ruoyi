@@ -65,10 +65,14 @@ public class WorkWithdrawalFaceServiceImpl implements IWorkWithdrawalFaceService
                     w1.setFaceYard(work.getFaceYard());
                     w1.setPlannedSupportQty(work.getPlannedSupportQty());
                     w1.setPlannedChuteQty(work.getPlannedChuteQty());
-                    workWithdrawalFaceMapper.updateWorkWithdrawalFace(work);
+                    w1.setRemainingStentCount(work.getPlannedSupportQty());
+                    w1.setRemainingChute(work.getPlannedChuteQty());
+                    workWithdrawalFaceMapper.updateWorkWithdrawalFace(w1);
                 }else {
                     work.setStatus(0);
                     work.setCreateTime(DateUtils.getNowDate());
+                    work.setRemainingStentCount(work.getPlannedSupportQty());
+                    work.setRemainingChute(work.getPlannedChuteQty());
                     workWithdrawalFaceMapper.insertWorkWithdrawalFace(work);
                 }
             }

@@ -61,8 +61,8 @@
     <select id="selectWorkCoalWashingReportMonthList" parameterType="com.ruoyi.system.domain.work.WorkCoalWashingReport" resultMap="WorkCoalWashingReportResult">
         select  unit_name, unit_code, sum(total_input) as total_input, sum(internal_input) as internal_input, sum(external_input) as external_input,
                sum(output_coal) as output_coal, sum(remaining_raw_coal) as remaining_raw_coal, sum(washing_input) as washing_input, sum(clean_coal) as clean_coal,
-               sum(clean_coal_yield) as clean_coal_yield, sum(washed_lump_coal) as washed_lump_coal, sum(washed_fine_coal) as washed_fine_coal, sum(comprehensive_yield) as comprehensive_yield,
-               sum(washing_consumption) as washing_consumption, sum(washing_consumption_rate) as washing_consumption_rate,
+               sum(washed_lump_coal) as washed_lump_coal, sum(washed_fine_coal) as washed_fine_coal,
+               sum(washing_consumption) as washing_consumption,
                sum(third_selection_fine_coal) as third_selection_fine_coal
                 from work_coal_washing_report
         <where>

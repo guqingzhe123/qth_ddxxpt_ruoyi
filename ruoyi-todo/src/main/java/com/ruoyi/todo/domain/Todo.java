@@ -132,9 +132,14 @@ public class Todo extends BaseEntity {
     private String createId;
 
     /**
-     * 更新人ID
+     * 更新人 ID
      */
     private String updateId;
+    
+    /** 开始创建时间 */
+    private Date beginCreateTime;
+    /** 结束创建时间 */
+    private Date endCreateTime;
 
 
     @Override

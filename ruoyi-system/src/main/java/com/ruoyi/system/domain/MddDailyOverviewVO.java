@@ -3,6 +3,8 @@ package com.ruoyi.system.domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class MddDailyOverviewVO {
 
@@ -16,7 +18,7 @@ public class MddDailyOverviewVO {
     private Integer qimeiProduction;
 
     @JsonProperty("全公司进尺")
-    private Integer companyAdvance;
+    private BigDecimal companyAdvance;
 
     @JsonProperty("全公司进尺计划")
     private Integer branchAdvance;
@@ -25,7 +27,7 @@ public class MddDailyOverviewVO {
     private Integer qimeiAdvance;
 
     @JsonProperty("全公司开拓")
-    private Integer companyTunneling;
+    private BigDecimal companyTunneling;
 
     @JsonProperty("全公司开拓计划")
     private Integer branchTunneling;

@@ -7,6 +7,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
+import java.util.Date;
+
 /**
  * 我起草的流程表对象 t_workflow_my_draft
  * 
@@ -61,6 +63,11 @@ public class WorkflowMyDraft extends BaseEntity {
 
     /** 驳回状态 */
     private String handleType;
+    /** 开始创建时间 */
+    private Date beginCreateTime;
+    /** 结束创建时间 */
+    private Date endCreateTime;
+
 
     @Override
     public String toString() {

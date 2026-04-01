@@ -3,6 +3,7 @@ package com.ruoyi.system.domain.BaoBiao.vo.plan;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Data
 public class MineData implements Serializable {
@@ -13,8 +14,8 @@ public class MineData implements Serializable {
     private String currentShift;
 
     private Integer productionData;//生产数据
-    private Integer expandData;//开拓数据
-    private Integer footageData;//进尺数据
+    private BigDecimal expandData;//开拓数据
+    private BigDecimal footageData;//进尺数据
     private Integer enterWellNum;//入井人数
     private Integer comeOutWellNum;//出井人数
     private Integer totalDownCount;//总出勤人数

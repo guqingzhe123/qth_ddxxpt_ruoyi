@@ -3,6 +3,7 @@ package com.ruoyi.system.domain.BaoBiao.po;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Data
 public class SubMineDevelopmentDataPO implements Serializable {
@@ -13,8 +14,8 @@ public class SubMineDevelopmentDataPO implements Serializable {
     private String unitNameJSON;  // 原JSON名，现用字符串存
     private String unitCode;
     private Integer productionData;
-    private Integer expandData;
-    private Integer footageData;
+    private BigDecimal expandData;
+    private BigDecimal footageData;
     private Integer enterWellNum;
     private Integer comeOutWellNum;
 }

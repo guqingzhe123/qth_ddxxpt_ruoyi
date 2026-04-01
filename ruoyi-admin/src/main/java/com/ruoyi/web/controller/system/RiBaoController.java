@@ -200,14 +200,13 @@ public class RiBaoController extends BaseController {
         List<shengChanRiBao> list = new ArrayList<>();
         shengChanRiBao 合计=new shengChanRiBao();
         合计.setUnitName("合计");
-        合计.setDayPlan(BigDecimal.valueOf(日计划.stream().filter(po -> po != null) .mapToInt(po -> toInt(po.getDayPlan())).sum()));
-        合计.setDayComplete(BigDecimal.valueOf(日完成.stream().filter(po -> po != null  && po.getUnitNameJSON().equals("合计")) .mapToInt(po -> toInt(po.getFootageData())).sum()));
-        合计.setMonthPlan(BigDecimal.valueOf(月计划.stream().filter(po -> po != null) .mapToInt(po -> toInt(po.getDayPlan())).sum()));
-        合计.setMonthComplete(BigDecimal.valueOf(月完成.stream().filter(po -> po != null  && po.getUnitNameJSON().equals("合计")) .mapToInt(po -> toInt(po.getFootageData())).sum()));
-        合计.setYearPlan(BigDecimal.valueOf(年计划.stream().filter(po -> po != null && !po.getUnitName().equals("计划总量") ) .mapToInt(po -> toInt(po.getMonthPlan())).sum()));
-        合计.setYearComplete(BigDecimal.valueOf(年完成.stream().filter(po -> po != null  && po.getUnitNameJSON().equals("合计")) .mapToInt(po -> toInt(po.getFootageData())).sum()));
+        合计.setDayPlan(BigDecimal.valueOf(日计划.stream().filter(po -> po != null).mapToInt(MinePlanDay::getDayPlan).sum()));
+        合计.setDayComplete(日完成.stream().filter(po -> po != null && po.getUnitNameJSON().equals("合计")).map(SubMineDevelopmentDataPO::getFootageData).filter(java.util.Objects::nonNull).reduce(BigDecimal.ZERO, BigDecimal::add));
+        合计.setMonthPlan(BigDecimal.valueOf(月计划.stream().filter(po -> po != null).mapToInt(MinePlanDay::getDayPlan).sum()));
+        合计.setMonthComplete(月完成.stream().filter(po -> po != null && po.getUnitNameJSON().equals("合计")).map(SubMineDevelopmentDataPO::getFootageData).filter(java.util.Objects::nonNull).reduce(BigDecimal.ZERO, BigDecimal::add));
+        合计.setYearPlan(年计划.stream().filter(po -> po != null && !po.getUnitName().equals("计划总量")).map(SubMinePlanPO::getMonthPlan).filter(java.util.Objects::nonNull).reduce(BigDecimal.ZERO, BigDecimal::add));
+        合计.setYearComplete(年完成.stream().filter(po -> po != null && po.getUnitNameJSON().equals("合计")).map(SubMineDevelopmentDataPO::getFootageData).filter(java.util.Objects::nonNull).reduce(BigDecimal.ZERO, BigDecimal::add));
         list.add(合计);
-
 
         for (MinePlanDay planDay : 日计划) {
             shengChanRiBao ribao = new shengChanRiBao();
@@ -227,19 +226,19 @@ public class RiBaoController extends BaseController {
             }
             SubMineDevelopmentDataPO 日完成内容 = 日完成.stream().filter(item -> planDay.getUnitName().equals(item.getUnitNameJSON())).findFirst().orElse(new SubMineDevelopmentDataPO());
             if (日完成内容.getFootageData() != null) {
-                ribao.setDayComplete(BigDecimal.valueOf(日完成内容.getFootageData()));
+                ribao.setDayComplete(日完成内容.getFootageData());
             } else {
                 ribao.setDayComplete(BigDecimal.valueOf(0));
             }
             SubMineDevelopmentDataPO 月完成内容 = 月完成.stream().filter(item -> planDay.getUnitName().equals(item.getUnitNameJSON())).findFirst().orElse(new SubMineDevelopmentDataPO());
             if (月完成内容.getFootageData() != null) {
-                ribao.setMonthComplete(BigDecimal.valueOf(月完成内容.getFootageData()));
+                ribao.setMonthComplete(月完成内容.getFootageData());
             } else {
                 ribao.setMonthComplete(BigDecimal.valueOf(0));
             }
             SubMineDevelopmentDataPO 年完成内容 = 年完成.stream().filter(item -> planDay.getUnitName().equals(item.getUnitNameJSON())).findFirst().orElse(new SubMineDevelopmentDataPO());
             if (年完成内容.getFootageData() != null) {
-                ribao.setYearComplete(BigDecimal.valueOf(年完成内容.getFootageData()));
+                ribao.setYearComplete(年完成内容.getFootageData());
             } else {
                 ribao.setYearComplete(BigDecimal.valueOf(0));
             }
@@ -275,12 +274,12 @@ public class RiBaoController extends BaseController {
         List<shengChanRiBao> list = new ArrayList<>();
         shengChanRiBao 合计=new shengChanRiBao();
         合计.setUnitName("合计");
-        合计.setDayPlan(BigDecimal.valueOf(日计划.stream().filter(po -> po != null) .mapToInt(po -> toInt(po.getDayPlan())).sum()));
-        合计.setDayComplete(BigDecimal.valueOf(日完成.stream().filter(po -> po != null  && po.getUnitNameJSON().equals("合计")) .mapToInt(po -> toInt(po.getExpandData())).sum()));
-        合计.setMonthPlan(BigDecimal.valueOf(月计划.stream().filter(po -> po != null) .mapToInt(po -> toInt(po.getDayPlan())).sum()));
-        合计.setMonthComplete(BigDecimal.valueOf(月完成.stream().filter(po -> po != null  && po.getUnitNameJSON().equals("合计")) .mapToInt(po -> toInt(po.getExpandData())).sum()));
-        合计.setYearPlan(BigDecimal.valueOf(年计划.stream().filter(po -> po != null && !po.getUnitName().equals("计划总量") ) .mapToInt(po -> toInt(po.getMonthPlan())).sum()));
-        合计.setYearComplete(BigDecimal.valueOf(年完成.stream().filter(po -> po != null  && po.getUnitNameJSON().equals("合计")) .mapToInt(po -> toInt(po.getExpandData())).sum()));
+        合计.setDayPlan(BigDecimal.valueOf(日计划.stream().filter(po -> po != null).mapToInt(MinePlanDay::getDayPlan).sum()));
+        合计.setDayComplete(日完成.stream().filter(po -> po != null && po.getUnitNameJSON().equals("合计")).map(SubMineDevelopmentDataPO::getExpandData).filter(java.util.Objects::nonNull).reduce(BigDecimal.ZERO, BigDecimal::add));
+        合计.setMonthPlan(BigDecimal.valueOf(月计划.stream().filter(po -> po != null).mapToInt(MinePlanDay::getDayPlan).sum()));
+        合计.setMonthComplete(月完成.stream().filter(po -> po != null && po.getUnitNameJSON().equals("合计")).map(SubMineDevelopmentDataPO::getExpandData).filter(java.util.Objects::nonNull).reduce(BigDecimal.ZERO, BigDecimal::add));
+        合计.setYearPlan(年计划.stream().filter(po -> po != null && !po.getUnitName().equals("计划总量")).map(SubMinePlanPO::getMonthPlan).filter(java.util.Objects::nonNull).reduce(BigDecimal.ZERO, BigDecimal::add));
+        合计.setYearComplete(年完成.stream().filter(po -> po != null && po.getUnitNameJSON().equals("合计")).map(SubMineDevelopmentDataPO::getExpandData).filter(java.util.Objects::nonNull).reduce(BigDecimal.ZERO, BigDecimal::add));
         list.add(合计);
 
         for (MinePlanDay planDay : 日计划) {
@@ -301,19 +300,19 @@ public class RiBaoController extends BaseController {
             }
             SubMineDevelopmentDataPO 日完成内容 = 日完成.stream().filter(item -> planDay.getUnitName().equals(item.getUnitNameJSON())).findFirst().orElse(new SubMineDevelopmentDataPO());
             if (日完成内容.getExpandData() != null) {
-                ribao.setDayComplete(BigDecimal.valueOf(日完成内容.getExpandData()));
+                ribao.setDayComplete(日完成内容.getExpandData());
             } else {
                 ribao.setDayComplete(BigDecimal.valueOf(0));
             }
             SubMineDevelopmentDataPO 月完成内容 = 月完成.stream().filter(item -> planDay.getUnitName().equals(item.getUnitNameJSON())).findFirst().orElse(new SubMineDevelopmentDataPO());
             if (月完成内容.getExpandData() != null) {
-                ribao.setMonthComplete(BigDecimal.valueOf(月完成内容.getExpandData()));
+                ribao.setMonthComplete(月完成内容.getExpandData());
             } else {
                 ribao.setMonthComplete(BigDecimal.valueOf(0));
             }
             SubMineDevelopmentDataPO 年完成内容 = 年完成.stream().filter(item -> planDay.getUnitName().equals(item.getUnitNameJSON())).findFirst().orElse(new SubMineDevelopmentDataPO());
             if (年完成内容.getExpandData() != null) {
-                ribao.setYearComplete(BigDecimal.valueOf(年完成内容.getExpandData()));
+                ribao.setYearComplete(年完成内容.getExpandData());
             } else {
                 ribao.setYearComplete(BigDecimal.valueOf(0));
             }
@@ -508,19 +507,19 @@ public class RiBaoController extends BaseController {
 
             SubMineDevelopmentDataPO 日完成内容 = 日完成.stream().filter(item -> "合计".equals(item.getUnitNameJSON())).findFirst().orElse(new SubMineDevelopmentDataPO());
             if (日完成内容.getFootageData() != null) {
-                煤矿.setDayComplete(BigDecimal.valueOf(日完成内容.getFootageData()));
+                煤矿.setDayComplete(日完成内容.getFootageData());
             } else {
                 煤矿.setDayComplete(BigDecimal.valueOf(0));
             }
             SubMineDevelopmentDataPO 月完成内容 = 月完成.stream().filter(item -> "合计".equals(item.getUnitNameJSON())).findFirst().orElse(new SubMineDevelopmentDataPO());
             if (月完成内容.getFootageData() != null) {
-                煤矿.setMonthComplete(BigDecimal.valueOf(月完成内容.getFootageData()));
+                煤矿.setMonthComplete(月完成内容.getFootageData());
             } else {
                 煤矿.setMonthComplete(BigDecimal.valueOf(0));
             }
             SubMineDevelopmentDataPO 年完成内容 = 年完成.stream().filter(item -> "合计".equals(item.getUnitNameJSON())).findFirst().orElse(new SubMineDevelopmentDataPO());
             if (年完成内容.getFootageData() != null) {
-                煤矿.setYearComplete(BigDecimal.valueOf(年完成内容.getFootageData()));
+                煤矿.setYearComplete(年完成内容.getFootageData());
             } else {
                 煤矿.setYearComplete(BigDecimal.valueOf(0));
             }
@@ -579,13 +578,13 @@ public class RiBaoController extends BaseController {
             煤矿.setYearPlan(Optional.ofNullable(年计划内容.getMonthPlan()).orElse(BigDecimal.ZERO));
             
             SubMineDevelopmentDataPO 日完成内容 = 日完成.stream().filter(item -> "合计".equals(item.getUnitNameJSON())).findFirst().orElse(new SubMineDevelopmentDataPO());
-            煤矿.setDayComplete(Optional.ofNullable(日完成内容.getExpandData()).map(BigDecimal::valueOf).orElse(BigDecimal.ZERO));
-            
+            煤矿.setDayComplete(Optional.ofNullable(日完成内容.getExpandData()).orElse(BigDecimal.ZERO));
+
             SubMineDevelopmentDataPO 月完成内容 = 月完成.stream().filter(item -> "合计".equals(item.getUnitNameJSON())).findFirst().orElse(new SubMineDevelopmentDataPO());
-            煤矿.setMonthComplete(Optional.ofNullable(月完成内容.getExpandData()).map(BigDecimal::valueOf).orElse(BigDecimal.ZERO));
-            
+            煤矿.setMonthComplete(Optional.ofNullable(月完成内容.getExpandData()).orElse(BigDecimal.ZERO));
+
             SubMineDevelopmentDataPO 年完成内容 = 年完成.stream().filter(item -> "合计".equals(item.getUnitNameJSON())).findFirst().orElse(new SubMineDevelopmentDataPO());
-            煤矿.setYearComplete(Optional.ofNullable(年完成内容.getExpandData()).map(BigDecimal::valueOf).orElse(BigDecimal.ZERO));
+            煤矿.setYearComplete(Optional.ofNullable(年完成内容.getExpandData()).orElse(BigDecimal.ZERO));
             list.add(煤矿);
             合计.setDayPlan(合计.getDayPlan().add(煤矿.getDayPlan()));
             合计.setMonthPlan(合计.getMonthPlan().add(煤矿.getMonthPlan()));
@@ -2061,19 +2060,19 @@ public class RiBaoController extends BaseController {
             }
             SubMineDevelopmentDataPO 日完成内容 = 日完成.stream().filter(item -> "合计".equals(item.getUnitNameJSON())).findFirst().orElse(new SubMineDevelopmentDataPO());
             if (日完成内容.getFootageData() != null) {
-                煤矿.setDayComplete(BigDecimal.valueOf(日完成内容.getFootageData()));
+                煤矿.setDayComplete(日完成内容.getFootageData());
             } else {
                 煤矿.setDayComplete(BigDecimal.valueOf(0));
             }
             SubMineDevelopmentDataPO 月完成内容 = 月完成.stream().filter(item -> "合计".equals(item.getUnitNameJSON())).findFirst().orElse(new SubMineDevelopmentDataPO());
             if (月完成内容.getFootageData() != null) {
-                煤矿.setMonthComplete(BigDecimal.valueOf(月完成内容.getFootageData()));
+                煤矿.setMonthComplete(月完成内容.getFootageData());
             } else {
                 煤矿.setMonthComplete(BigDecimal.valueOf(0));
             }
             SubMineDevelopmentDataPO 年完成内容 = 年完成.stream().filter(item -> "合计".equals(item.getUnitNameJSON())).findFirst().orElse(new SubMineDevelopmentDataPO());
             if (年完成内容.getFootageData() != null) {
-                煤矿.setYearComplete(BigDecimal.valueOf(年完成内容.getFootageData()));
+                煤矿.setYearComplete(年完成内容.getFootageData());
             } else {
                 煤矿.setYearComplete(BigDecimal.valueOf(0));
             }

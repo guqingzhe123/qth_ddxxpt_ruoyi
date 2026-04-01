@@ -31,7 +31,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="bizTitle != null  and bizTitle != ''"> and biz_title like concat('%', #{bizTitle}, '%')</if>
             <if test="templateId != null  and templateId != ''"> and template_id = #{templateId}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and create_time between #{params.beginCreateTime} and #{params.endCreateTime}</if>
+            <if test="beginCreateTime != null"> and create_time &gt;= #{beginCreateTime}</if>
+            <if test="endCreateTime != null"> and create_time &lt;= #{endCreateTime}</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''">
+             and create_time between #{params.beginCreateTime} and #{params.endCreateTime}
+             </if>
         </where>
         order by create_time desc
     </select>

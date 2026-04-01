@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -263,18 +264,18 @@ public class AnQuanController extends BaseController {
             List<MineData> 月完成 = subMineDevelopmentDataMapper.selectMonthDate(DateUtils.returnDateRange(anQuan.getReportDate()));
             List<MineData> 日完成 = subMineDevelopmentDataMapper.selectDayDate(DateUtils.returnDateRange(anQuan.getReportDate()));
 
-            int jcSum = 月完成.stream().filter(item -> anQuan.getUnit().equals(item.getUnitName())).mapToInt(po -> po.getFootageData()).sum();
-            int ktSum = 月完成.stream().filter(item -> anQuan.getUnit().equals(item.getUnitName())).mapToInt(po -> po.getExpandData()).sum();
-            int jc = 日完成.stream().filter(item -> anQuan.getUnit().equals(item.getUnitName())).mapToInt(po -> po.getFootageData()).sum();
-            int kt = 日完成.stream().filter(item -> anQuan.getUnit().equals(item.getUnitName())).mapToInt(po -> po.getExpandData()).sum();
+            BigDecimal jcSum = 月完成.stream().filter(item -> anQuan.getUnit().equals(item.getUnitName())).filter(po -> po.getFootageData() != null).map(po -> po.getFootageData()).reduce(BigDecimal.ZERO, BigDecimal::add);
+            BigDecimal ktSum = 月完成.stream().filter(item -> anQuan.getUnit().equals(item.getUnitName())).filter(po -> po.getExpandData() != null).map(po -> po.getExpandData()).reduce(BigDecimal.ZERO, BigDecimal::add);
+            BigDecimal jc = 日完成.stream().filter(item -> anQuan.getUnit().equals(item.getUnitName())).filter(po -> po.getFootageData() != null).map(po -> po.getFootageData()).reduce(BigDecimal.ZERO, BigDecimal::add);
+            BigDecimal kt = 日完成.stream().filter(item -> anQuan.getUnit().equals(item.getUnitName())).filter(po -> po.getExpandData() != null).map(po -> po.getExpandData()).reduce(BigDecimal.ZERO, BigDecimal::add);
             anQuan.setId(workProductionDailyReport.getId());
             anQuan.setUnit(workProductionDailyReport.getUnit());
             anQuan.setUnitCode(workProductionDailyReport.getUnitCode());
 
-            anQuan.setMineDailyAdvance((long) jc);
-            anQuan.setMineTotalAdvance((long) jcSum);
-            anQuan.setMineDailyDevelopment((long) kt);
-            anQuan.setMineTotalDevelopment((long) ktSum);
+            anQuan.setMineDailyAdvance(jc);
+            anQuan.setMineTotalAdvance(jcSum);
+            anQuan.setMineDailyDevelopment(kt);
+            anQuan.setMineTotalDevelopment( ktSum);
             anQuan.setMovingStatus(workProductionDailyReport.getMovingStatus());
             anQuan.setEquipmentStatus(workProductionDailyReport.getEquipmentStatus());
             anQuan.setProductionImpact(workProductionDailyReport.getProductionImpact());

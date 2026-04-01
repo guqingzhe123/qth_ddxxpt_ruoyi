@@ -61,6 +61,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="readFlag != null  and readFlag != ''"> and read_flag = #{readFlag}</if>
             <if test="delFlag != null  and delFlag != ''"> and del_flag = #{delFlag}</if>
             <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="beginCreateTime != null"> and create_time &gt;= #{beginCreateTime}</if>
+            <if test="endCreateTime != null"> and create_time &lt;= #{endCreateTime}</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''">
+             and create_time between #{params.beginCreateTime} and #{params.endCreateTime}
+             </if>
             <if test="createTime != null "> and create_time = #{createTime}</if>
             <if test="updateId != null "> and update_id = #{updateId}</if>
         </where>
@@ -90,6 +95,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="readFlag != null  and readFlag != ''"> and read_flag = #{readFlag}</if>
             <if test="delFlag != null  and delFlag != ''"> and del_flag = #{delFlag}</if>
             <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="beginCreateTime != null"> and create_time &gt;= #{beginCreateTime}</if>
+            <if test="endCreateTime != null"> and create_time &lt;= #{endCreateTime}</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''">
+             and create_time between #{params.beginCreateTime} and #{params.endCreateTime}
+             </if>
             <if test="createTime != null "> and create_time = #{createTime}</if>
             <if test="updateId != null "> and update_id = #{updateId}</if>
         </where>

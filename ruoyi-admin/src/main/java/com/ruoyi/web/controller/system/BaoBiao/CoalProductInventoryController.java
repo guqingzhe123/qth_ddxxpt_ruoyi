@@ -11,6 +11,7 @@ import com.ruoyi.system.domain.BaoBiao.FactoryArchive;
 import com.ruoyi.system.domain.BaoBiao.dto.cpi.SubCoalProductInventory;
 import com.ruoyi.system.domain.SysUserRole;
 import com.ruoyi.system.domain.UserMessage;
+import com.ruoyi.system.mapper.BaoBiao.SubCoalProductInventoryMapper;
 import com.ruoyi.system.mapper.SysRoleMapper;
 import com.ruoyi.system.mapper.SysUserMapper;
 import com.ruoyi.system.mapper.SysUserRoleMapper;
@@ -19,9 +20,11 @@ import com.ruoyi.system.service.BaoBiao.ICoalProductInventoryService;
 import com.ruoyi.system.service.BaoBiao.IFactoryArchiveService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -44,6 +47,8 @@ public class CoalProductInventoryController extends BaseController {
     private SysUserRoleMapper sysUserRoleMapper;
     @Resource
     private UserMessageMapper messageMapper;
+    @Autowired
+    private SubCoalProductInventoryMapper subCoalProductInventoryMapper;
 
     @Anonymous
     @Operation(summary = "新增洗煤产品库存及自用煤（入参含 data_JSON）")
@@ -93,24 +98,96 @@ public class CoalProductInventoryController extends BaseController {
                 factoryArchive.setFactoryName(query.getUnitName());
             }
             List<FactoryArchive> list1 = factoryArchiveService.list(factoryArchive);
-            List<SubCoalProductInventory> month = service.selectProductMonth(DateUtils.getFirstDayOfMonth(query.getRecordDate()));
-            if(month.size()>0){
-                for (FactoryArchive fact :list1) {
-                    for (SubCoalProductInventory subC:month){
-                        if(fact.getFactoryCode()==subC.getUnitCode()){
-                            subC.setUnitCode(fact.getFactoryCode());
-                            subC.setUnitName(fact.getFactoryName());
-                            list.add(subC);
-                        }
-                    }
+            List<SubCoalProductInventory> month = service.selectProductMonth(query.getRecordDate());
+
+
+            List<SubCoalProductInventory> returnList=new ArrayList<>();
+
+            for (FactoryArchive fact :list1) {
+                SubCoalProductInventory listMatch = list.stream()
+                        .filter(item -> fact.getFactoryCode().equals(item.getUnitCode()))
+                        .findFirst()
+                        .orElse(new SubCoalProductInventory());
+
+                SubCoalProductInventory monthMatch = month.stream()
+                        .filter(item -> fact.getFactoryCode().equals(item.getUnitCode()))
+                        .findFirst()
+                        .orElse(new SubCoalProductInventory());
+
+                SubCoalProductInventory subCoalProductInventory = new SubCoalProductInventory();
+                if(listMatch.getUnitCode()!=null){
+                    subCoalProductInventory = listMatch;
+                }else {
+                    subCoalProductInventory.setUnitCode(fact.getFactoryCode());
+                    subCoalProductInventory.setUnitName(fact.getFactoryName());
                 }
-            }else {
-                for (FactoryArchive fact :list1) {
-                    SubCoalProductInventory subc=new SubCoalProductInventory();
-                    subc.setUnitCode(fact.getFactoryCode());
-                    subc.setUnitName(fact.getFactoryName());
-                    list.add(subc);
+
+                if(monthMatch.getUnitCode()!=null){
+                    subCoalProductInventory.setMonthlyTotalSelfUse(monthMatch.getMonthlyTotalSelfUse());
+                    subCoalProductInventory.setYearlyTotalSelfUse(monthMatch.getYearlyTotalSelfUse());
+                }else {
+                    subCoalProductInventory.setUnitCode(fact.getFactoryCode());
+                    subCoalProductInventory.setUnitName(fact.getFactoryName());
                 }
+                returnList.add(subCoalProductInventory);
+            }
+            return getDataTable(returnList);
+
+
+//            if(month.size()>0){
+//
+//            }else {
+//                for (FactoryArchive fact :list1) {
+//                    SubCoalProductInventory subc=new SubCoalProductInventory();
+//                    subc.setUnitCode(fact.getFactoryCode());
+//                    subc.setUnitName(fact.getFactoryName());
+//                    list.add(subc);
+//                }
+//            }
+        }
+        else {
+            if(list.size()==0){
+
+                List<SubCoalProductInventory> month = service.selectProductInventoryMonth(query.getRecordDate());
+                List<SubCoalProductInventory> year = service.selectProductInventoryYear(query.getRecordDate());
+
+                query.setRecordDate(DateUtils.getDayBefore(query.getRecordDate()));
+                List<SubCoalProductInventory> beforlist = service.listSubCoalProductInventory(query);
+
+                SubCoalProductInventory day=new SubCoalProductInventory();
+                day.setUnitCode(query.getUnitCode());
+                day.setUnitName(query.getUnitName());
+
+                if(beforlist.size()>0){
+                    SubCoalProductInventory befor=beforlist.get(0);
+
+                    day.setCleanCoalPrevStock(befor.getCleanCoalCurrentStock());
+                    day.setSlackLumpPrevStock(befor.getSlackLumpCurrentStock());
+                    day.setTotalPrevStock(befor.getTotalCurrentStock());
+                    day.setCleanCoalPrevStock(befor.getCleanCoalCurrentStock());
+                }
+                // 获取 month 中 unitName 与 query.getUnitName() 相同的数据，并计算 dailyPlantSelfUse 和 dailyOutsideSelfUse 的总和 (类型为 BigDecimal)
+                java.math.BigDecimal monthlyTotalSelfUse = month.stream()
+                        .filter(item -> query.getUnitName().equals(item.getUnitName()))
+                        .map(item -> {
+                            java.math.BigDecimal plantSelfUse = item.getDailyPlantSelfUse() != null ? item.getDailyPlantSelfUse() : java.math.BigDecimal.ZERO;
+                            java.math.BigDecimal outsideSelfUse = item.getDailyOutsideSelfUse() != null ? item.getDailyOutsideSelfUse() : java.math.BigDecimal.ZERO;
+                            return plantSelfUse.add(outsideSelfUse);
+                        })
+                        .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+                day.setMonthlyTotalSelfUse(monthlyTotalSelfUse);
+
+                java.math.BigDecimal yearlyTotalSelfUse = year.stream()
+                        .filter(item -> query.getUnitName().equals(item.getUnitName()))
+                        .map(item -> {
+                            java.math.BigDecimal plantSelfUse = item.getDailyPlantSelfUse() != null ? item.getDailyPlantSelfUse() : java.math.BigDecimal.ZERO;
+                            java.math.BigDecimal outsideSelfUse = item.getDailyOutsideSelfUse() != null ? item.getDailyOutsideSelfUse() : java.math.BigDecimal.ZERO;
+                            return plantSelfUse.add(outsideSelfUse);
+                        })
+                        .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+                day.setYearlyTotalSelfUse(yearlyTotalSelfUse);
+                list.add(day);
+
             }
         }
         return getDataTable(list);

@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -39,19 +40,19 @@ public class WorkProductionDailyReport extends BaseEntity {
 
     /** 全矿进尺（单位：米） */
     @Excel(name = "全矿进尺", readConverterExp = "单=位：米")
-    private Long mineDailyAdvance;
+    private BigDecimal mineDailyAdvance;
 
     /** 全矿累计进尺（单位：米） */
     @Excel(name = "全矿累计进尺", readConverterExp = "单=位：米")
-    private Long mineTotalAdvance;
+    private BigDecimal mineTotalAdvance;
 
     /** 全矿开拓（单位：米） */
     @Excel(name = "全矿开拓", readConverterExp = "单=位：米")
-    private Long mineDailyDevelopment;
+    private BigDecimal mineDailyDevelopment;
 
     /** 全矿累计开拓（单位：米） */
     @Excel(name = "全矿累计开拓", readConverterExp = "单=位：米")
-    private Long mineTotalDevelopment;
+    private BigDecimal mineTotalDevelopment;
 
     /** 搬家情况 */
     @Excel(name = "搬家情况")

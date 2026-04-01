@@ -110,6 +110,11 @@ public class Done extends BaseEntity {
     @Excel(name = "更新人")
     private String updateId;
 
+    /** 开始创建时间 */
+    private Date beginCreateTime;
+    /** 结束创建时间 */
+    private Date endCreateTime;
+
 
     @Override
     public String toString() {

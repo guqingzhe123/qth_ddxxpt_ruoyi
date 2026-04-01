@@ -60,9 +60,13 @@ public class WorkInstallationFaceServiceImpl implements IWorkInstallationFaceSer
                 w1.setTeamNo(work.getTeamNo());
                 List<WorkInstallationFace> workInstallationFaces = workInstallationFaceMapper.selectWorkInstallationFaceList(w1);
                 if(workInstallationFaces.size()>0){
+                    work.setRemainingStentCount(work.getPlannedSupportQty());
+                    work.setRemainingChute(work.getPlannedChuteQty());
                     work.setId(workInstallationFaces.get(0).getId());
                     workInstallationFaceMapper.updateWorkInstallationFace(work);
                 }else {
+                    work.setRemainingStentCount(work.getPlannedSupportQty());
+                    work.setRemainingChute(work.getPlannedChuteQty());
                     work.setStatus("0");
                     work.setCreateTime(DateUtils.getNowDate());
                     workInstallationFaceMapper.insertWorkInstallationFace(work);

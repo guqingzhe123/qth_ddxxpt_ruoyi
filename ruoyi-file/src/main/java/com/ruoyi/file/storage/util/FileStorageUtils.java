@@ -24,7 +24,7 @@ import java.util.List;
 @Slf4j
 public class FileStorageUtils {
 
-    public static String LOCAL_STORAGE_PATH = RuoYiConfig.getUploadPath();
+    public static String LOCAL_STORAGE_PATH = normalizePath(RuoYiConfig.getUploadPath());
 
     public static final String ROOT_PATH = "upload";
 
@@ -76,13 +76,15 @@ public class FileStorageUtils {
 
     /**
      * 获取缓存路径<br>
-     * 路径为： 系统配置路径/cache/月份/fileUrl
+     * 路径为：系统配置路径/cache/月份/fileUrl
      *
      * @param fileUrl
      * @return
      */
     public static String getCachePath(String fileUrl) {
-        return getDataPath() + CACHE_FLODER + File.separator + LocalDateTimeUtil.month() + File.separator + fileUrl;
+        // 统一使用正斜杠格式化路径
+        String normalizedFileUrl = fileUrl.replace("\\", "/");
+        return getDataPath() + CACHE_FLODER + File.separator + LocalDateTimeUtil.month() + File.separator + normalizedFileUrl;
     }
 
     public static File getCacheFile(String fileUrl) {
@@ -168,15 +170,16 @@ public class FileStorageUtils {
 
     /**
      * 获取上传文件路径
-     * 返回路径格式 “upload/yyyy/MM/dd/”
+     * 返回路径格式 "upload/yyyy/MM/dd/"
      *
-     * @param identifier 文件名（一般传入md5或uuid,防止文件名重复）
+     * @param identifier 文件名（一般传入 md5 或 uuid，防止文件名重复）
      * @param extendName 文件扩展名
      * @return 返回上传文件路径
      */
     public static String getUploadFileUrl(String identifier, String extendName) {
+        // 统一使用正斜杠，兼容各操作系统
         String path = ROOT_PATH + SEPERATOR + LocalDateTimeUtil.formatNow(LocalDateTimeUtil.FORMAT_YMD) + SEPERATOR;
-        File dir = new File(getDataPath() + path);
+        File dir = new File(getDataPath() + path.replace("/", File.separator));
         if (!dir.exists()) {
             dir.mkdirs();
         }
@@ -186,12 +189,14 @@ public class FileStorageUtils {
 
     /**
      * 格式化路径<br>
-     * 1、去除多余的“/”和“\”
+     * 1、去除多余的"/"和"\"
      *
      * @param path
      * @return
      */
     public static String formatPath(String path) {
+        // 先统一转换为正斜杠
+        path = path.replace("\\", "/");
         path = pathSplitFormat(path);
         if (SEPERATOR.equals(path)) {
             return path;
@@ -236,9 +241,23 @@ public class FileStorageUtils {
 
     @NotNull
     private static String getObjectName(String fileUrl) {
+        // 统一使用正斜杠
         if (fileUrl.startsWith("/") || fileUrl.startsWith("\\")) {
             fileUrl = fileUrl.substring(1);
         }
-        return fileUrl;
+        return fileUrl.replace("\\", "/");
+    }
+    
+    /**
+     * 标准化路径，适配不同操作系统
+     * @param path 原始路径
+     * @return 标准化后的路径
+     */
+    private static String normalizePath(String path) {
+        if (path == null) {
+            return null;
+        }
+        // 将反斜杠替换为正斜杠，便于统一处理
+        return path.replace("\\", "/");
     }
 }

@@ -120,6 +120,24 @@ public class CoalProductInventoryServiceImpl implements ICoalProductInventorySer
     public List<SubCoalProductInventory> selectProductMonth(Date date) {
         return subCoalProductInventoryMapper.selectProductMonth(date);
     }
-
+    /**
+     * 查询洗煤产品库存及自用煤列表
+     *
+     * @param date 日期
+     * @return 洗煤产品库存及自用煤
+     */
+    @Override
+    public List<SubCoalProductInventory> selectProductInventoryMonth(Date date) {
+        return subCoalProductInventoryMapper.selectProductInventoryMonth(date);
+    } /**
+     * 查询洗煤产品库存及自用煤列表
+     *
+     * @param date 日期
+     * @return 洗煤产品库存及自用煤
+     */
+    @Override
+    public List<SubCoalProductInventory> selectProductInventoryYear(Date date) {
+        return subCoalProductInventoryMapper.selectProductInventoryYear(date);
+    }
 
 }

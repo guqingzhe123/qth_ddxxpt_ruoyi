@@ -25,7 +25,7 @@ public interface MddStatMapper {
                                       @Param("isSeparate") Integer isSeparate);
     /** 近七日生产数据 */
     List<MineData> sevenDaySeriesProductionAndPlanning(@Param("startDate") LocalDate startDate,
-                                      @Param("endDate") LocalDate endDate);
+                                                                 @Param("endDate") LocalDate endDate);
     /** 近七日生产计划数据 */
     DateTotalRow sevendayPlanData(@Param("Date") LocalDate startDate,
                                   @Param("dataType") String dataType);

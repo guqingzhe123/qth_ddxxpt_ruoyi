@@ -57,6 +57,13 @@ public class WorkInstallationFace extends BaseEntity {
     @Excel(name = "状态")
     private String status;
 
+    /** 计划支架数量 */
+    @Excel(name = "剩余支架数量")
+    private String remainingStentCount;
+
+    /** 计划溜槽 */
+    @Excel(name = "剩余溜槽")
+    private String remainingChute;
 
     @Override
     public String toString() {
@@ -72,6 +79,8 @@ public class WorkInstallationFace extends BaseEntity {
             .append("plannedChuteQty", getPlannedChuteQty())
             .append("status", getStatus())
             .append("createTime", getCreateTime())
+            .append("remainingStentCount", getRemainingStentCount())
+            .append("remainingChute", getRemainingChute())
             .toString();
     }
 }

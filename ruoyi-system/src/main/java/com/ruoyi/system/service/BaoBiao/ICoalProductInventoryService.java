@@ -61,4 +61,8 @@ public interface ICoalProductInventoryService {
      * @return 洗煤产品库存及自用煤集合
      */
     List<SubCoalProductInventory> selectProductMonth(Date date);
+
+    List<SubCoalProductInventory> selectProductInventoryMonth(Date date);
+
+    List<SubCoalProductInventory> selectProductInventoryYear(Date date);
 }

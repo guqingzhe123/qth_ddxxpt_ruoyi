@@ -6,7 +6,6 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.SecurityUtils;
-import com.ruoyi.im.chat.enums.BusinessMessageType;
 import com.ruoyi.message.service.impl.BusinessSystemMessageService;
 import com.ruoyi.system.domain.BaoBiao.dto.dev.MddCreateDTO;
 import com.ruoyi.system.domain.BaoBiao.dto.dev.MddPageQueryDTO;
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -52,25 +50,23 @@ public class MineDevelopmentDataController extends BaseController {
     @Operation(summary = "新增矿开拓/进拓/升拓数据（入参含 data_JSON）")
     @PostMapping
     public AjaxResult add(@RequestBody MddCreateDTO dto) {
-
-
         Long id = service.add(dto);
         if(id==null){
             return AjaxResult.error("联系局里删除后重新保存");
         }else {
             String message=dto.getUnit_name()+"提交了"+dto.getData_type()+dto.getCurrent_shift()+"班日报";
-            List<String> recvIds=new ArrayList<>();
+//            List<String> recvIds=new ArrayList<>();
 
             SysRole 七煤集团权限 = sysRoleMapper.checkRoleNameUnique("七煤集团权限");
             List<SysUserRole> sysUserRoles = sysUserRoleMapper.selectRoleUserInfos(Arrays.asList(七煤集团权限.getRoleId()));
             for (SysUserRole userRole:sysUserRoles) {
                 messageMapper.insertUserMessage(new UserMessage(SecurityUtils.getUserId(),userRole.getUserId(),message,new Date()));
-                recvIds.add(userRole.getUserId());
+//                recvIds.add(userRole.getUserId());
             }
-            if(recvIds.size()>0){
-                businessSystemMessageService.sendBusinessSystemMessage(BusinessMessageType.TODO_RECEIVE.getCode(),
-                        SecurityUtils.getUserId(), recvIds, message);
-            }
+//            if(recvIds.size()>0){
+//                businessSystemMessageService.sendBusinessSystemMessage(BusinessMessageType.TODO_RECEIVE.getCode(),
+//                        SecurityUtils.getUserId(), recvIds, message);
+//            }
             return AjaxResult.success(id);
         }
     }
@@ -112,16 +108,16 @@ public class MineDevelopmentDataController extends BaseController {
     @Operation(summary = "分页列表（含 data_JSON）")
     @GetMapping("/classThreestatus")
     public AjaxResult classThreestatus(MddPageQueryDTO query) {
-        ///数据从2026-01-01开始
-        if(parseDate(query.getRecord_date())
-                .before(java.sql.Date.valueOf("2026-01-07"))){
-            MinePlanThree ju=new MinePlanThree();
-            ju.setPlanType(query.getData_type());
-            ju.setOneClass(0);
-            ju.setTwoClass(0);
-            ju.setThreeClass(0);
-            return success(ju);
-        }
+//        ///数据从2026-03-31开始
+//        if(parseDate(query.getRecord_date())
+//                .before(java.sql.Date.valueOf("2026-03-31"))){
+//            MinePlanThree ju=new MinePlanThree();
+//            ju.setPlanType(query.getData_type());
+//            ju.setOneClass(0);
+//            ju.setTwoClass(0);
+//            ju.setThreeClass(0);
+//            return success(ju);
+//        }
 
         List<MddVO> list = service.page(query);
         MinePlanThree ju=new MinePlanThree();

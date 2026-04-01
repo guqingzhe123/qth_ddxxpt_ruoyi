@@ -544,7 +544,9 @@ public class IShengChanRiBaoService {
             StatisticsFootage 公司=new StatisticsFootage();
             公司.setUnitName(mining.getAreaName());
             SubMinePlanPO 开拓月计划内容 = 开拓月计划.stream().filter(item -> mining.getAreaName().equals(item.getUnitName())).findFirst().orElse(new SubMinePlanPO());
-            int jc = 日完成.stream().filter(item -> mining.getAreaName().equals(item.getUnitName())).mapToInt(po -> po.getFootageData()).sum();
+            BigDecimal jc = 日完成.stream().filter(item -> mining.getAreaName().equals(item.getUnitName())).filter(po -> po.getFootageData() != null)
+                    .map(po -> po.getFootageData()).reduce(BigDecimal.ZERO, BigDecimal::add);
+
             MineData 累计日完成 = 累计月完成.stream().filter(item -> mining.getAreaName().equals(item.getUnitName())).findFirst().orElse(new MineData());
 
             int jh = 日计划.stream().filter(po -> po != null).filter(item -> mining.getAreaName().equals(item.getAreaName())).mapToInt(po -> toInt(po.getDayPlan())).sum();
@@ -567,7 +569,7 @@ public class IShengChanRiBaoService {
         合计.setMonthTarget(list.stream().filter(po -> po != null) .mapToInt(po -> toInt(po.getMonthTarget())).sum());
         合计.setDayPlan(list.stream().filter(po -> po != null) .mapToInt(po -> toInt(po.getDayPlan())).sum());
         合计.setDayTarget(list.stream().filter(po -> po != null) .mapToInt(po -> toInt(po.getDayTarget())).sum());
-        合计.setDayComplete(list.stream().filter(po -> po != null) .mapToInt(po -> toInt(po.getDayComplete())).sum());
+        合计.setDayComplete(list.stream().filter(po -> po != null && po.getDayComplete() != null).map(po -> po.getDayComplete()).reduce(BigDecimal.ZERO, BigDecimal::add));
         合计.setDayCumulativePlan(list.stream().filter(po -> po != null) .mapToInt(po -> toInt(po.getDayCumulativePlan())).sum());
         合计.setDayCumulativeTarget(list.stream().filter(po -> po != null) .mapToInt(po -> toInt(po.getDayCumulativeTarget())).sum());
         合计.setDayCumulativeComplete(list.stream().filter(po -> po != null) .mapToInt(po -> toInt(po.getDayCumulativeComplete())).sum());

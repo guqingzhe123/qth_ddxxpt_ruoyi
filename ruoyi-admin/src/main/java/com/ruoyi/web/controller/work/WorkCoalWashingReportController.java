@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -107,6 +108,18 @@ public class WorkCoalWashingReportController extends BaseController {
                 当日数据.add(workCoalWashingReport1_1);
             }
             if(workCoalWashingReport2.getUnitName() !=null){
+                if (workCoalWashingReport2.getWashingInput() != null && workCoalWashingReport2.getWashingInput() > 0) {
+                    workCoalWashingReport2.setCleanCoalYield(BigDecimal.valueOf(workCoalWashingReport2.getCleanCoal())
+                            .divide(BigDecimal.valueOf(workCoalWashingReport2.getWashingInput()), 4, BigDecimal.ROUND_HALF_UP)
+                            .multiply(BigDecimal.valueOf(100)));
+                    workCoalWashingReport2.setComprehensiveYield(BigDecimal.valueOf(workCoalWashingReport2.getCleanCoal() + workCoalWashingReport2.getWashedLumpCoal() + workCoalWashingReport2.getWashedFineCoal())
+                            .divide(BigDecimal.valueOf(workCoalWashingReport2.getWashingInput()), 4, BigDecimal.ROUND_HALF_UP)
+                            .multiply(BigDecimal.valueOf(100)));
+                    workCoalWashingReport2.setWashingConsumptionRate(BigDecimal.valueOf(workCoalWashingReport2.getWashingConsumption())
+                            .divide(BigDecimal.valueOf(workCoalWashingReport2.getWashingInput()), 4, BigDecimal.ROUND_HALF_UP)
+                            .multiply(BigDecimal.valueOf(100)));
+                }
+
                 当月数据.add(workCoalWashingReport2);
             }else {
                 WorkCoalWashingReport workCoalWashingReport2_1 = new WorkCoalWashingReport();

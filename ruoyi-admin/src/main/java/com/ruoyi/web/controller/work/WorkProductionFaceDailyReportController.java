@@ -54,6 +54,7 @@ public class WorkProductionFaceDailyReportController extends BaseController {
                 }else {
                     WorkProductionFaceDailyReport workProduction = new WorkProductionFaceDailyReport();
                     workProduction.setUnit(mining.getAreaName());
+                    workProduction.setUnit(mining.getAreaName());
                     AllList.add( workProduction);
                 }
             }

@@ -82,6 +82,13 @@ public class WorkWithdrawalFaceDailyReport extends BaseEntity {
     @Excel(name = "三班溜槽数量")
     private String threePlannedChuteQty;
 
+    /** 计划支架数量 */
+    @Excel(name = "剩余支架数量")
+    private String remainingStentCount;
+
+    /** 计划溜槽 */
+    @Excel(name = "剩余溜槽")
+    private String remainingChute;
     /** 备注 */
     @Excel(name = "备注")
     private String remarks;

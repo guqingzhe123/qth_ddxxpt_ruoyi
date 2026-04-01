@@ -89,6 +89,7 @@ public abstract class Previewer {
             FileUtils.writeByteArrayToFile(FileStorageUtils.getCacheFile(fileUrl), bytes);
             bytes = CharsetUtils.convertTxtCharsetToUTF8(bytes, FilenameUtils.getExtension(fileUrl));
             outputStream.write(bytes);
+            outputStream.flush();
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         } finally {
@@ -115,6 +116,7 @@ public abstract class Previewer {
             fis = new FileInputStream(cacheFile);
             outputStream = httpServletResponse.getOutputStream();
             IOUtils.copy(fis, outputStream);
+            outputStream.flush();
             return true;
         } catch (IOException e) {
             log.error(e.getMessage(), e);

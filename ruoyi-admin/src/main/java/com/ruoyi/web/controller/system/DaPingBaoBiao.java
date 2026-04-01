@@ -184,16 +184,16 @@ public class DaPingBaoBiao extends BaseController {
         开拓.setMonthPlan(月开拓计划 != null ? 月开拓计划.getMonthPlan() : BigDecimal.valueOf(0));
         开拓.setYearPlan(年开拓计划 != null ? 年开拓计划.getYearPlan() : BigDecimal.valueOf(0));
 
-        开拓.setDayComplete(BigDecimal.valueOf(日完成 != null ? 日完成.getExpandData() : 0));
-        进尺.setDayComplete(BigDecimal.valueOf(日完成 != null ? 日完成.getFootageData() : 0));
+        开拓.setDayComplete(日完成 != null ? 日完成.getExpandData() : BigDecimal.valueOf(0));
+        进尺.setDayComplete(日完成 != null ? 日完成.getFootageData() : BigDecimal.valueOf(0));
         生产.setDayComplete(BigDecimal.valueOf(日完成 != null ? 日完成.getProductionData() : 0));
         
-        开拓.setMonthComplete(BigDecimal.valueOf(月完成 != null ? 月完成.getExpandData() : 0));
-        进尺.setMonthComplete(BigDecimal.valueOf(月完成 != null ? 月完成.getFootageData() : 0));
+        开拓.setMonthComplete(月完成 != null ? 月完成.getExpandData() : BigDecimal.valueOf(0));
+        进尺.setMonthComplete(月完成 != null ? 月完成.getFootageData() : BigDecimal.valueOf(0));
         生产.setMonthComplete(BigDecimal.valueOf(月完成 != null ? 月完成.getProductionData() : 0));
         
-        开拓.setYearComplete(BigDecimal.valueOf(年完成 != null ? 年完成.getExpandData() : 0));
-        进尺.setYearComplete(BigDecimal.valueOf(年完成 != null ? 年完成.getFootageData() : 0));
+        开拓.setYearComplete(年完成 != null ? 年完成.getExpandData() :BigDecimal.valueOf(0));
+        进尺.setYearComplete(年完成 != null ? 年完成.getFootageData() : BigDecimal.valueOf(0));
         生产.setYearComplete(BigDecimal.valueOf(年完成 != null ? 年完成.getProductionData() : 0));
 
         data.add(生产);

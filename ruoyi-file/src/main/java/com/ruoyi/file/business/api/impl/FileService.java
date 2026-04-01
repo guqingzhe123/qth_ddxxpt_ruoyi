@@ -10,9 +10,9 @@ import com.ruoyi.file.business.domain.FileStorage;
 import com.ruoyi.file.business.enmus.OfficeTemplateEnum;
 import com.ruoyi.file.business.mapper.FileSourceTargetMapper;
 import com.ruoyi.file.business.module.BookmarkData;
+import com.ruoyi.file.business.module.FileQO;
 import com.ruoyi.file.business.module.FontStyle;
 import com.ruoyi.file.business.service.IFileStorageService;
-import com.ruoyi.file.business.module.FileQO;
 import com.ruoyi.file.convert.module.ConvertFileDTO;
 import com.ruoyi.file.convert.service.OfficeToPdfService;
 import com.ruoyi.file.storage.config.FileConfig;
@@ -28,14 +28,13 @@ import com.ruoyi.file.storage.preview.Previewer;
 import com.ruoyi.file.storage.preview.domain.PreviewFile;
 import com.ruoyi.file.storage.upload.domain.UploadFile;
 import com.ruoyi.file.storage.upload.domain.UploadFileResult;
+import com.ruoyi.file.storage.util.FileStorageUtils;
 import com.ruoyi.file.storage.util.FileUtil;
 import com.ruoyi.file.storage.util.MimeUtils;
-import com.ruoyi.file.storage.util.FileStorageUtils;
 import com.ruoyi.file.storage.write.Writer;
 import com.ruoyi.file.storage.write.domain.WriteFile;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xwpf.usermodel.*;
@@ -114,31 +113,9 @@ public class FileService implements IFileService {
         if (uploadFile == null) {
             throw new BaseException("参数错误");
         }
-        UploadFileResult uploadFileResult = null;
-        boolean skipUpload = false;
-        // 通过文件名+identifier确定文件唯一（同类型的空文件计算md5时，前端spark是相同值！）
-        FileStorage query = new FileStorage();
-        query.setIdentifier(uploadFile.getIdentifier());
-        query.setFileName(FileUtil.getName(uploadFile.getFilename()));
-        List<FileStorage> list = fileStorageService.listByEqConditions(query);
-        if (CollectionUtils.isNotEmpty(list)) {
-            skipUpload = true;
-            FileStorage fileStorage = list.get(0);
-            // 存在相同的，则copy
-            String fileUrl = copyFile(fileStorage.getStorageType(), fileStorage.getFileUrl(), fileStorage.getFileName(), fileStorage.getExtendName(), fileStorage.getFileSize());
-            fileStorage.setId(null);
-            fileStorage.setFileUrl(fileUrl);
-            fileStorage.setFileId(IdUtils.fastSimpleUUID());
-            // 非office文件，预览地址为文件地址
-            if (!StorageContants.DOCS.contains(fileStorage.getExtendName())) {
-                fileStorage.setPreviewUrl(fileStorage.getFileUrl());
-            }
-            fileStorageService.saveFileStorage(fileStorage);
-            uploadFileResult = FileSourceTargetMapper.INSTANCE.convertUploadFileResult(fileStorage);
-        } else {
-            uploadFileResult = new UploadFileResult();
-        }
-        uploadFileResult.setSkipUpload(skipUpload);
+        // 取消极速上传功能：每次上传都返回不跳过，需要重新上传
+        UploadFileResult uploadFileResult = new UploadFileResult();
+        uploadFileResult.setSkipUpload(false);
         return uploadFileResult;
     }
 
@@ -186,9 +163,11 @@ public class FileService implements IFileService {
         if (fileStorage == null) {
             throw new BaseException("文件不存在");
         }
+        
+        DownloadFile downloadFile = new DownloadFile();
+        downloadFile.setFileUrl(fileStorage.getFileUrl());
+        
         try {
-            DownloadFile downloadFile = new DownloadFile();
-            downloadFile.setFileUrl(fileStorage.getFileUrl());
             // 设置响应头
             String fileName = fileStorage.getFileName() + Constants.DOT + fileStorage.getExtendName();
             String encodedFileName = "attachment; filename*=UTF-8''" + URLEncoder.encode(fileName, "UTF-8");
@@ -196,11 +175,15 @@ public class FileService implements IFileService {
             httpServletResponse.setCharacterEncoding("UTF-8");
             httpServletResponse.addHeader("Content-Disposition", encodedFileName);
             httpServletResponse.setContentLengthLong(fileStorage.getFileSize());
+            
             // 获取对应存储类型下载器执行下载
             fileServerContext.getDownloader(fileStorage.getStorageType()).download(httpServletResponse, downloadFile);
+        } catch (BaseException e) {
+            log.error("文件下载业务异常：{}", e.getMessage(), e);
+            throw e;
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new BaseException("文件下载失败");
+            log.error("文件下载出现未知异常：{}", e.getMessage(), e);
+            throw new BaseException("下载文件出现错误，请联系管理员！原因：" + e.getMessage());
         }
     }
 

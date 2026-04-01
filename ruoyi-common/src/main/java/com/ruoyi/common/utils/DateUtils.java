@@ -285,6 +285,31 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
         // 转换回 Date 类型并返回
         return calendar.getTime();
     }
+
+
+    /**
+     * 将 Date 类型的日期日期减 1，其他字段（月、日、时、分、秒）保持不变
+     * @param statsDate 原始日期（可 null，null 时返回 null）
+     * @return 年份减 1 后的 Date 对象
+     */
+    public static Date getDayBefore(Date statsDate) {
+        // 处理 null 输入
+        if (statsDate == null) {
+            return null;
+        }
+
+        // 使用 Calendar 类操作日期（兼容所有 Java 版本）
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(statsDate); // 将 Date 转换为 Calendar
+
+        // 年份减 1（Calendar.YEAR 表示年份字段）
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+
+        // 转换回 Date 类型并返回
+        return calendar.getTime();
+    }
+
+
     /**
      * 方法1：Java 8+ 推荐实现（简洁、线程安全）
      * @param statsDate 传入的日期（核心用其年份）
