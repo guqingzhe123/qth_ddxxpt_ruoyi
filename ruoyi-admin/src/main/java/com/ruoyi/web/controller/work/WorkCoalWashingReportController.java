@@ -127,7 +127,6 @@ public class WorkCoalWashingReportController extends BaseController {
                 当月数据.add(workCoalWashingReport2_1);
             }
         }
-
         quankuang.setList(当日数据);
         quankuang.setMonthList(当月数据);
         if(workCoalWashingReportSub !=null){
