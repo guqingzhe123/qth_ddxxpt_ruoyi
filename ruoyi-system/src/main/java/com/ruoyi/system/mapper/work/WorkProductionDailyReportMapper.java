@@ -67,4 +67,22 @@ public interface WorkProductionDailyReportMapper {
      * @return 结果
      */
     public int deleteWorkProductionDailyReportByIds(String[] ids);
+
+
+
+    /**
+     * 修改生产信息日报
+     *
+     * @param workProductionDailyReport 生产信息日报
+     * @return 结果
+     */
+    public int listWorkProductionStatusDay(WorkProductionDailyReport workProductionDailyReport);
+
+    /**
+     * 修改生产信息日报
+     *
+     * @param workProductionDailyReport 生产信息日报
+     * @return 结果
+     */
+    public int listWorkProductionStatusMonth(WorkProductionDailyReport workProductionDailyReport);
 }

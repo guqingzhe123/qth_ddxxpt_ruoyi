@@ -166,6 +166,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 <if test="handler != null">
                     and handler = #{handler}
                 </if>
+                <if test="beginHandleTime != null">
+                    and handle_time &gt;= #{beginHandleTime}
+                </if>
+                <if test="endHandleTime != null">
+                    and handle_time &lt;= #{endHandleTime}
+                </if>
+                <if test="beginHandleTime != null">
+                    and handle_time &gt;= #{beginHandleTime}
+                </if>
+                <if test="endHandleTime != null">
+                    and handle_time &lt;= #{endHandleTime}
+                </if>
             </where>
             group by business_id
             order by max_time desc

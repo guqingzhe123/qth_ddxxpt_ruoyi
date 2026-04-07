@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -61,20 +62,30 @@ public class WorkFullyMechanizedStatsController extends BaseController {
         List<MiningAreaCategory> miningAreaCategories = miningAreaCategoryService.list(fac);
 
         WorkFullyMechanizedStatsListju work=new WorkFullyMechanizedStatsListju();
-        List<WorkFullyMechanizedStatsJu> 综采=new ArrayList<>();
+        List<WorkFullyMechanizedStatsJu> fullyMiningList=new ArrayList<>();
 
         WorkFullyMechanizedStatsJu zc=new WorkFullyMechanizedStatsJu();
         zc.setStatsType("综采");
         zc.setUnitName("全公司合计");
         zc.setUnitCode(workFullyMechanizedStats.getUnitCode());
         zc.setDutyDate(workFullyMechanizedStats.getDutyDate());
-        zc.setOutputShift1(fullyMining.stream().filter(Objects::nonNull).mapToInt(po -> po.getOutputShift1() != null ? po.getOutputShift1() : 0).sum());
-        zc.setOutputShift2(fullyMining.stream().filter(Objects::nonNull).mapToInt(po -> po.getOutputShift2() != null ? po.getOutputShift2() : 0).sum());
-        zc.setOutputShift3(fullyMining.stream().filter(Objects::nonNull).mapToInt(po -> po.getOutputShift3() != null ? po.getOutputShift3() : 0).sum());
-        zc.setOriginalOutput(fullyMining.stream().filter(Objects::nonNull).mapToInt(po -> po.getOriginalOutput() != null ? po.getOriginalOutput() : 0).sum());
-        zc.setCumulativeOutput(allFullyMining.stream().filter(Objects::nonNull).mapToInt(po -> po.getOriginalOutput() != null ? po.getOriginalOutput() : 0).sum());
-        综采.add(zc);
-        List<WorkFullyMechanizedStatsJu> 综掘=new ArrayList<>();
+        zc.setOutputShift1(fullyMining.stream().filter(Objects::nonNull)
+                .map(po -> po.getOutputShift1() != null ? po.getOutputShift1() : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add));
+        zc.setOutputShift2(fullyMining.stream().filter(Objects::nonNull)
+                .map(po -> po.getOutputShift2() != null ? po.getOutputShift2() : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add));
+        zc.setOutputShift3(fullyMining.stream().filter(Objects::nonNull)
+                .map(po -> po.getOutputShift3() != null ? po.getOutputShift3() : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add));
+        zc.setOriginalOutput(fullyMining.stream().filter(Objects::nonNull)
+                .map(po -> po.getOriginalOutput() != null ? po.getOriginalOutput() : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add));
+        zc.setCumulativeOutput(allFullyMining.stream().filter(Objects::nonNull)
+                .map(po -> po.getOriginalOutput() != null ? po.getOriginalOutput() : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add).intValue());
+        fullyMiningList.add(zc);
+        List<WorkFullyMechanizedStatsJu> comprehensiveList=new ArrayList<>();
 
         // 按照miningAreaCategories的顺序添加综采数据
         for (MiningAreaCategory miningAreaCategory : miningAreaCategories) {
@@ -97,9 +108,11 @@ public class WorkFullyMechanizedStatsController extends BaseController {
                     zc1.setCumulativeOutput(allFullyMining.stream().filter(po -> po != null)
                             .filter(item -> workFully.getUnitName().equals(item.getUnitName()))
                             .filter(item -> workFully.getUnitCode().equals(item.getUnitCode()))
-                            .filter(item -> workFully.getTeamName().equals(item.getTeamName())).mapToInt(po -> po.getOriginalOutput()).sum());
+                            .filter(item -> workFully.getTeamName().equals(item.getTeamName()))
+                            .map(po -> po.getOriginalOutput() != null ? po.getOriginalOutput() : BigDecimal.ZERO)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add).intValue());
                     zc1.setRemarks(workFully.getRemarks());
-                    综采.add(zc1);
+                    fullyMiningList.add(zc1);
                 }
             }
         }
@@ -109,14 +122,23 @@ public class WorkFullyMechanizedStatsController extends BaseController {
         zj.setUnitName("全公司合计");
         zj.setUnitCode(workFullyMechanizedStats.getUnitCode());
         zj.setDutyDate(workFullyMechanizedStats.getDutyDate());
-        zj.setDutyDate(workFullyMechanizedStats.getDutyDate());
-        zj.setOutputShift1(comprehensive.stream().filter(Objects::nonNull).mapToInt(po -> po.getOutputShift1() != null ? po.getOutputShift1() : 0).sum());
-        zj.setOutputShift2(comprehensive.stream().filter(Objects::nonNull).mapToInt(po -> po.getOutputShift2() != null ? po.getOutputShift2() : 0).sum());
-        zj.setOutputShift3(comprehensive.stream().filter(Objects::nonNull).mapToInt(po -> po.getOutputShift3() != null ? po.getOutputShift3() : 0).sum());
-        zj.setOriginalOutput(comprehensive.stream().filter(Objects::nonNull).mapToInt(po -> po.getOriginalOutput() != null ? po.getOriginalOutput() : 0).sum());
-        zj.setCumulativeOutput(allcomprehensive.stream().filter(Objects::nonNull).mapToInt(po -> po.getOriginalOutput() != null ? po.getOriginalOutput() : 0).sum());
+        zj.setOutputShift1(comprehensive.stream().filter(Objects::nonNull)
+                .map(po -> po.getOutputShift1() != null ? po.getOutputShift1() : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add));
+        zj.setOutputShift2(comprehensive.stream().filter(Objects::nonNull)
+                .map(po -> po.getOutputShift2() != null ? po.getOutputShift2() : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add));
+        zj.setOutputShift3(comprehensive.stream().filter(Objects::nonNull)
+                .map(po -> po.getOutputShift3() != null ? po.getOutputShift3() : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add));
+        zj.setOriginalOutput(comprehensive.stream().filter(Objects::nonNull)
+                .map(po -> po.getOriginalOutput() != null ? po.getOriginalOutput() : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add));
+        zj.setCumulativeOutput(allcomprehensive.stream().filter(Objects::nonNull)
+                .map(po -> po.getOriginalOutput() != null ? po.getOriginalOutput() : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add).intValue());
 
-        综掘.add(zj);
+        comprehensiveList.add(zj);
 
         // 按照miningAreaCategories的顺序添加综掘数据
         for (MiningAreaCategory miningAreaCategory : miningAreaCategories) {
@@ -140,17 +162,19 @@ public class WorkFullyMechanizedStatsController extends BaseController {
                     zc1.setCumulativeOutput(allcomprehensive.stream().filter(po -> po != null)
                             .filter(item -> workFully.getUnitName().equals(item.getUnitName()))
                             .filter(item -> workFully.getUnitCode().equals(item.getUnitCode()))
-                            .filter(item -> workFully.getTeamName().equals(item.getTeamName())).mapToInt(po -> po.getOriginalOutput()).sum());
+                            .filter(item -> workFully.getTeamName().equals(item.getTeamName()))
+                            .map(po -> po.getOriginalOutput() != null ? po.getOriginalOutput() : BigDecimal.ZERO)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add).intValue());
 
                     zc1.setRemarks(workFully.getRemarks());
-                    综掘.add(zc1);
+                    comprehensiveList.add(zc1);
                 }
             }
         }
 
 
-        work.setFullyMining(综采);//综采
-        work.setComprehensive(综掘);//综掘
+        work.setFullyMining(fullyMiningList);//综采
+        work.setComprehensive(comprehensiveList);//综掘
         return success(work);
     }
     /**

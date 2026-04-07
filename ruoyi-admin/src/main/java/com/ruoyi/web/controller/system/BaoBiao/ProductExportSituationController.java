@@ -98,7 +98,9 @@ public class ProductExportSituationController extends BaseController {
 
         List<ProductExportSituation> list = productExportSituationService.list(query);
         if(list.size()>0){
-            return AjaxResult.error("每天保存一次");
+            entity.setId(list.get(0).getId());
+            return AjaxResult.toAjax(productExportSituationService.edit(entity));
+//            return AjaxResult.error("每天保存一次");
         }else {
             SysRole 七煤集团权限 = sysRoleMapper.checkRoleNameUnique("七煤集团权限");
             List<SysUserRole> sysUserRoles = sysUserRoleMapper.selectRoleUserInfos(Arrays.asList(七煤集团权限.getRoleId()));

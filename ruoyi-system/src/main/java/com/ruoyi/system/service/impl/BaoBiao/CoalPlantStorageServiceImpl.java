@@ -33,6 +33,7 @@ public class CoalPlantStorageServiceImpl implements ICoalPlantStorageService {
     @Transactional(rollbackFor = Exception.class)
     public Long add(CpsCreateDTO dto) {
         Map<String, Object> p = new HashMap<>();
+        p.put("unitName", dto.getUnit_name());
         p.put("recordDate", parseDate(dto.getRecord_time()));
         List<CoalPlantStoragePO> mains = mainMapper.selectList(p);
         Long id;
@@ -72,7 +73,8 @@ public class CoalPlantStorageServiceImpl implements ICoalPlantStorageService {
 
     @Override
     public int remove(Long id) {
-        return mainMapper.softDeleteById(id);
+//        return mainMapper.softDeleteById(id);
+        return subMapper.deleteById(id);
     }
 
     @Override
@@ -162,15 +164,35 @@ public class CoalPlantStorageServiceImpl implements ICoalPlantStorageService {
     private List<SubCoalPlantStoragePO> toSubs(Long parentId, List<CpsSubItemDTO> list) {
         List<SubCoalPlantStoragePO> out = new ArrayList<>();
         if (list == null) return out;
+        List<SubCoalPlantStoragePO> subCoalPlantStoragePOS = subMapper.selectByParentId(parentId);
         for (CpsSubItemDTO it : list) {
-            SubCoalPlantStoragePO s = new SubCoalPlantStoragePO();
-            s.setCoalPlantStorageID(parentId);
-            s.setRecordDate(parseTime(it.getRecord_date()));
-            s.setCleanCoal(it.getClean_coal());
-            s.setSlackCoal(it.getSlack_coal());
-            s.setLumpCoal(it.getLump_coal());
-            s.setRawCoal(it.getRaw_coal());
-            out.add(s);
+
+            String targetTime = parseTime(it.getRecord_date());
+
+            // 查找子列表中 recordDate 等于 targetTime 的现有记录
+            SubCoalPlantStoragePO existing = subCoalPlantStoragePOS.stream()
+                    .filter(sub -> targetTime.equals(sub.getRecordDate()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (existing != null) {
+                // 如果存在，更新现有记录的数据
+                existing.setCleanCoal(it.getClean_coal());
+                existing.setSlackCoal(it.getSlack_coal());
+                existing.setLumpCoal(it.getLump_coal());
+                existing.setRawCoal(it.getRaw_coal());
+                subMapper.updateById(existing); // 直接更新数据库
+            }else {
+                SubCoalPlantStoragePO s = new SubCoalPlantStoragePO();
+                s.setCoalPlantStorageID(parentId);
+                s.setRecordDate(parseTime(it.getRecord_date()));
+                s.setCleanCoal(it.getClean_coal());
+                s.setSlackCoal(it.getSlack_coal());
+                s.setLumpCoal(it.getLump_coal());
+                s.setRawCoal(it.getRaw_coal());
+                out.add(s);
+            }
+
         }
         return out;
     }
@@ -188,6 +210,7 @@ public class CoalPlantStorageServiceImpl implements ICoalPlantStorageService {
         List<CpsSubItemDTO> items = new ArrayList<>();
         for (SubCoalPlantStoragePO s : subs) {
             CpsSubItemDTO it = new CpsSubItemDTO();
+            it.setId(s.getId());
             it.setRecord_date(s.getRecordDate());
             it.setClean_coal(s.getCleanCoal());
             it.setSlack_coal(s.getSlackCoal());

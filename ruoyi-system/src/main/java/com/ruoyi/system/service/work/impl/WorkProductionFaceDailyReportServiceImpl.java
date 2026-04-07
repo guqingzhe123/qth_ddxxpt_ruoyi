@@ -148,20 +148,20 @@ public class WorkProductionFaceDailyReportServiceImpl implements IWorkProduction
         if (CollUtil.isEmpty(workProductionFaceDailyReports)) {
             return AjaxResult.warn("该矿未查询到生产面日报！");
         }
-        if (workProductionFaceDailyReports.size() > 1){
-            return AjaxResult.warn("该矿有多条生产面日报,请处理后在选择！");
-        }
+//        if (workProductionFaceDailyReports.size() > 1){
+//            return AjaxResult.warn("该矿有多条生产面日报,请处理后在选择！");
+//        }
         WorkProductionFaceDailyReport dailyReport = workProductionFaceDailyReports.get(0);
         if (dailyReport.getStatus() == 2L){
             return AjaxResult.warn("该日报已退回，请勿重复处理！");
         }
         for (WorkProductionFaceDailyReport report : workProductionFaceDailyReports) {
             report.setStatus(2L);
+            workProductionFaceDailyReportMapper.updateWorkProductionFaceDailyReport(report);
         }
         String userId = sysUserMapper.selectUserByNickName(unit).getUserId();
         String message="七煤调度退回了您的日报请重新编写!";
         messageMapper.insertUserMessage(new UserMessage(SecurityUtils.getUserId(),userId,message,new java.util.Date()));
-        int i = workProductionFaceDailyReportMapper.batchUpdateWorkProductionFaceDailyReport(workProductionFaceDailyReports);
         return AjaxResult.success("退回成功");
     }
 

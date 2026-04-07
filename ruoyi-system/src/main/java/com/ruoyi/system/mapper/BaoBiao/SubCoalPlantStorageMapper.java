@@ -10,4 +10,7 @@ public interface SubCoalPlantStorageMapper {
     int deleteByParentId(Long parentId);
     List<SubCoalPlantStoragePO> selectByParentId(Long parentId);
     List<SubCoalPlantStoragePO> selectByParentIds(List<Long> parentIds);
+
+    int updateById(SubCoalPlantStoragePO subCoalPlantStorage);
+    int deleteById(Long Id);
 }

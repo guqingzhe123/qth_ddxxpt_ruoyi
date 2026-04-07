@@ -1004,7 +1004,7 @@ public class MinePlanServiceImpl implements IMinePlanService {
             if (num > 2) {
                 ju.setIsDeleted("正常");
             } else if (num > 0) {
-                ju.setIsDeleted("待上报");
+                ju.setIsDeleted("正常");
             } else {
                 ju.setIsDeleted(null);
             }

@@ -65,4 +65,7 @@ public interface IWorkProductionStatusService {
      * @return 结果
      */
     public int deleteWorkProductionStatusById(String id);
+
+
+
 }

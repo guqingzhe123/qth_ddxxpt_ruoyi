@@ -68,6 +68,7 @@ public class CoalPlantStorageController extends BaseController {
         return AjaxResult.toAjax(service.remove(id));
     }
 
+
     @Anonymous
     @Operation(summary = "按ID查询详情（含 data_JSON）")
     @GetMapping("/{id}")

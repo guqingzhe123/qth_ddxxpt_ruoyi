@@ -179,4 +179,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+
+
+    <select id="listWorkProductionStatusDay" parameterType="com.ruoyi.system.domain.work.WorkProductionDailyReport" resultType="java.lang.Integer">
+
+        SELECT COALESCE(sum(t2.maily_sales), 0) from work_production_daily_report t1 LEFT JOIN  work_production_status t2 on t1.id =t2.parent_id where  t1.unit=#{unit} and  t1.report_date= #{reportDate}
+
+    </select>
+    <select id="listWorkProductionStatusMonth" parameterType="com.ruoyi.system.domain.work.WorkProductionDailyReport" resultType="java.lang.Integer">
+        SELECT COALESCE(sum(t2.maily_sales), 0) from work_production_daily_report t1 LEFT JOIN  work_production_status t2 on t1.id =t2.parent_id where  t1.unit=#{unit}
+            AND YEAR(t1.report_date) = YEAR(#{reportDate}) AND MONTH(t1.report_date) = MONTH(#{reportDate})
+
+    </select>
 </mapper>

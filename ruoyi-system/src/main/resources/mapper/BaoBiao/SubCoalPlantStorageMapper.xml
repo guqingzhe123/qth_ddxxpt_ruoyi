@@ -25,6 +25,9 @@
     <delete id="deleteByParentId">
         DELETE FROM sub_coal_plant_storage WHERE coal_plant_storageID = #{parentId}
     </delete>
+    <delete id="deleteById">
+        DELETE FROM sub_coal_plant_storage WHERE id = #{Id}
+    </delete>
 
     <select id="selectByParentId" resultMap="SubMap">
         SELECT * FROM sub_coal_plant_storage
@@ -38,5 +41,15 @@
         <foreach collection="list" item="id" open="(" separator="," close=")">#{id}</foreach>
         ORDER BY coal_plant_storageID ASC, record_date DESC, id ASC
     </select>
+
+    <update id="updateById" parameterType="com.ruoyi.system.domain.BaoBiao.po.SubCoalPlantStoragePO">
+        UPDATE sub_coal_plant_storage
+        SET clean_coal = #{cleanCoal},
+            slack_coal = #{slackCoal},
+            lump_coal = #{lumpCoal},
+            raw_coal = #{rawCoal}
+        WHERE id = #{id}
+    </update>
+
 
 </mapper>

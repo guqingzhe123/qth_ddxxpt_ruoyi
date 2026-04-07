@@ -44,6 +44,7 @@ public interface WorkProductionFaceDailyReportMapper {
     public int updateWorkProductionFaceDailyReport(WorkProductionFaceDailyReport workProductionFaceDailyReport);
 
     int batchUpdateWorkProductionFaceDailyReport(List<WorkProductionFaceDailyReport> reports);
+    int batchUpdateWorkProductionFaceDail(WorkProductionFaceDailyReport report);
 
     /**
      * 删除生产面日报

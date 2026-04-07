@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -45,19 +46,19 @@ public class WorkFullyMechanizedStats extends BaseEntity {
 
     /** 一班产量 */
     @Excel(name = "一班产量")
-    private Integer outputShift1;
+    private BigDecimal outputShift1;
 
     /** 二班产量 */
     @Excel(name = "二班产量")
-    private Integer outputShift2;
+    private BigDecimal outputShift2;
 
     /** 三班产量 */
     @Excel(name = "三班产量")
-    private Integer outputShift3;
+    private BigDecimal outputShift3;
 
     /** 原班产量 */
     @Excel(name = "原班产量")
-    private Integer originalOutput;
+    private BigDecimal originalOutput;
 
     /** 备注（异常说明、调整记录等） */
     @Excel(name = "备注", readConverterExp = "异=常说明、调整记录等")

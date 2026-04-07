@@ -387,7 +387,7 @@
     </update>
 
     <update id="batchUpdateWorkProductionFaceDailyReport" parameterType="java.util.List">
-        <foreach collection="list" item="item" separator=";">
+        <foreach collection="list" item="item" open="" separator=";" close="">
             UPDATE work_production_face_daily_report
             <trim prefix="SET" suffixOverrides=",">
                 <if test="item.unit != null and item.unit != ''">
@@ -482,4 +482,84 @@
             #{id}
         </foreach>
     </delete>
+
+    <update id="batchUpdateWorkProductionFaceDail" parameterType="com.ruoyi.system.domain.work.WorkProductionFaceDailyReport">
+        UPDATE work_production_face_daily_report
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="unit != null and unit != ''">
+                unit = #{unit},
+            </if>
+            <if test="reportDate != null and reportDate != ''">
+                report_date = #{reportDate},
+            </if>
+            <if test="unitCode != null and unitCode != ''">
+                unit_code = #{unitCode},
+            </if>
+            <if test="teamId != null and teamId != ''">
+                team_id = #{teamId},
+            </if>
+            <if test="workLocation != null and workLocation != ''">
+                work_location = #{workLocation},
+            </if>
+            <if test="miningTechnology != null and miningTechnology != ''">
+                mining_technology = #{miningTechnology},
+            </if>
+            <if test="unitModel != null">
+                unit_model = #{unitModel},
+            </if>
+            <if test="scraperConveyorModel != null">
+                scraper_conveyor_model = #{scraperConveyorModel},
+            </if>
+            <if test="supportForm != null and supportForm != ''">
+                support_form = #{supportForm},
+            </if>
+            <if test="oneAttendance != null">
+                one_attendance = #{oneAttendance},
+            </if>
+            <if test="twoAttendance != null">
+                two_attendance = #{twoAttendance},
+            </if>
+            <if test="threeAttendance != null">
+                three_attendance = #{threeAttendance},
+            </if>
+            <if test="countAttendance != null">
+                count_attendance = #{countAttendance},
+            </if>
+            <if test="oneOutput != null">
+                one_output = #{oneOutput},
+            </if>
+            <if test="twoOutput != null">
+                two_output = #{twoOutput},
+            </if>
+            <if test="threeOutput != null">
+                three_output = #{threeOutput},
+            </if>
+            <if test="countOutput != null">
+                count_output = #{countOutput},
+            </if>
+            <if test="oneCutsNum != null">
+                one_cuts_num = #{oneCutsNum},
+            </if>
+            <if test="twoCutsNum != null">
+                two_cuts_num = #{twoCutsNum},
+            </if>
+            <if test="threeCutsNum != null">
+                three_cuts_num = #{threeCutsNum},
+            </if>
+            <if test="countCutsNum != null">
+                count_cuts_num = #{countCutsNum},
+            </if>
+            <if test="remarks != null">
+                remarks = #{remarks},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+
 </mapper>

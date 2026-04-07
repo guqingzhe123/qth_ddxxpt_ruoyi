@@ -16,10 +16,13 @@ import com.ruoyi.system.domain.ribaobaobiao.xiMeiRiBaoBaoBiao;
 import com.ruoyi.system.domain.work.CompletionRawCoalGeneration;
 import com.ruoyi.system.domain.work.SafetyInfluencingFactors;
 import com.ruoyi.system.domain.work.StatisticalTableRawCoal;
+import com.ruoyi.system.domain.work.WorkProductionDailyReport;
 import com.ruoyi.system.mapper.BaoBiao.*;
 import com.ruoyi.system.mapper.*;
 import com.ruoyi.system.mapper.work.SafetyInfluencingFactorsMapper;
 import com.ruoyi.system.service.BaoBiao.IMiningAreaCategoryService;
+import com.ruoyi.system.service.work.IWorkProductionDailyReportService;
+import com.ruoyi.system.service.work.IWorkProductionStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -59,6 +62,14 @@ public class IShengChanRiBaoService {
 
     @Autowired
     private SafetyInfluencingFactorsMapper safetyInfluencingFactorsMapper;//公司各单位影响安全生产因素（原因）列表
+
+
+
+    @Autowired
+    private IWorkProductionStatusService workProductionStatusService;//子表 生产情况
+    @Autowired
+    private IWorkProductionDailyReportService workProductionDailyReportService;//主表情况
+
 
     /***
      * 生产汇总表  传入时间
@@ -605,16 +616,26 @@ public class IShengChanRiBaoService {
         for (MiningAreaCategory  mining:miningAreaCategories) {
             StatisticalTableRawCoal 公司=new StatisticalTableRawCoal();
             公司.setUnitName(mining.getAreaName());
-            DestinationOfRawCoal dest=new DestinationOfRawCoal();
-            dest.setRecordDate(statsDate);
-            dest.setUnitName(mining.getAreaName());
-            List<DestinationOfRawCoal> 日去向 = destinationOfRawCoalMapper.selectDestinationOfRawCoalList(dest);
-            List<DestinationOfRawCoal> 月去向 = destinationOfRawCoalMapper.selectDestinationOfRawCoalByMonth(dest);
+//            DestinationOfRawCoal dest=new DestinationOfRawCoal();
+//            dest.setRecordDate(statsDate);
+//            dest.setUnitName(mining.getAreaName());
+//            List<DestinationOfRawCoal> 日去向 = destinationOfRawCoalMapper.selectDestinationOfRawCoalList(dest);
+//            List<DestinationOfRawCoal> 月去向 = destinationOfRawCoalMapper.selectDestinationOfRawCoalByMonth(dest);
+            WorkProductionDailyReport dest=new WorkProductionDailyReport();
+            dest.setReportDate(statsDate);
+            dest.setUnit(mining.getAreaName());
+            int 日销售 = workProductionDailyReportService.listWorkProductionStatusDay(dest);
+            int 月销售 = workProductionDailyReportService.listWorkProductionStatusMonth(dest);
+
+
             SubMinePlanPO 原煤月计划内容 = 原煤月计划.stream().filter(item -> mining.getAreaName().equals(item.getUnitName())).findFirst().orElse(new SubMinePlanPO());
             int 当日日完成  = 日完成.stream().filter(item ->  mining.getAreaName().equals(item.getUnitName())).mapToInt(po -> po.getProductionData()).sum();
             MineData 累计日完成 = 累计月完成.stream().filter(item -> mining.getAreaName().equals(item.getUnitName())).findFirst().orElse(new MineData());
-            DestinationOfRawCoal 日销售 = 日去向.stream().filter(item -> mining.getAreaName().equals(item.getUnitName())).findFirst().orElse(new DestinationOfRawCoal());
-            DestinationOfRawCoal 月销售 = 月去向.stream().filter(item -> mining.getAreaName().equals(item.getUnitName())).findFirst().orElse(new DestinationOfRawCoal());
+
+//            DestinationOfRawCoal 日销售 = 日去向.stream().filter(item -> mining.getAreaName().equals(item.getUnitName())).findFirst().orElse(new DestinationOfRawCoal());
+//            DestinationOfRawCoal 月销售 = 月去向.stream().filter(item -> mining.getAreaName().equals(item.getUnitName())).findFirst().orElse(new DestinationOfRawCoal());
+
+
             SubInitialInventoryOfEachMine 矿起初库存 = 期初库存.stream().filter(item -> mining.getAreaName().equals(item.getUnitName())).findFirst().orElse(new SubInitialInventoryOfEachMine());
             CoalMineWorkingDay 日计划 = coalMineWorkingDayMapper.selectCoalMineWorkingDayByDay(mining.getAreaName(), yue, day);
             CoalMineWorkingDay 累计日计划 = coalMineWorkingDayMapper.selectCoalMineWorkingDayByMonth(mining.getAreaName(), yue, day);
@@ -623,11 +644,13 @@ public class IShengChanRiBaoService {
             公司.setDayPlan(日计划 != null && 日计划.getProductionPlan() != null ? toInt(日计划.getProductionPlan()) : 0);
             公司.setDayTarget(日计划 != null && 日计划.getProductionObjective() != null ? toInt(日计划.getProductionObjective()) : 0);
             公司.setDayComplete(当日日完成);
-            公司.setMailySales(日销售 != null && 日销售.getSalesVolume() != null ? toInt(日销售.getSalesVolume()) : 0);
+//            公司.setMailySales(日销售 != null && 日销售.getSalesVolume() != null ? toInt(日销售.getSalesVolume()) : 0);
+            公司.setMailySales(日销售);
             公司.setMonthlyPlanTotal(累计日计划 != null && 累计日计划.getProductionPlan() != null ? toInt(累计日计划.getProductionPlan()) : 0);
             公司.setMonthlyCompleteTarget(累计日计划 != null && 累计日计划.getProductionObjective() != null ? toInt(累计日计划.getProductionObjective()) : 0);
             公司.setMonthlyCompleteTotal(累计日完成 != null && 累计日完成.getProductionData() != null ? toInt(累计日完成.getProductionData()) : 0);
-            公司.setMonthlyMailySales(月销售 != null && 月销售.getSalesVolume() != null ? toInt(月销售.getSalesVolume()) : 0);
+//            公司.setMonthlyMailySales(月销售 != null && 月销售.getSalesVolume() != null ? toInt(月销售.getSalesVolume()) : 0);
+            公司.setMonthlyMailySales(月销售);
             公司.setGroundStorage(矿起初库存 != null && 矿起初库存.getInitialInventoryOfThisMonth() != null ? toInt(矿起初库存.getInitialInventoryOfThisMonth()) : 0);
             list.add(公司);
         }

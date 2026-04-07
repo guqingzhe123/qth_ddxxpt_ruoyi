@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -66,7 +67,14 @@ public class WorkCoalWashingReportController extends BaseController {
                     workCoalWashingReport1.setUnitCode(factory.getFactoryCode());
                     list1.add(workCoalWashingReport1);
                 }else {
-                    list1.add(workCoalWashingReport2);
+                    if (workCoalWashingReport2.getState() != null && workCoalWashingReport2.getState() == 2) {
+                        WorkCoalWashingReport workCoalWashingReport1=new WorkCoalWashingReport();
+                        workCoalWashingReport1.setUnitName(factory.getFactoryName());
+                        workCoalWashingReport1.setUnitCode(factory.getFactoryCode());
+                        list1.add(workCoalWashingReport1);
+                    }else {
+                        list1.add(workCoalWashingReport2);
+                    }
                 }
             }
             return getDataTable(list1);
@@ -101,6 +109,30 @@ public class WorkCoalWashingReportController extends BaseController {
 
 
             if(workCoalWashingReport1.getUnitName() !=null){
+                // 当日数据：确保三个率值保留 2 位小数
+                if (workCoalWashingReport1.getWashingInput() != null && workCoalWashingReport1.getWashingInput() > 0) {
+                    // 精煤产率：(精煤 / 洗入量) * 100，保留 2 位小数
+                    BigDecimal cleanCoal = workCoalWashingReport1.getCleanCoal() != null ? BigDecimal.valueOf(workCoalWashingReport1.getCleanCoal()) : BigDecimal.ZERO;
+                    BigDecimal washedLumpCoal = workCoalWashingReport1.getWashedLumpCoal() != null ? BigDecimal.valueOf(workCoalWashingReport1.getWashedLumpCoal()) : BigDecimal.ZERO;
+                    BigDecimal washedFineCoal = workCoalWashingReport1.getWashedFineCoal() != null ? BigDecimal.valueOf(workCoalWashingReport1.getWashedFineCoal()) : BigDecimal.ZERO;
+                    BigDecimal washingConsumption = workCoalWashingReport1.getWashingConsumption() != null ? BigDecimal.valueOf(workCoalWashingReport1.getWashingConsumption()) : BigDecimal.ZERO;
+                    BigDecimal washingInput = BigDecimal.valueOf(workCoalWashingReport1.getWashingInput());
+                    
+                    workCoalWashingReport1.setCleanCoalYield(cleanCoal
+                            .divide(washingInput, 6, RoundingMode.HALF_UP)
+                            .multiply(BigDecimal.valueOf(100))
+                            .setScale(2, RoundingMode.HALF_UP));
+                    // 综合产率：(精煤 + 洗块煤 + 洗末煤) / 洗入量 * 100，保留 2 位小数
+                    workCoalWashingReport1.setComprehensiveYield(cleanCoal.add(washedLumpCoal).add(washedFineCoal)
+                            .divide(washingInput, 6, RoundingMode.HALF_UP)
+                            .multiply(BigDecimal.valueOf(100))
+                            .setScale(2, RoundingMode.HALF_UP));
+                    // 洗耗率：(洗耗 / 洗入量) * 100，保留 2 位小数
+                    workCoalWashingReport1.setWashingConsumptionRate(washingConsumption
+                            .divide(washingInput, 6, RoundingMode.HALF_UP)
+                            .multiply(BigDecimal.valueOf(100))
+                            .setScale(2, RoundingMode.HALF_UP));
+                }
                 当日数据.add(workCoalWashingReport1);
             }else {
                 WorkCoalWashingReport workCoalWashingReport1_1 = new WorkCoalWashingReport();
@@ -109,15 +141,27 @@ public class WorkCoalWashingReportController extends BaseController {
             }
             if(workCoalWashingReport2.getUnitName() !=null){
                 if (workCoalWashingReport2.getWashingInput() != null && workCoalWashingReport2.getWashingInput() > 0) {
-                    workCoalWashingReport2.setCleanCoalYield(BigDecimal.valueOf(workCoalWashingReport2.getCleanCoal())
-                            .divide(BigDecimal.valueOf(workCoalWashingReport2.getWashingInput()), 4, BigDecimal.ROUND_HALF_UP)
-                            .multiply(BigDecimal.valueOf(100)));
-                    workCoalWashingReport2.setComprehensiveYield(BigDecimal.valueOf(workCoalWashingReport2.getCleanCoal() + workCoalWashingReport2.getWashedLumpCoal() + workCoalWashingReport2.getWashedFineCoal())
-                            .divide(BigDecimal.valueOf(workCoalWashingReport2.getWashingInput()), 4, BigDecimal.ROUND_HALF_UP)
-                            .multiply(BigDecimal.valueOf(100)));
-                    workCoalWashingReport2.setWashingConsumptionRate(BigDecimal.valueOf(workCoalWashingReport2.getWashingConsumption())
-                            .divide(BigDecimal.valueOf(workCoalWashingReport2.getWashingInput()), 4, BigDecimal.ROUND_HALF_UP)
-                            .multiply(BigDecimal.valueOf(100)));
+                    // 精煤产率：(精煤 / 洗入量) * 100，保留 2 位小数
+                    BigDecimal cleanCoal = workCoalWashingReport2.getCleanCoal() != null ? BigDecimal.valueOf(workCoalWashingReport2.getCleanCoal()) : BigDecimal.ZERO;
+                    BigDecimal washedLumpCoal = workCoalWashingReport2.getWashedLumpCoal() != null ? BigDecimal.valueOf(workCoalWashingReport2.getWashedLumpCoal()) : BigDecimal.ZERO;
+                    BigDecimal washedFineCoal = workCoalWashingReport2.getWashedFineCoal() != null ? BigDecimal.valueOf(workCoalWashingReport2.getWashedFineCoal()) : BigDecimal.ZERO;
+                    BigDecimal washingConsumption = workCoalWashingReport2.getWashingConsumption() != null ? BigDecimal.valueOf(workCoalWashingReport2.getWashingConsumption()) : BigDecimal.ZERO;
+                    BigDecimal washingInput = BigDecimal.valueOf(workCoalWashingReport2.getWashingInput());
+                    
+                    workCoalWashingReport2.setCleanCoalYield(cleanCoal
+                            .divide(washingInput, 6, RoundingMode.HALF_UP)
+                            .multiply(BigDecimal.valueOf(100))
+                            .setScale(2, RoundingMode.HALF_UP));
+                    // 综合产率：(精煤 + 洗块煤 + 洗末煤) / 洗入量 * 100，保留 2 位小数
+                    workCoalWashingReport2.setComprehensiveYield(cleanCoal.add(washedLumpCoal).add(washedFineCoal)
+                            .divide(washingInput, 6, RoundingMode.HALF_UP)
+                            .multiply(BigDecimal.valueOf(100))
+                            .setScale(2, RoundingMode.HALF_UP));
+                    // 洗耗率：(洗耗 / 洗入量) * 100，保留 2 位小数
+                    workCoalWashingReport2.setWashingConsumptionRate(washingConsumption
+                            .divide(washingInput, 6, RoundingMode.HALF_UP)
+                            .multiply(BigDecimal.valueOf(100))
+                            .setScale(2, RoundingMode.HALF_UP));
                 }
 
                 当月数据.add(workCoalWashingReport2);
@@ -173,12 +217,16 @@ public class WorkCoalWashingReportController extends BaseController {
                 List<WorkCoalStockSalesStat> list4 = workCoalStockSalesStatService.listWorkCoalStockSalesStat(workCoalStat);
                 if(list4.size()>0){
                     WorkCoalStockSalesStat workCoalStockSalesStat = new WorkCoalStockSalesStat();
+                    workCoalStockSalesStat.setCoalType(workCoalWashingReport.getUnitName());
+                    workCoalStockSalesStat.setRecordDate(workCoalWashingReport.getReportTime());//设置记录日期
                     workCoalStockSalesStat.setRawCoalDailyChange(l);//当日增减
                     long l1 =  list4.get(0).getRawCoalCurrentStock()+ workCoalWashingReport.getTotalInput() - workCoalWashingReport.getWashingInput();
                     workCoalStockSalesStat.setRawCoalCurrentStock(l1);
                     workCoalStockSalesStatService.saveWorkCoalStockSalesStat(workCoalStockSalesStat);
                 }else {
                     WorkCoalStockSalesStat workCoalStockSalesStat = new WorkCoalStockSalesStat();
+                    workCoalStockSalesStat.setRecordDate(workCoalWashingReport.getReportTime());//设置记录日期
+                    workCoalStockSalesStat.setCoalType(workCoalWashingReport.getUnitName());
                     workCoalStockSalesStat.setRawCoalDailyChange(l);//当日增减
                     workCoalStockSalesStat.setRawCoalCurrentStock(l);
                     workCoalStockSalesStatService.saveWorkCoalStockSalesStat(workCoalStockSalesStat);

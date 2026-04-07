@@ -65,4 +65,19 @@ public interface IWorkProductionDailyReportService {
      * @return 结果
      */
     public int deleteWorkProductionDailyReportById(String id);
+
+    /**
+     * 修改生产信息日报
+     *
+     * @param workProductionDailyReport 生产信息日报
+     * @return 结果
+     */
+    public int listWorkProductionStatusDay(WorkProductionDailyReport workProductionDailyReport);
+    /**
+     * 修改生产信息日报
+     *
+     * @param workProductionDailyReport 生产信息日报
+     * @return 结果
+     */
+    public int listWorkProductionStatusMonth(WorkProductionDailyReport workProductionDailyReport);
 }

@@ -98,4 +98,25 @@ public class WorkProductionDailyReportServiceImpl implements IWorkProductionDail
     public int deleteWorkProductionDailyReportById(String id) {
         return workProductionDailyReportMapper.deleteWorkProductionDailyReportById(id);
     }
+
+    /**
+     * 查询日销售
+     *
+     * @param id 生产信息日报主键
+     * @return 结果
+     */
+    public int listWorkProductionStatusDay(WorkProductionDailyReport workProductionDailyReport) {
+        return workProductionDailyReportMapper.listWorkProductionStatusDay(workProductionDailyReport);
+    }
+
+    /**
+     * 查询日销售
+     *
+     * @param id 生产信息日报主键
+     * @return 结果
+     */
+    public int listWorkProductionStatusMonth(WorkProductionDailyReport workProductionDailyReport) {
+        return workProductionDailyReportMapper.listWorkProductionStatusMonth(workProductionDailyReport);
+    }
+
 }

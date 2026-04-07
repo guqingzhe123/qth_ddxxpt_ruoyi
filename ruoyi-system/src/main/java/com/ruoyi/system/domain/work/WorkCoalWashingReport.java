@@ -68,6 +68,7 @@ public class WorkCoalWashingReport extends BaseEntity {
 
     /** 精煤产率（%） */
     @Excel(name = "精煤产率", readConverterExp = "%=")
+    @JsonFormat(pattern = "0.00", shape = JsonFormat.Shape.STRING)
     private BigDecimal cleanCoalYield;
 
     /** 洗块（吨） */
@@ -80,6 +81,7 @@ public class WorkCoalWashingReport extends BaseEntity {
 
     /** 综合产率（%） */
     @Excel(name = "综合产率", readConverterExp = "%=")
+    @JsonFormat(pattern = "0.00", shape = JsonFormat.Shape.STRING)
     private BigDecimal comprehensiveYield;
 
     /** 洗耗（吨/吨） */
@@ -88,6 +90,7 @@ public class WorkCoalWashingReport extends BaseEntity {
 
     /** 洗耗率（%） */
     @Excel(name = "洗耗率", readConverterExp = "%=")
+    @JsonFormat(pattern = "0.00", shape = JsonFormat.Shape.STRING)
     private BigDecimal washingConsumptionRate;
 
     /** 三选末（吨） */

@@ -115,6 +115,11 @@ public class Done extends BaseEntity {
     /** 结束创建时间 */
     private Date endCreateTime;
 
+    /** 开始办理时间 */
+    private Date beginHandleTime;
+    /** 结束办理时间 */
+    private Date endHandleTime;
+
 
     @Override
     public String toString() {

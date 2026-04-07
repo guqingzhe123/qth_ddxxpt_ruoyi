@@ -55,6 +55,13 @@ public class DoneServiceImpl implements IDoneService {
     @Override
     public List<Done> listDone(Done done) {
         done.setHandler(SecurityUtils.getUserId());
+        // 兼容前端传递的 beginCreateTime 和 endCreateTime 参数，将其映射到办理时间范围查询
+        if (done.getBeginCreateTime() != null && done.getBeginHandleTime() == null) {
+            done.setBeginHandleTime(done.getBeginCreateTime());
+        }
+        if (done.getEndCreateTime() != null && done.getEndHandleTime() == null) {
+            done.setEndHandleTime(done.getEndCreateTime());
+        }
         return doneMapper.selectLastDoneList(done);
     }
 
