@@ -8,7 +8,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 /**
- * 流程驳回事件监听器（处理草稿表更新）
+ * 流程退回事件监听器（处理草稿表更新）
  */
 @Component
 @RequiredArgsConstructor

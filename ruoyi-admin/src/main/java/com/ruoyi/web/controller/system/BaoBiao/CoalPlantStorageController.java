@@ -47,7 +47,7 @@ public class CoalPlantStorageController extends BaseController {
         dto.setMine_category("0");
         Long id = service.add(dto);
         if(id==0l){
-            return AjaxResult.error("请联系局里进行驳回");
+            return AjaxResult.error("请联系局里进行退回");
         }
 
         SysRole 七煤集团权限 = sysRoleMapper.checkRoleNameUnique("七煤集团权限");

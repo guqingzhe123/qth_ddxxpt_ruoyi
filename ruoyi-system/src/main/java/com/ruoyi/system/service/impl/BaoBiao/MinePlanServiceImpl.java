@@ -1037,7 +1037,7 @@ public class MinePlanServiceImpl implements IMinePlanService {
                         return "已上报";
                     }
                     if (subMinePlanPO.getIsDeleted() == 2) {
-                        return "已驳回";
+                        return "已退回";
                     }
                 }
 

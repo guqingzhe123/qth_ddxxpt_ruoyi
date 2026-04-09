@@ -72,7 +72,7 @@ public class CoalProductInventoryController extends BaseController {
                 mineInfo.setMineName(subCoalProductInventories.get(0).getUnitName());
                 List<MineInfo> mineInfos = mineInfoService.listMineInfo(mineInfo);
                 if(mineInfos.size()==0){
-                    return AjaxResult.error("请联系局里进行驳回");
+                    return AjaxResult.error("请联系局里进行退回");
                 }
                 if(mineInfos.size()>=0){
                     mineInfoService.deleteMineInfoByDate(mineInfo);

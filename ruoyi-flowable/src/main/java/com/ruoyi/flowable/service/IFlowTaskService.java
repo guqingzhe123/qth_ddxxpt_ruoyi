@@ -24,7 +24,7 @@ public interface IFlowTaskService {
     void complete(FlowTaskVo task);
 
     /**
-     * 驳回任务
+     * 退回任务
      *
      * @param flowTaskVo 请求实体参数
      */
@@ -220,7 +220,7 @@ public interface IFlowTaskService {
     Boolean checkReturnCondition(FlowTaskVo flowTaskVo);
 
     /**
-     * 校验驳回
+     * 校验退回
      *
      * @param flowTaskVo 请求实体参数
      * @return

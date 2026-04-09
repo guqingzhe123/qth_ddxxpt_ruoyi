@@ -27,6 +27,6 @@ public class InitialInventoryOfEachMineOutput extends BaseEntity {
     private BigDecimal initialInventoryOfThisMonth;
 
     /** 是否分公司 */
-    @Excel(name = "是否驳回")
+    @Excel(name = "是否退回")
     private Integer isreject;
 }

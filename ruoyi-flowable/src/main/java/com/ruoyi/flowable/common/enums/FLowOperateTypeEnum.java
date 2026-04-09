@@ -11,7 +11,7 @@ public enum FLowOperateTypeEnum {
 
     COMPLETE("2", "完成任务"),
 
-    REJECT("3", "驳回任务"),
+    REJECT("3", "退回任务"),
 
     BACK("4", "退回任务"),
 

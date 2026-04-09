@@ -54,7 +54,7 @@ public class WashCoalPlanController extends BaseController {
         dto.setUser_id(SecurityUtils.getUserId());
         Long id = service.add(dto);
         if(id==0){
-            return AjaxResult.error("请联系局里进行驳回");
+            return AjaxResult.error("请联系局里进行退回");
         }
         SysRole 七煤集团权限 = sysRoleMapper.checkRoleNameUnique("七煤集团权限");
         List<SysUserRole> sysUserRoles = sysUserRoleMapper.selectRoleUserInfos(Arrays.asList(七煤集团权限.getRoleId()));

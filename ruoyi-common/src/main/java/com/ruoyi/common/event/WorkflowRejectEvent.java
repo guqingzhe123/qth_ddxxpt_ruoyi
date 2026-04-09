@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
 /**
- * 流程驳回事件（用于跨模块通知更新草稿状态）
+ * 流程退回事件（用于跨模块通知更新草稿状态）
  */
 @Getter
 public class WorkflowRejectEvent extends ApplicationEvent {

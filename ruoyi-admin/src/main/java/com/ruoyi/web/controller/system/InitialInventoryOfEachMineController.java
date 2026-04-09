@@ -159,9 +159,9 @@ public class InitialInventoryOfEachMineController extends BaseController {
         return toAjax(initialInventoryOfEachMineService.updateInitialInventoryOfEachMine(initialInventoryOfEachMine));
     }
     /**
-     * 驳回各矿期初库存录入
+     * 退回各矿期初库存录入
      */
-    @Log(title = "驳回各矿期初库存录入", businessType = BusinessType.UPDATE)
+    @Log(title = "退回各矿期初库存录入", businessType = BusinessType.UPDATE)
     @PutMapping("/reject")
     public AjaxResult editlist(@RequestBody InitialInventoryOfEachMineUpdateInput output) {
         try{

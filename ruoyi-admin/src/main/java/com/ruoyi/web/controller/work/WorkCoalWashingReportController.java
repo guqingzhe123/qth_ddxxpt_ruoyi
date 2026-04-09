@@ -194,7 +194,7 @@ public class WorkCoalWashingReportController extends BaseController {
         List<WorkCoalWashingReport> list = workCoalWashingReportService.listWorkCoalWashingReport(work);
         if(list.size()>0){
             if(list.get(0).getState()==0){
-                return AjaxResult.error("请联系局里进行驳回");
+                return AjaxResult.error("请联系局里进行退回");
             }
             workCoalWashingReport.setState(0);
             workCoalWashingReport.setId(list.get(0).getId());

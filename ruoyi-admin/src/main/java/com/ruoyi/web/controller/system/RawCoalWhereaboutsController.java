@@ -185,7 +185,7 @@ public class RawCoalWhereaboutsController extends BaseController {
                 mineName=input1.getCoalWashing();
                  if(input1.getCoalWashing().equals("七洗厂")){
                     if(mineInfos.size()==0 && input.getXichangRi() !=null  && input.getXichangLeiji() !=null){
-                        return AjaxResult.error("请联系局里进行驳回");
+                        return AjaxResult.error("请联系局里进行退回");
                     }
 
                     input.setXichangRi(input1.getRi());
@@ -193,7 +193,7 @@ public class RawCoalWhereaboutsController extends BaseController {
                 }
                 if(input1.getCoalWashing().equals("桃选厂")){
                     if(mineInfos.size()==0 && input.getTiaoxianchangRi() !=null  && input.getTiaoxianchangLeiji() !=null){
-                        return AjaxResult.error("请联系局里进行驳回");
+                        return AjaxResult.error("请联系局里进行退回");
                     }
 
 
@@ -202,7 +202,7 @@ public class RawCoalWhereaboutsController extends BaseController {
                 }
                 if(input1.getCoalWashing().equals("新选厂")){
                     if(mineInfos.size()==0 && input.getXinxuanchangRi() !=null  && input.getXinxuanchangLeiji() !=null){
-                        return AjaxResult.error("请联系局里进行驳回");
+                        return AjaxResult.error("请联系局里进行退回");
                     }
 
                     input.setXinxuanchangRi(input1.getRi());
@@ -210,7 +210,7 @@ public class RawCoalWhereaboutsController extends BaseController {
                 }
                 if(input1.getCoalWashing().equals("铁选厂")){
                     if(mineInfos.size()==0 && input.getTiexuanchangRi() !=null  && input.getTiexuanchangRi() !=null){
-                        return AjaxResult.error("请联系局里进行驳回");
+                        return AjaxResult.error("请联系局里进行退回");
                     }
 
                     input.setTiexuanchangRi(input1.getRi());
@@ -218,14 +218,14 @@ public class RawCoalWhereaboutsController extends BaseController {
                 }
                 if(input1.getCoalWashing().equals("龙洗厂")){
                     if(mineInfos.size()==0 && input.getLongxichangRi() !=null  && input.getLongxichangLeiji() !=null){
-                        return AjaxResult.error("请联系局里进行驳回");
+                        return AjaxResult.error("请联系局里进行退回");
                     }
                     input.setLongxichangRi(input1.getRi());
                     input.setLongxichangLeiji(input1.getLeiji());
                 }
                 if(input1.getCoalWashing().equals("富洗厂")){
                     if(mineInfos.size()==0 && input.getFuxichangRi() !=null  && input.getFuxichangLeiji() !=null){
-                        return AjaxResult.error("请联系局里进行驳回");
+                        return AjaxResult.error("请联系局里进行退回");
                     }
                     input.setFuxichangRi(input1.getRi());
                     input.setFuxichangLeiji(input1.getLeiji());

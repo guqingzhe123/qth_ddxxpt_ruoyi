@@ -107,7 +107,7 @@ public class coalMiningFaceReportController  extends BaseController {
             int 巷修面 = workRoadwayRepairFaceDailyReportService.saveWorkRoadwayRepairFaceDailyReport(coalMiningFaceReport.getWorkRoadwayRepairFaceDailyReport());
             return  toAjax(1);
         }catch (Exception e){
-            return AjaxResult.error("请联系局里进行驳回");
+            return AjaxResult.error("请联系局里进行退回");
         }
     }
 }

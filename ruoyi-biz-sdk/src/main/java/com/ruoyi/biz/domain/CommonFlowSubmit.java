@@ -13,7 +13,7 @@ import lombok.Data;
 public class CommonFlowSubmit {
 
     /**
-     * 操作类型，提交、驳回、转交、退回等
+     * 操作类型，提交、退回、转交、退回等
      */
     private String operateType;
 

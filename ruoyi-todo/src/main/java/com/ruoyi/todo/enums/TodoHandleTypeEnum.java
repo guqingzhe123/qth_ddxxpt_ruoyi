@@ -8,7 +8,7 @@ package com.ruoyi.todo.enums;
 public enum TodoHandleTypeEnum {
     DRAFT("0", "草稿"),
     AUDIT("1", "审批"),
-    REJECT("2", "驳回"),
+    REJECT("2", "退回"),
     BACK("3", "退回"),
     REVOKE("4", "取回"),
     MULTI_REVOKE("5", "多实例取回"),

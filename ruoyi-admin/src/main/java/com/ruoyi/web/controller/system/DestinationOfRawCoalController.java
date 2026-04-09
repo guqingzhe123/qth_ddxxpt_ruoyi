@@ -73,7 +73,7 @@ public class DestinationOfRawCoalController extends BaseController {
         return toAjax(destinationOfRawCoalService.updateDestinationOfRawCoal(destinationOfRawCoal));
     }
     /**
-     * 驳回原煤去向
+     * 退回原煤去向
      */
     @Log(title = "原煤去向/各矿日实际产量录入", businessType = BusinessType.UPDATE)
     @PutMapping("/reject")

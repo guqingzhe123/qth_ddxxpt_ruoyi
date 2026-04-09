@@ -61,7 +61,7 @@ public class WorkflowMyDraft extends BaseEntity {
     private String createId;
 
 
-    /** 驳回状态 */
+    /** 退回状态 */
     private String handleType;
     /** 开始创建时间 */
     private Date beginCreateTime;

@@ -71,7 +71,7 @@ public class TDailySalesController extends BaseController {
             stock.setStatDate(tDailySales.getStatDate());
             List<TDailySales> list = tDailySalesService.listTDailySales(stock);
             if(list.size()>0 && list.get(0).getState()==0){
-                return error("请联系局里进行驳回");
+                return error("请联系局里进行退回");
             }else {
                 tDailySalesService.deleteTDailySalesByStatDate(stock);
             }

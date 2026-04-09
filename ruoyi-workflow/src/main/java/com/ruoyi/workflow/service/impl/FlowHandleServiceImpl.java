@@ -348,7 +348,7 @@ public class FlowHandleServiceImpl implements IFlowHandleService {
     }
 
     /**
-     * 驳回任务
+     * 退回任务
      *
      * @param flowTaskVo 流程对象
      * @param createId   创建人ID
@@ -361,16 +361,16 @@ public class FlowHandleServiceImpl implements IFlowHandleService {
             return;
         }
 
-        validateRejectParam(flowTaskVo);//校验驳回参数
+        validateRejectParam(flowTaskVo);//校验退回参数
         flowTaskService.taskReject(flowTaskVo);
         //flowTaskService.complete(flowTaskVo);
 
         flowTaskService.deleteTaskByParallelGateway(flowTaskVo);
-        // 获取驳回任务，插入新待办
+        // 获取退回任务，插入新待办
         List<Todo> nextTodos = todoService.createNextTodo(flowTaskVo, createId, false);
         handleNextTodos(nextTodos, flowTaskVo);
         // 处理其他操作
-        handleOtherOperation(nextTodos, createId, true,"您的事项被驳回！");
+        handleOtherOperation(nextTodos, createId, true,"您的事项被退回！");
         //删除其他人的审批意见
 
         // 改变状态
@@ -383,7 +383,7 @@ public class FlowHandleServiceImpl implements IFlowHandleService {
         if (targetUser == null) {
             log.error("催办通知发送失败：目标用户不存在，用户ID：{}", flowTaskVo.getTemplateType());
         }
-        String message = String.format("[%s] 驳回了您的协同事项。",targetUser.getNickName());
+        String message = String.format("[%s] 退回了您的协同事项。",targetUser.getNickName());
 
         // 处理其他操作  除了发送通知
         handleOtherOperation(nextTodos, createId, false,message);
@@ -567,7 +567,7 @@ public class FlowHandleServiceImpl implements IFlowHandleService {
     }
 
     /**
-     * 检查驳回条件
+     * 检查退回条件
      *
      * @param flowTaskVo 流程对象
      * @return Boolean
@@ -1165,7 +1165,7 @@ public class FlowHandleServiceImpl implements IFlowHandleService {
     }
 
     /**
-     * 校验驳回参数
+     * 校验退回参数
      *
      * @param flowTaskVo 流程对象
      */

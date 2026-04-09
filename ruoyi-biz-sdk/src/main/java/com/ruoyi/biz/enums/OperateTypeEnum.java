@@ -9,7 +9,7 @@ public enum OperateTypeEnum {
 
     COMPLETE("200", "完成"),
 
-    REJECT("201", "驳回"),
+    REJECT("201", "退回"),
 
     BACK("202", "直接退回"),
 

@@ -102,7 +102,7 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
     }
 
     /**
-     * 驳回任务
+     * 退回任务
      *
      * @param flowTaskVo 请求实体参数
      */
@@ -122,10 +122,10 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
                 throw new FlowableHandleException("未找到当前任务对应的流程节点");
             }
 
-            // 3. 获取当前节点的所有父级用户任务节点（用于确定驳回目标节点）
+            // 3. 获取当前节点的所有父级用户任务节点（用于确定退回目标节点）
             List<UserTask> parentUserTaskList = FlowableUtil.iteratorFindParentUserTasks(source, null, null);
             if (parentUserTaskList.isEmpty()) {
-                throw new FlowableHandleException("未找到可驳回的上级节点");
+                throw new FlowableHandleException("未找到可退回的上级节点");
             }
             List<String> parentUserTaskKeyList = parentUserTaskList.stream()
                     .map(UserTask::getId)
@@ -134,10 +134,10 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
             // 4. 清洗历史任务实例数据（过滤无效/已完成的任务）
             List<String> lastHistoricTaskInstanceList = historicTaskInstanceClean(task, bpmnModel);
 
-            // 5. 确定驳回的目标节点ID列表
+            // 5. 确定退回的目标节点ID列表
             List<String> targetIds = getTargetIds(lastHistoricTaskInstanceList, parentUserTaskKeyList);
             if (targetIds.isEmpty()) {
-                throw new FlowableHandleException("未找到有效的驳回目标节点");
+                throw new FlowableHandleException("未找到有效的退回目标节点");
             }
 
             // 6. 获取当前需要处理的任务ID列表（包含并行网关中的任务）
@@ -172,18 +172,18 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
             // 9. 恢复目标节点的处理人（使用历史处理人信息）
             //setNewActivityAssigneeByBeforeActivity(flowTaskVo.getProcInsId(), activityInstanceListMap);
 
-            log.info("流程驳回成功，流程实例ID：{}，当前任务ID：{}，目标节点：{}",
+            log.info("流程退回成功，流程实例ID：{}，当前任务ID：{}，目标节点：{}",
                     task.getProcessInstanceId(), flowTaskVo.getTaskId(), targetIds);
 
         } catch (FlowableObjectNotFoundException e) {
-            log.error("驳回失败：流程实例不存在或已结束", e);
-            throw new FlowableHandleException("流程实例不存在或已结束，无法执行驳回操作");
+            log.error("退回失败：流程实例不存在或已结束", e);
+            throw new FlowableHandleException("流程实例不存在或已结束，无法执行退回操作");
         } catch (FlowableException e) {
-            log.error("驳回失败：Flowable引擎异常", e);
+            log.error("退回失败：Flowable引擎异常", e);
             throw new FlowableHandleException("流程引擎异常：" + e.getMessage());
         } catch (Exception e) {
-            log.error("驳回任务发生未知异常", e);
-            throw new FlowableHandleException("驳回操作失败，请联系管理员");
+            log.error("退回任务发生未知异常", e);
+            throw new FlowableHandleException("退回操作失败，请联系管理员");
         }
     }
 //    @Override
@@ -243,8 +243,8 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
 //            log.error("未找到流程实例，流程可能已发生变化", e);
 //            throw new FlowableHandleException("未找到流程实例，流程可能已发生变化");
 //        } catch (FlowableException e) {
-//            log.error("驳回任务异常：", e);
-//            throw new FlowableHandleException("驳回任务失败，异常信息：" + e.getMessage());
+//            log.error("退回任务异常：", e);
+//            throw new FlowableHandleException("退回任务失败，异常信息：" + e.getMessage());
 //        }
 //    }
 
@@ -994,7 +994,7 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
     }
 
     /**
-     * 检查驳回条件
+     * 检查退回条件
      *
      * @param flowTaskVo 请求实体参数
      * @return
@@ -1003,7 +1003,7 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
     public Boolean checkRejectCondition(FlowTaskVo flowTaskVo) {
         // 1. 基础参数校验
         if (flowTaskVo == null || StringUtils.isBlank(flowTaskVo.getTaskId())) {
-            log.error("校验驳回条件失败：任务ID为空");
+            log.error("校验退回条件失败：任务ID为空");
             return false;
         }
         String taskId = flowTaskVo.getTaskId();
@@ -1014,7 +1014,7 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
         try {
             task = taskService.createTaskQuery().taskId(taskId).singleResult();
             if (task == null) {
-                log.error("校验驳回条件失败：任务不存在或已被处理，taskId={}", taskId);
+                log.error("校验退回条件失败：任务不存在或已被处理，taskId={}", taskId);
                 return false;
             }
             // 补充流程实例ID（若参数未传递）
@@ -1023,7 +1023,7 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
                 flowTaskVo.setProcInsId(procInsId);
             }
         } catch (FlowableException e) {
-            log.error("校验驳回条件失败：查询任务异常，taskId={}", taskId, e);
+            log.error("校验退回条件失败：查询任务异常，taskId={}", taskId, e);
             return false;
         }
 
@@ -1033,22 +1033,22 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
                     .processInstanceId(procInsId)
                     .singleResult();
             if (procInst == null) {
-                log.error("校验驳回条件失败：流程实例已结束或不存在，procInsId={}", procInsId);
+                log.error("校验退回条件失败：流程实例已结束或不存在，procInsId={}", procInsId);
                 return false;
             }
             if (procInst.isSuspended()) {
-                log.error("校验驳回条件失败：流程实例已挂起，无法执行驳回操作，procInsId={}", procInsId);
+                log.error("校验退回条件失败：流程实例已挂起，无法执行退回操作，procInsId={}", procInsId);
                 return false;
             }
         } catch (FlowableException e) {
-            log.error("校验驳回条件失败：查询流程实例异常，procInsId={}", procInsId, e);
+            log.error("校验退回条件失败：查询流程实例异常，procInsId={}", procInsId, e);
             return false;
         }
 
-        // 4. 校验当前用户是否有权限驳回（任务负责人或候选人）
+        // 4. 校验当前用户是否有权限退回（任务负责人或候选人）
         String currentUserId = flowTaskVo.getUserId();
         if (StringUtils.isBlank(currentUserId)) {
-            log.error("校验驳回条件失败：操作人ID为空");
+            log.error("校验退回条件失败：操作人ID为空");
             return false;
         }
         // 检查是否为任务负责人
@@ -1060,34 +1060,34 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
                     .anyMatch(link -> IdentityLinkType.CANDIDATE.equals(link.getType())
                             && currentUserId.equals(link.getUserId()));
             if (!isCandidate) {
-                log.error("校验驳回条件失败：用户无驳回权限，userId={}, taskId={}", currentUserId, taskId);
+                log.error("校验退回条件失败：用户无退回权限，userId={}, taskId={}", currentUserId, taskId);
                 return false;
             }
         }
 
-        // 5. 校验当前节点是否有可驳回的父节点（流程模型约束）
+        // 5. 校验当前节点是否有可退回的父节点（流程模型约束）
         try {
             BpmnModel bpmnModel = repositoryService.getBpmnModel(task.getProcessDefinitionId());
             FlowElement currentElement = bpmnModel.getFlowElement(task.getTaskDefinitionKey());
             if (currentElement == null) {
-                log.error("校验驳回条件失败：当前节点不存在于流程模型中，taskDefKey={}", task.getTaskDefinitionKey());
+                log.error("校验退回条件失败：当前节点不存在于流程模型中，taskDefKey={}", task.getTaskDefinitionKey());
                 return false;
             }
-            // 调用工具类查询可驳回的父节点
+            // 调用工具类查询可退回的父节点
             List<UserTask> parentUserTasks = FlowableUtil.iteratorFindParentUserTasks(currentElement, null, null);
             if (CollectionUtils.isEmpty(parentUserTasks)) {
-                log.warn("校验驳回条件失败：当前节点无可用驳回节点，taskDefKey={}", task.getTaskDefinitionKey());
+                log.warn("校验退回条件失败：当前节点无可用退回节点，taskDefKey={}", task.getTaskDefinitionKey());
                 return false;
             }
         } catch (FlowableException e) {
-            log.error("校验驳回条件失败：解析流程模型异常，procDefId={}", task.getProcessDefinitionId(), e);
+            log.error("校验退回条件失败：解析流程模型异常，procDefId={}", task.getProcessDefinitionId(), e);
             return false;
         }
 
-        // 6. 业务自定义校验（如流程变量中的驳回限制）
+        // 6. 业务自定义校验（如流程变量中的退回限制）
         Map<String, Object> variables = flowCommonService.getProcessVariablesByProcInstId(procInsId);
         if (variables.containsKey("rejectDisabled") && Boolean.TRUE.equals(variables.get("rejectDisabled"))) {
-            log.error("校验驳回条件失败：业务规则禁止驳回，procInsId={}", procInsId);
+            log.error("校验退回条件失败：业务规则禁止退回，procInsId={}", procInsId);
             return false;
         }
 
@@ -1098,7 +1098,7 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
 //    public Boolean checkRejectCondition(FlowTaskVo flowTaskVo) {
 //        // 1. 基础参数校验
 //        if (flowTaskVo == null || StringUtils.isBlank(flowTaskVo.getTaskId())) {
-//            log.error("校验驳回条件失败：任务ID为空");
+//            log.error("校验退回条件失败：任务ID为空");
 //            return false;
 //        }
 //        String taskId = flowTaskVo.getTaskId();
@@ -1109,7 +1109,7 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
 //        try {
 //            task = taskService.createTaskQuery().taskId(taskId).singleResult();
 //            if (task == null) {
-//                log.error("校验驳回条件失败：任务不存在，taskId={}", taskId);
+//                log.error("校验退回条件失败：任务不存在，taskId={}", taskId);
 //                return false;
 //            }
 //            // 补充流程实例ID（如果参数中未传递）
@@ -1118,7 +1118,7 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
 //                flowTaskVo.setProcInsId(procInsId);
 //            }
 //        } catch (FlowableException e) {
-//            log.error("校验驳回条件失败：查询任务异常，taskId={}", taskId, e);
+//            log.error("校验退回条件失败：查询任务异常，taskId={}", taskId, e);
 //            return false;
 //        }
 //
@@ -1128,22 +1128,22 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
 //                    .processInstanceId(procInsId)
 //                    .singleResult();
 //            if (procInst == null) {
-//                log.error("校验驳回条件失败：流程实例已结束或不存在，procInsId={}", procInsId);
+//                log.error("校验退回条件失败：流程实例已结束或不存在，procInsId={}", procInsId);
 //                return false;
 //            }
 //            if (procInst.isSuspended()) {
-//                log.error("校验驳回条件失败：流程实例已挂起，procInsId={}", procInsId);
+//                log.error("校验退回条件失败：流程实例已挂起，procInsId={}", procInsId);
 //                return false;
 //            }
 //        } catch (FlowableException e) {
-//            log.error("校验驳回条件失败：查询流程实例异常，procInsId={}", procInsId, e);
+//            log.error("校验退回条件失败：查询流程实例异常，procInsId={}", procInsId, e);
 //            return false;
 //        }
 //
-//        // 4. 校验当前用户是否有权限驳回（通常为当前任务的处理人）
+//        // 4. 校验当前用户是否有权限退回（通常为当前任务的处理人）
 //        String currentUserId = flowTaskVo.getUserId(); // 从参数获取当前操作人
 //        if (StringUtils.isBlank(currentUserId)) {
-//            log.error("校验驳回条件失败：操作人ID为空");
+//            log.error("校验退回条件失败：操作人ID为空");
 //            return false;
 //        }
 //        // 检查是否为任务的负责人（或候选人/候选人组）
@@ -1155,27 +1155,27 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
 //                    .map(IdentityLink::getUserId)
 //                    .collect(Collectors.toList());
 //            if (!candidates.contains(currentUserId)) {
-//                log.error("校验驳回条件失败：用户无权限驳回，userId={}, taskId={}", currentUserId, taskId);
+//                log.error("校验退回条件失败：用户无权限退回，userId={}, taskId={}", currentUserId, taskId);
 //                return false;
 //            }
 //        }
 //
-//        // 5. 校验流程节点是否允许驳回（基于流程模型）
+//        // 5. 校验流程节点是否允许退回（基于流程模型）
 //        try {
 //            BpmnModel bpmnModel = repositoryService.getBpmnModel(task.getProcessDefinitionId());
 //            FlowElement currentElement = bpmnModel.getFlowElement(task.getTaskDefinitionKey());
 //            if (currentElement == null) {
-//                log.error("校验驳回条件失败：当前节点不存在于流程模型中，taskDefKey={}", task.getTaskDefinitionKey());
+//                log.error("校验退回条件失败：当前节点不存在于流程模型中，taskDefKey={}", task.getTaskDefinitionKey());
 //                return false;
 //            }
-//            // 检查当前节点是否有可驳回的父节点（参考驳回逻辑中的父节点查询）
+//            // 检查当前节点是否有可退回的父节点（参考退回逻辑中的父节点查询）
 //            List<UserTask> parentUserTasks = FlowableUtil.iteratorFindParentUserTasks(currentElement, null, null);
 //            if (CollectionUtils.isEmpty(parentUserTasks)) {
-//                log.warn("校验驳回条件警告：当前节点无可用驳回节点，taskDefKey={}", task.getTaskDefinitionKey());
-//                return false; // 无父节点则无法驳回
+//                log.warn("校验退回条件警告：当前节点无可用退回节点，taskDefKey={}", task.getTaskDefinitionKey());
+//                return false; // 无父节点则无法退回
 //            }
 //        } catch (FlowableException e) {
-//            log.error("校验驳回条件失败：解析流程模型异常，procDefId={}", task.getProcessDefinitionId(), e);
+//            log.error("校验退回条件失败：解析流程模型异常，procDefId={}", task.getProcessDefinitionId(), e);
 //            return false;
 //        }
 //
@@ -1184,7 +1184,7 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
 //        if (variables.containsKey("rejectCondition")) {
 //            Object rejectCondition = variables.get("rejectCondition");
 //            if (rejectCondition instanceof Boolean && !(Boolean) rejectCondition) {
-//                log.error("校验驳回条件失败：业务规则不允许驳回，procInsId={}", procInsId);
+//                log.error("校验退回条件失败：业务规则不允许退回，procInsId={}", procInsId);
 //                return false;
 //            }
 //        }
@@ -2062,7 +2062,7 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
             String procInstId = task.getProcessInstanceId();
             Set<String> parallelGatewayFinishedUserTask = getParallelGatewayFinishedUserTask(procInstId, parallelGateway, bpmnModel);
             if (CollectionUtils.isNotEmpty(parallelGatewayFinishedUserTask)) {
-                throw new FlowableHandleException("操作失败，当前节点在并行网关分支上，存在部分分支节点已执行，不允许退回或驳回!");
+                throw new FlowableHandleException("操作失败，当前节点在并行网关分支上，存在部分分支节点已执行，不允许退回或退回!");
             }
         }
     }

@@ -51,7 +51,7 @@ public class FlowHandleController extends BaseController {
     }
 
     /**
-     * 驳回任务
+     * 退回任务
      *
      * @param flowTaskVo
      * @return
@@ -363,7 +363,7 @@ public class FlowHandleController extends BaseController {
     }
 
     /**
-     * 校验驳回
+     * 校验退回
      *
      * @param flowTaskVo
      * @return

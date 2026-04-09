@@ -652,7 +652,7 @@ public class FlowableUtil {
                 // 是全新的需要添加的脏线路
                 boolean isNewDirtyData = true;
                 for (Set<String> dirtyDataLineSet : dirtyDataLineList) {
-                    // 如果发现他的上个节点在脏线路内，说明这个点可能是并行的节点，或者连续驳回
+                    // 如果发现他的上个节点在脏线路内，说明这个点可能是并行的节点，或者连续退回
                     // 这时，都以之前的脏线路节点为标准，只需合并脏线路即可，也就是路线补全
                     if (dirtyDataLineSet.contains(userTaskKey.toString())) {
                         isNewDirtyData = false;
@@ -661,9 +661,9 @@ public class FlowableUtil {
                 }
                 // 已确定时全新的脏线路
                 if (isNewDirtyData) {
-                    // deleteKey 单一路线驳回到并行，这种同时生成多个新实例记录情况，这时 deleteKey 其实是由多个值组成
+                    // deleteKey 单一路线退回到并行，这种同时生成多个新实例记录情况，这时 deleteKey 其实是由多个值组成
                     // 按照逻辑，回退后立刻生成的实例记录就是回退的记录
-                    // 至于驳回所生成的 Key，直接从删除原因中获取，因为存在驳回到并行的情况
+                    // 至于退回所生成的 Key，直接从删除原因中获取，因为存在退回到并行的情况
                     deleteKeyList.add(dirtyPoint + ",");
                     dirtyDataLineList.add(dirtyDataLine);
                 }

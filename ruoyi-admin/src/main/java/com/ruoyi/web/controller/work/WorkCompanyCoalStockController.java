@@ -310,7 +310,7 @@ public class WorkCompanyCoalStockController extends BaseController {
         }
     }
     /**
-     * 煤气公司精煤库存统计对象  局端保存
+     * 煤气公司精煤库存统计对象  燃气公司保存
      */
     @Log(title = "煤气公司精煤库存统计对象", businessType = BusinessType.INSERT)
     @PostMapping("/bureau")
@@ -329,7 +329,7 @@ public class WorkCompanyCoalStockController extends BaseController {
                 if(mineInfos.size()>0){
                     mineInfoService.deleteMineInfoByDate(mineInfo);
                 }else {
-                    return AjaxResult.error("请联系局里进行驳回");
+                    return AjaxResult.error("请联系局里进行退回");
                 }
             }
             for (WorkCompanyCoalStock workCompanyCoalStock : listCompanyCoalStock){
@@ -344,6 +344,51 @@ public class WorkCompanyCoalStockController extends BaseController {
                     workCompanyCoalStockService.saveWorkCompanyCoalStock(workCompanyCoalStock);
                 }
             }
+
+//            for (WorkThermalPowerCoalSales workThermalPowerCoalSale : listThermalPowerCoalSales){
+//                WorkThermalPowerCoalSales workThermalPower = new WorkThermalPowerCoalSales();
+//                workThermalPower.setRecordDate(workThermalPowerCoalSale.getRecordDate());
+//                workThermalPower.setCoalType(workThermalPowerCoalSale.getCoalType());
+//                List<WorkThermalPowerCoalSales> workThermalPowerCoalSales = workThermalPowerCoalSalesService.listWorkThermalPowerCoalSales(workThermalPower);
+//                if (workThermalPowerCoalSales.size() > 0){
+//                    workThermalPowerCoalSale.setId(workThermalPowerCoalSales.get(0).getId());
+//                    workThermalPowerCoalSalesService.updateWorkThermalPowerCoalSales(workThermalPowerCoalSale);
+//                }else {
+//                    workThermalPowerCoalSalesService.saveWorkThermalPowerCoalSales(workThermalPowerCoalSale);
+//                }
+//            }
+
+//            for (WorkCoalStockSalesStat workCoalStockSalesStat : listCoalStockSalesStat){
+//                WorkCoalStockSalesStat workThermalSale = new WorkCoalStockSalesStat();
+//                workThermalSale.setRecordDate(workCoalStockSalesStat.getRecordDate());
+//                workThermalSale.setCoalType(workCoalStockSalesStat.getCoalType());
+//                List<WorkCoalStockSalesStat> workThermalPowerCoalSales = workCoalStockSalesStatService.listWorkCoalStockSalesStat(workThermalSale);
+//                if (workThermalPowerCoalSales.size() > 0){
+//                    workCoalStockSalesStat.setId(workThermalPowerCoalSales.get(0).getId());
+//                    workCoalStockSalesStatService.updateWorkCoalStockSalesStat(workCoalStockSalesStat);
+//                }else {
+//                    workCoalStockSalesStatService.saveWorkCoalStockSalesStat(workCoalStockSalesStat);
+//                }
+//            }
+        }catch (Exception e){
+            return toAjax(0);
+        }
+        return toAjax(1);
+    }
+
+
+
+    /**
+     * 煤气公司精煤库存统计对象  局端保存
+     */
+    @Log(title = "煤气公司精煤库存统计对象", businessType = BusinessType.INSERT)
+    @PostMapping("/bureauJu")
+    public AjaxResult addJu(@RequestBody WorkCoalStock work) {
+//        List<WorkCompanyCoalStock> listCompanyCoalStock = work.getListCompanyCoalStock();
+        List<WorkThermalPowerCoalSales> listThermalPowerCoalSales = work.getListThermalPowerCoalSales();
+//        List<WorkCoalStockSalesStat> listCoalStockSalesStat = work.getListCoalStockSalesStat();
+        try{
+
 
             for (WorkThermalPowerCoalSales workThermalPowerCoalSale : listThermalPowerCoalSales){
                 WorkThermalPowerCoalSales workThermalPower = new WorkThermalPowerCoalSales();
@@ -375,6 +420,9 @@ public class WorkCompanyCoalStockController extends BaseController {
         }
         return toAjax(1);
     }
+
+
+
 
     /**
      * 退回原煤去向对照表

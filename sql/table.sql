@@ -2541,7 +2541,7 @@ CREATE TABLE `t_workflow_todo` (
   `template_name` varchar(200) DEFAULT NULL COMMENT '模板名称',
   `template_type` varchar(50) DEFAULT NULL COMMENT '模板分类',
   `type` varchar(10) DEFAULT '1' COMMENT '待办类型，1-待办，2-阅办',
-  `handle_type` varchar(10) DEFAULT '0' COMMENT '处理类型, 0-草稿 1-审批 2-驳回，3-退回，4-取回 5-多实例取回 6-抄送 7-委派 8-转办 9-加签 10-委托 11-秘书办理',
+  `handle_type` varchar(10) DEFAULT '0' COMMENT '处理类型, 0-草稿 1-审批 2-退回，3-退回，4-取回 5-多实例取回 6-抄送 7-委派 8-转办 9-加签 10-委托 11-秘书办理',
   `urgency_status` varchar(10) DEFAULT '0' COMMENT '紧急状态，0-普通，1-加急，2-紧急，3-特急',
   `urge_flag` char(1) DEFAULT '0' COMMENT '催办标识，0-否，1-是',
   `read_flag` char(1) DEFAULT '0' COMMENT '是否已读，0-未读，1-已读',

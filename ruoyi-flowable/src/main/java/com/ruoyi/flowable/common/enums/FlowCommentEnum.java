@@ -12,7 +12,7 @@ public enum FlowCommentEnum {
      */
     NORMAL("1", "正常意见"),
     REBACK("2", "退回意见"),
-    REJECT("3", "驳回意见"),
+    REJECT("3", "退回意见"),
     DELEGATE("4", "委派意见"),
     ASSIGN("5", "转办意见"),
     STOP("6", "终止流程"),

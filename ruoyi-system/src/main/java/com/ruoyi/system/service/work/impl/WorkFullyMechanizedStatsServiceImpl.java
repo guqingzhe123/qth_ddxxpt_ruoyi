@@ -75,7 +75,7 @@ public class WorkFullyMechanizedStatsServiceImpl implements IWorkFullyMechanized
                 List<WorkFullyMechanizedStats> workInstallationFaces = workFullyMechanizedStatsMapper.selectWorkFullyMechanizedStatsList(w1);
                 if(workInstallationFaces.size()>0){
                     if(workInstallationFaces.get(0).getStatus().equals("0")){
-                        throw new IllegalArgumentException("请联系局里进行驳回");
+                        throw new IllegalArgumentException("请联系局里进行退回");
                     }
                     综采.setStatus("0");
                     综采.setId(workInstallationFaces.get(0).getId());
@@ -98,7 +98,7 @@ public class WorkFullyMechanizedStatsServiceImpl implements IWorkFullyMechanized
                 List<WorkFullyMechanizedStats> workInstallationFaces = workFullyMechanizedStatsMapper.selectWorkFullyMechanizedStatsList(w1);
                 if(workInstallationFaces.size()>0){
                     if(workInstallationFaces.get(0).getStatus().equals("0")){
-                        throw new IllegalArgumentException("请联系局里进行驳回");
+                        throw new IllegalArgumentException("请联系局里进行退回");
                     }
                     综掘.setStatus("0");
                     综掘.setId(workInstallationFaces.get(0).getId());

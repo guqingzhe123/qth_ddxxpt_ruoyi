@@ -15,7 +15,7 @@ import java.io.Serializable;
 public class FlowCommentVo implements Serializable {
 
     /**
-     * 意见类别 0 正常意见  1 退回意见 2 驳回意见
+     * 意见类别 0 正常意见  1 退回意见 2 退回意见
      */
     private String type;
 

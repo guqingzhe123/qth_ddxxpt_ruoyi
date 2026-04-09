@@ -34,8 +34,8 @@ public class SubInitialInventoryOfEachMine extends BaseEntity {
     /** 本月初期库存 */
     @Excel(name = "本月初期库存")
     private BigDecimal initialInventoryOfThisMonth;
-    /** 是否驳回 */
-    @Excel(name = "是否驳回")
+    /** 是否退回 */
+    @Excel(name = "是否退回")
     private Integer isReject;
 
     @Override

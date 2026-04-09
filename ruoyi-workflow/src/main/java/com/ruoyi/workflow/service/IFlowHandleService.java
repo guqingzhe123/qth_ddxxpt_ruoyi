@@ -33,7 +33,7 @@ public interface IFlowHandleService {
     void revokeProcess(FlowTaskVo flowTaskVo);
 
     /**
-     * 驳回任务
+     * 退回任务
      *
      * @param flowTaskVo 流程对象
      * @param createId 创建人ID
@@ -236,7 +236,7 @@ public interface IFlowHandleService {
     Boolean checkReturnCondition(FlowTaskVo flowTaskVo);
 
     /**
-     * 校验驳回
+     * 校验退回
      *
      * @param flowTaskVo 流程对象
      * @return 是否检验通过

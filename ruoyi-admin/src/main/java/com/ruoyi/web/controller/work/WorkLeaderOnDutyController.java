@@ -52,7 +52,7 @@ public class WorkLeaderOnDutyController extends BaseController {
         List<WorkLeaderOnDuty> list = workLeaderOnDutyService.listWorkLeaderOnDuty(workLeaderOnDuty);
         if (list.size() > 0) {
             if(list.get(0).getStatus().equals("0")){
-                return error("请联系局里进行驳回");
+                return error("请联系局里进行退回");
             }
         }
 
