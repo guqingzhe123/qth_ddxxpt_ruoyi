@@ -30,6 +30,20 @@ public class CoalPlantStorageServiceImpl implements ICoalPlantStorageService {
     @Resource private SubCoalPlantStorageMapper subMapper;
 
     @Override
+    public int updateState(CpsCreateDTO dto) {
+        Map<String, Object> p = new HashMap<>();
+        p.put("unitName", dto.getUnit_name());
+        p.put("recordDate", parseDate(dto.getRecord_time()));
+        List<CoalPlantStoragePO> mains = mainMapper.selectList(p);
+
+        if(mains.size()>0){
+            mains.get(0).setIsDeleted(2);
+           return  mainMapper.update(mains.get(0));
+        }
+        return 0;
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public Long add(CpsCreateDTO dto) {
         Map<String, Object> p = new HashMap<>();
@@ -37,8 +51,10 @@ public class CoalPlantStorageServiceImpl implements ICoalPlantStorageService {
         p.put("recordDate", parseDate(dto.getRecord_time()));
         List<CoalPlantStoragePO> mains = mainMapper.selectList(p);
         Long id;
+        Integer del=null;
         if(mains.size()>0){
             id=mains.get(0).getId();
+            del=mains.get(0).getIsDeleted();
         }else {
             CoalPlantStoragePO po = new CoalPlantStoragePO();
             po.setUnitName(dto.getUnit_name());
@@ -48,9 +64,13 @@ public class CoalPlantStorageServiceImpl implements ICoalPlantStorageService {
             po.setIsDeleted(0);
             mainMapper.insert(po);
             id = po.getId();
+            del=0;
         }
-        List<SubCoalPlantStoragePO> subs = toSubs(id, dto.getList());
+        List<SubCoalPlantStoragePO> subs = toSubs(id, dto.getList(),del);
         if (!subs.isEmpty()) subMapper.batchInsert(subs);
+        if(del!=null&&subs.size()==0){
+            return 0L;
+        }
         return id;
     }
 
@@ -66,7 +86,7 @@ public class CoalPlantStorageServiceImpl implements ICoalPlantStorageService {
         int n = mainMapper.update(po);
 
         subMapper.deleteByParentId(dto.getId());
-        List<SubCoalPlantStoragePO> subs = toSubs(dto.getId(), dto.getList());
+        List<SubCoalPlantStoragePO> subs = toSubs(dto.getId(), dto.getList(),0);
         if (!subs.isEmpty()) subMapper.batchInsert(subs);
         return n;
     }
@@ -99,6 +119,34 @@ public class CoalPlantStorageServiceImpl implements ICoalPlantStorageService {
 //        p.put("recordDateTo", parseDate(q.getRecord_date_to()));
 
         List<CoalPlantStoragePO> mains = mainMapper.selectList(p);
+        if (mains.isEmpty()) return Collections.emptyList();
+
+        List<Long> ids = mains.stream().map(CoalPlantStoragePO::getId).collect(Collectors.toList());
+        List<SubCoalPlantStoragePO> allSubs = subMapper.selectByParentIds(ids);
+        Map<Long, List<SubCoalPlantStoragePO>> grouped = allSubs.stream()
+                .collect(Collectors.groupingBy(SubCoalPlantStoragePO::getCoalPlantStorageID, LinkedHashMap::new, Collectors.toList()));
+
+        List<CpsVO> out = new ArrayList<>(mains.size());
+        for (CoalPlantStoragePO m : mains) {
+            out.add(toVO(m, grouped.getOrDefault(m.getId(), Collections.emptyList())));
+        }
+        return out;
+    }
+
+    @Override
+    public List<CpsVO> pageALL(CpsPageQueryDTO q) {
+        Map<String, Object> p = new HashMap<>();
+        p.put("unitName", q.getUnit_name());
+//        p.put("userId", q.getUser_id());
+//        p.put("mineCategory", q.getMine_category());
+//        p.put("isDeleted", q.getIs_deleted());
+//        p.put("recordTimeFrom", parseDateTime(q.getRecord_time_from()));
+//        p.put("recordTimeTo", parseDateTime(q.getRecord_time_to()));
+        p.put("recordDate", parseDate(q.getRecord_date()));
+//        p.put("recordDateFrom", parseDate(q.getRecord_date_from()));
+//        p.put("recordDateTo", parseDate(q.getRecord_date_to()));
+
+        List<CoalPlantStoragePO> mains = mainMapper.selectListAll(p);
         if (mains.isEmpty()) return Collections.emptyList();
 
         List<Long> ids = mains.stream().map(CoalPlantStoragePO::getId).collect(Collectors.toList());
@@ -161,7 +209,7 @@ public class CoalPlantStorageServiceImpl implements ICoalPlantStorageService {
             return time.toString();
         }
     }
-    private List<SubCoalPlantStoragePO> toSubs(Long parentId, List<CpsSubItemDTO> list) {
+    private List<SubCoalPlantStoragePO> toSubs(Long parentId, List<CpsSubItemDTO> list,Integer  del) {
         List<SubCoalPlantStoragePO> out = new ArrayList<>();
         if (list == null) return out;
         List<SubCoalPlantStoragePO> subCoalPlantStoragePOS = subMapper.selectByParentId(parentId);
@@ -176,12 +224,14 @@ public class CoalPlantStorageServiceImpl implements ICoalPlantStorageService {
                     .orElse(null);
 
             if (existing != null) {
-                // 如果存在，更新现有记录的数据
-                existing.setCleanCoal(it.getClean_coal());
-                existing.setSlackCoal(it.getSlack_coal());
-                existing.setLumpCoal(it.getLump_coal());
-                existing.setRawCoal(it.getRaw_coal());
-                subMapper.updateById(existing); // 直接更新数据库
+                if(del !=0){
+                    // 如果存在，更新现有记录的数据
+                    existing.setCleanCoal(it.getClean_coal());
+                    existing.setSlackCoal(it.getSlack_coal());
+                    existing.setLumpCoal(it.getLump_coal());
+                    existing.setRawCoal(it.getRaw_coal());
+                    subMapper.updateById(existing); // 直接更新数据库
+                }
             }else {
                 SubCoalPlantStoragePO s = new SubCoalPlantStoragePO();
                 s.setCoalPlantStorageID(parentId);

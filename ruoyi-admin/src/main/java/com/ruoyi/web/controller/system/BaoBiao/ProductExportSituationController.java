@@ -8,6 +8,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.system.domain.BaoBiao.FactoryArchive;
 import com.ruoyi.system.domain.BaoBiao.ProductExportSituation;
+import com.ruoyi.system.domain.MineInfo;
 import com.ruoyi.system.domain.SysUserRole;
 import com.ruoyi.system.domain.UserMessage;
 import com.ruoyi.system.mapper.SysRoleMapper;
@@ -15,6 +16,7 @@ import com.ruoyi.system.mapper.SysUserRoleMapper;
 import com.ruoyi.system.mapper.UserMessageMapper;
 import com.ruoyi.system.service.BaoBiao.IFactoryArchiveService;
 import com.ruoyi.system.service.BaoBiao.IProductExportSituationService;
+import com.ruoyi.system.service.IMineInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +43,9 @@ public class ProductExportSituationController extends BaseController {
     @Resource
     private IFactoryArchiveService factoryArchiveService;//洗煤厂列表
 
+    @Resource
+    private IMineInfoService mineInfoService;//退回状态
+
 //    @Anonymous
 //    @Operation(summary = "查询列表")
 //    @GetMapping("/list")
@@ -62,7 +67,21 @@ public class ProductExportSituationController extends BaseController {
             List<ProductExportSituation> AllList=new ArrayList<>();
             for (FactoryArchive factoryAr:factory) {
                 if(list.stream().filter(x -> x.getUnitCode().equals(factoryAr.getFactoryCode())).count() > 0){
-                    list.stream().filter(x -> x.getUnitCode().equals(factoryAr.getFactoryCode())).forEach(AllList::add);
+                    MineInfo mineInfo = new MineInfo();
+                    mineInfo.setModuleName("产品外销情况");
+                    mineInfo.setStatDate(query.getExportDate());
+                    mineInfo.setMineName(factoryAr.getFactoryName());
+                    List<MineInfo> mineInfos = mineInfoService.listMineInfo(mineInfo);
+
+                    if(mineInfos.size()>0){
+                        ProductExportSituation productExportSituation=new ProductExportSituation();
+                        productExportSituation.setUnitCode(factoryAr.getFactoryCode());
+                        productExportSituation.setUnitName(factoryAr.getFactoryName());
+                        AllList.add(productExportSituation);
+                    }else {
+                        list.stream().filter(x -> x.getUnitCode().equals(factoryAr.getFactoryCode())).forEach(AllList::add);
+                    }
+
                 }else {
                     ProductExportSituation productExportSituation=new ProductExportSituation();
                     productExportSituation.setUnitCode(factoryAr.getFactoryCode());
@@ -98,6 +117,19 @@ public class ProductExportSituationController extends BaseController {
 
         List<ProductExportSituation> list = productExportSituationService.list(query);
         if(list.size()>0){
+            MineInfo mineInfo = new MineInfo();
+            mineInfo.setModuleName("产品外销情况");
+            mineInfo.setStatDate(list.get(0).getExportDate());
+            mineInfo.setMineName(list.get(0).getUnitName());
+            List<MineInfo> mineInfos = mineInfoService.listMineInfo(mineInfo);
+            if(mineInfos.size()==0){
+                return AjaxResult.error("请联系局里进行驳回");
+            }
+            if(mineInfos.size()>=0){
+                mineInfoService.deleteMineInfoByDate(mineInfo);
+            }
+
+
             entity.setId(list.get(0).getId());
             return AjaxResult.toAjax(productExportSituationService.edit(entity));
 //            return AjaxResult.error("每天保存一次");
@@ -134,5 +166,24 @@ public class ProductExportSituationController extends BaseController {
     @DeleteMapping
     public AjaxResult removeBatch(@RequestBody List<Long> ids) {
         return AjaxResult.toAjax(productExportSituationService.removeBatch(ids));
+    }
+
+
+    /**
+     * 洗煤产品库存及自用
+     */
+    @GetMapping("/updateState")
+    public AjaxResult updateState(ProductExportSituation raw){
+        MineInfo mineInfo = new MineInfo();
+        mineInfo.setModuleName("产品外销情况");
+        mineInfo.setStatDate(raw.getExportDate());
+        mineInfo.setMineName(raw.getUnitName());
+        List<MineInfo> mineInfos = mineInfoService.listMineInfo(mineInfo);
+        if(mineInfos.size()>0){
+            return AjaxResult.error("已经退回");
+        }else {
+            mineInfoService.saveMineInfo(mineInfo);
+            return AjaxResult.success("退回成功");
+        }
     }
 }

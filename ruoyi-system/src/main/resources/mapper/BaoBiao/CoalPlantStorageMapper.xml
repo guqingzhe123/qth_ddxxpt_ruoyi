@@ -28,7 +28,8 @@
         SET unit_name = #{unitName},
             record_time = #{recordTime},
             user_id = #{userId},
-            mine_category = #{mineCategory}
+            mine_category = #{mineCategory},
+            is_deleted = #{isDeleted}
         WHERE id = #{id} AND is_deleted = 0
     </update>
 
@@ -70,5 +71,30 @@
         </where>
         ORDER BY m.record_time DESC, m.id DESC
     </select>
+    <!-- 主表分页 + 子表EXISTS筛选；排序按时间/ID降序 -->
+    <select id="selectListAll" parameterType="map" resultMap="MainMap">
+        SELECT <include refid="BaseCols"/>
+        FROM coal_plant_storage m
+        <where>
+            <if test="isDeleted != null">AND m.is_deleted = #{isDeleted}</if>
+            <!--&#45;&#45;             <if test="unitName != null and unitName != ''">AND m.unit_name LIKE CONCAT('%', #{unitName}, '%')</if>-->
+            <if test="unitName != null and unitName != ''">AND m.unit_name =#{unitName}</if>
+            <if test="userId != null and userId != ''">AND m.user_id = #{userId}</if>
+            <if test="mineCategory != null and mineCategory != ''">AND m.mine_category = #{mineCategory}</if>
+            <!--            <if test="recordTimeFrom != null">AND m.record_time &gt;= #{recordTimeFrom}</if>-->
+            <!--            <if test="recordTimeTo != null">AND m.record_time &lt;= #{recordTimeTo}</if>-->
+            <if test="recordDate != null">AND m.record_time = #{recordDate}</if>
 
+            <!--            <if test="recordDate != null or recordDateFrom != null or recordDateTo != null">-->
+            <!--                AND EXISTS (-->
+            <!--                SELECT 1 FROM sub_coal_plant_storage s-->
+            <!--                WHERE s.coal_plant_storageID = m.id-->
+            <!--                <if test="recordDate != null">AND s.record_date = #{recordDate}</if>-->
+            <!--                <if test="recordDateFrom != null">AND s.record_date &gt;= #{recordDateFrom}</if>-->
+            <!--                <if test="recordDateTo != null">AND s.record_date &lt;= #{recordDateTo}</if>-->
+            <!--                )-->
+            <!--            </if>-->
+        </where>
+        ORDER BY m.record_time DESC, m.id DESC
+    </select>
 </mapper>

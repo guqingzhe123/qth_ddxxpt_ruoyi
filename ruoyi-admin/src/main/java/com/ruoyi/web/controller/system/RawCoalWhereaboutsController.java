@@ -8,11 +8,13 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.domain.BaoBiao.MiningAreaCategory;
+import com.ruoyi.system.domain.MineInfo;
 import com.ruoyi.system.domain.RawCoalWhereabouts;
 import com.ruoyi.system.domain.RawCoalWhereaboutsAddInput;
 import com.ruoyi.system.domain.work.WorkProductionDailyReport;
 import com.ruoyi.system.domain.work.WorkProductionStatus;
 import com.ruoyi.system.service.BaoBiao.IMiningAreaCategoryService;
+import com.ruoyi.system.service.IMineInfoService;
 import com.ruoyi.system.service.IRawCoalWhereaboutsService;
 import com.ruoyi.system.service.work.IWorkProductionStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,12 @@ public class RawCoalWhereaboutsController extends BaseController {
 
     @Resource
     private IMiningAreaCategoryService miningAreaCategoryService;//煤矿主结构表
+
+
+    @Resource
+    private IMineInfoService mineInfoService;//退回状态
+
+
     /**
      * 查询原煤去向对照（记录各煤矿原煤每日及累计去向数据）列表
      */
@@ -101,10 +109,43 @@ public class RawCoalWhereaboutsController extends BaseController {
         fac.setIsSealed(0);
         List<MiningAreaCategory> miningAreaCategories = miningAreaCategoryService.list(fac);
 
+        MineInfo mineInfo = new MineInfo();
+        mineInfo.setModuleName("原煤去向对照表");
+        mineInfo.setStatus(2L);
+        mineInfo.setStatDate(rawCoalWhereabouts.getRq());
+        List<MineInfo> mineInfos = mineInfoService.listMineInfo(mineInfo);
+
         List<RawCoalWhereabouts> sortedList = new ArrayList<>();
         for (MiningAreaCategory miningAreaCategory : miningAreaCategories) {
             for (RawCoalWhereabouts item : list) {
                 if (item.getDanwei().equals(miningAreaCategory.getAreaName())) {
+
+                    for (MineInfo info : mineInfos){
+                        if(info.getMineName().equals("七洗厂")){
+                            item.setXichangRi(BigDecimal.valueOf(0));
+                            item.setXichangLeiji(BigDecimal.valueOf(0));
+                        }
+                        if(info.getMineName().equals("桃选厂")){
+                            item.setTiaoxianchangRi(BigDecimal.valueOf(0));
+                            item.setTiaoxianchangLeiji(BigDecimal.valueOf(0));
+                        }
+                        if(info.getMineName().equals("新选厂")){
+                            item.setXinxuanchangRi(BigDecimal.valueOf(0));
+                            item.setXinxuanchangLeiji(BigDecimal.valueOf(0));
+                        }
+                        if(info.getMineName().equals("铁选厂")){
+                            item.setTiexuanchangRi(BigDecimal.valueOf(0));
+                            item.setTiexuanchangLeiji(BigDecimal.valueOf(0));
+                        }
+                        if(info.getMineName().equals("龙洗厂")){
+                            item.setLongxichangRi(BigDecimal.valueOf(0));
+                            item.setLongxichangLeiji(BigDecimal.valueOf(0));
+                        }
+                        if(info.getMineName().equals("富洗厂")){
+                            item.setFuxichangRi(BigDecimal.valueOf(0));
+                            item.setFuxichangLeiji(BigDecimal.valueOf(0));
+                        }
+                    }
                     sortedList.add(item);
                     break;
                 }
@@ -124,35 +165,78 @@ public class RawCoalWhereaboutsController extends BaseController {
         RawCoalWhereabouts raw=new RawCoalWhereabouts();
         raw.setRq(rawCoalWhereabouts.get(0).getRq());
         List<RawCoalWhereabouts> list = rawCoalWhereaboutsService.listRawCoalWhereabouts(raw);
+
+
+
+
+
+
         if(list.size()>0){
+            String mineName=null;
+            MineInfo mineInfo = new MineInfo();
+            mineInfo.setModuleName("原煤去向对照表");
+            mineInfo.setStatDate(raw.getRq());
             for (RawCoalWhereabouts input:list) {
                 RawCoalWhereaboutsAddInput input1 = rawCoalWhereabouts.stream().filter(item -> input.getDanwei().equals(item.getDanwei())).findFirst().orElse(new RawCoalWhereaboutsAddInput());
-                if(input1.getCoalWashing().equals("七洗厂")){
+
+                mineInfo.setMineName(input1.getCoalWashing());//那个洗煤厂退回
+                List<MineInfo> mineInfos = mineInfoService.listMineInfo(mineInfo);
+
+                mineName=input1.getCoalWashing();
+                 if(input1.getCoalWashing().equals("七洗厂")){
+                    if(mineInfos.size()==0 && input.getXichangRi() !=null  && input.getXichangLeiji() !=null){
+                        return AjaxResult.error("请联系局里进行驳回");
+                    }
+
                     input.setXichangRi(input1.getRi());
                     input.setXichangLeiji(input1.getLeiji());
                 }
                 if(input1.getCoalWashing().equals("桃选厂")){
+                    if(mineInfos.size()==0 && input.getTiaoxianchangRi() !=null  && input.getTiaoxianchangLeiji() !=null){
+                        return AjaxResult.error("请联系局里进行驳回");
+                    }
+
+
                     input.setTiaoxianchangRi(input1.getRi());
                     input.setTiaoxianchangLeiji(input1.getLeiji());
                 }
                 if(input1.getCoalWashing().equals("新选厂")){
+                    if(mineInfos.size()==0 && input.getXinxuanchangRi() !=null  && input.getXinxuanchangLeiji() !=null){
+                        return AjaxResult.error("请联系局里进行驳回");
+                    }
+
                     input.setXinxuanchangRi(input1.getRi());
                     input.setXinxuanchangLeiji(input1.getLeiji());
                 }
                 if(input1.getCoalWashing().equals("铁选厂")){
+                    if(mineInfos.size()==0 && input.getTiexuanchangRi() !=null  && input.getTiexuanchangRi() !=null){
+                        return AjaxResult.error("请联系局里进行驳回");
+                    }
+
                     input.setTiexuanchangRi(input1.getRi());
                     input.setTiexuanchangLeiji(input1.getLeiji());
                 }
                 if(input1.getCoalWashing().equals("龙洗厂")){
+                    if(mineInfos.size()==0 && input.getLongxichangRi() !=null  && input.getLongxichangLeiji() !=null){
+                        return AjaxResult.error("请联系局里进行驳回");
+                    }
                     input.setLongxichangRi(input1.getRi());
                     input.setLongxichangLeiji(input1.getLeiji());
                 }
                 if(input1.getCoalWashing().equals("富洗厂")){
+                    if(mineInfos.size()==0 && input.getFuxichangRi() !=null  && input.getFuxichangLeiji() !=null){
+                        return AjaxResult.error("请联系局里进行驳回");
+                    }
                     input.setFuxichangRi(input1.getRi());
                     input.setFuxichangLeiji(input1.getLeiji());
                 }
                 rawCoalWhereaboutsService.updateRawCoalWhereabouts(input);
             }
+            if(mineName !=null){
+                mineInfo.setMineName(mineName);
+                mineInfoService.deleteMineInfoByDate(mineInfo);
+            }
+
         }
         else {
             List<RawCoalWhereabouts> listRaw =new ArrayList<>();
@@ -311,6 +395,26 @@ public class RawCoalWhereaboutsController extends BaseController {
     public AjaxResult edit(@RequestBody RawCoalWhereabouts rawCoalWhereabouts) {
         return toAjax(rawCoalWhereaboutsService.updateRawCoalWhereabouts(rawCoalWhereabouts));
     }
+
+    /**
+     * 退回原煤去向对照表
+     */
+    @GetMapping("/updateState")
+    public AjaxResult updateState(RawCoalWhereaboutsAddInput raw){
+        MineInfo mineInfo = new MineInfo();
+        mineInfo.setModuleName("原煤去向对照表");
+        mineInfo.setMineName(raw.getCoalWashing());//那个洗煤厂退回
+        mineInfo.setStatus(2L);
+        mineInfo.setStatDate(raw.getRq());
+        List<MineInfo> mineInfos = mineInfoService.listMineInfo(mineInfo);
+        if(mineInfos.size()>0){
+            return AjaxResult.error("已经退回");
+        }else {
+            mineInfoService.saveMineInfo(mineInfo);
+            return AjaxResult.success("退回成功");
+        }
+    }
+
     /**
      * 删除原煤去向对照（记录各煤矿原煤每日及累计去向数据）
      */

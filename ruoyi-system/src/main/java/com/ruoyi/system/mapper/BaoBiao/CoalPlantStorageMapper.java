@@ -20,4 +20,7 @@ public interface CoalPlantStorageMapper {
      * recordDate, recordDateFrom, recordDateTo
      */
     List<CoalPlantStoragePO> selectList(Map<String, Object> params);
+    List<CoalPlantStoragePO> selectListAll(Map<String, Object> params);
+
+
 }

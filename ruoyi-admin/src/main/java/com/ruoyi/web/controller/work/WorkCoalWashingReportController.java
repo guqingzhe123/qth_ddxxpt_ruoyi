@@ -203,15 +203,18 @@ public class WorkCoalWashingReportController extends BaseController {
             workCoalStat.setRecordDate(workCoalWashingReport.getReportTime());
             workCoalStat.setCoalType(workCoalWashingReport.getUnitName());
             List<WorkCoalStockSalesStat> list3 = workCoalStockSalesStatService.listWorkCoalStockSalesStat(workCoalStat);
+            // 安全获取数值，避免空指针
+            long totalInput = workCoalWashingReport.getTotalInput() != null ? workCoalWashingReport.getTotalInput() : 0L;
+            long washingInput = workCoalWashingReport.getWashingInput() != null ? workCoalWashingReport.getWashingInput() : 0L;
             if(list3.size()>0){
-                long l = workCoalWashingReport.getTotalInput() - workCoalWashingReport.getWashingInput();
+                long l = totalInput - washingInput;
                 WorkCoalStockSalesStat workCoalStockSalesStat = list3.get(0);
                 workCoalStockSalesStat.setRawCoalDailyChange(l);//当日增减
-                long l1 = workCoalStockSalesStat.getRawCoalPreviousStock() + workCoalWashingReport.getTotalInput() - workCoalWashingReport.getWashingInput();
+                long l1 = workCoalStockSalesStat.getRawCoalPreviousStock() + totalInput - washingInput;
                 workCoalStockSalesStat.setRawCoalCurrentStock(l1);
                 workCoalStockSalesStatService.updateWorkCoalStockSalesStat(workCoalStockSalesStat);
             }else {
-                long l = workCoalWashingReport.getTotalInput() - workCoalWashingReport.getWashingInput();
+                long l = totalInput - washingInput;
                 Date previousDay = getPreviousDay(workCoalWashingReport.getReportTime());//上一天日期
                 workCoalStat.setRecordDate(previousDay);
                 List<WorkCoalStockSalesStat> list4 = workCoalStockSalesStatService.listWorkCoalStockSalesStat(workCoalStat);
@@ -220,7 +223,8 @@ public class WorkCoalWashingReportController extends BaseController {
                     workCoalStockSalesStat.setCoalType(workCoalWashingReport.getUnitName());
                     workCoalStockSalesStat.setRecordDate(workCoalWashingReport.getReportTime());//设置记录日期
                     workCoalStockSalesStat.setRawCoalDailyChange(l);//当日增减
-                    long l1 =  list4.get(0).getRawCoalCurrentStock()+ workCoalWashingReport.getTotalInput() - workCoalWashingReport.getWashingInput();
+                    long previousStock = list4.get(0).getRawCoalCurrentStock() != null ? list4.get(0).getRawCoalCurrentStock() : 0L;
+                    long l1 = previousStock + totalInput - washingInput;
                     workCoalStockSalesStat.setRawCoalCurrentStock(l1);
                     workCoalStockSalesStatService.saveWorkCoalStockSalesStat(workCoalStockSalesStat);
                 }else {

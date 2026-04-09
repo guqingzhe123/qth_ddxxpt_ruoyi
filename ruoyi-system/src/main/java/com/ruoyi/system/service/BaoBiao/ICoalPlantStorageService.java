@@ -10,4 +10,7 @@ public interface ICoalPlantStorageService {
     int remove(Long id);
     CpsVO get(Long id);
     List<CpsVO> page(CpsPageQueryDTO query);
+    int updateState(CpsCreateDTO dto);
+
+    List<CpsVO> pageALL(CpsPageQueryDTO q);
 }

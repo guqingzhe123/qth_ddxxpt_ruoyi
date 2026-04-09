@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.TProductMapper">
+    
+    <resultMap type="TProduct" id="TProductResult">
+        <result property="id"    column="id"    />
+        <result property="productCode"    column="product_code"    />
+        <result property="productName"    column="product_name"    />
+        <result property="unit"    column="unit"    />
+        <result property="taxRate"    column="tax_rate"    />
+    </resultMap>
+
+    <sql id="selectTProductVo">
+        select id, product_code, product_name, unit, tax_rate from t_product
+    </sql>
+
+    <select id="selectTProductList" parameterType="TProduct" resultMap="TProductResult">
+        <include refid="selectTProductVo"/>
+        <where>  
+            <if test="productCode != null  and productCode != ''"> and product_code = #{productCode}</if>
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="taxRate != null "> and tax_rate = #{taxRate}</if>
+        </where>
+    </select>
+    
+    <select id="selectTProductById" parameterType="Long" resultMap="TProductResult">
+        <include refid="selectTProductVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTProduct" parameterType="TProduct" useGeneratedKeys="true" keyProperty="id">
+        insert into t_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productCode != null and productCode != ''">product_code,</if>
+            <if test="productName != null and productName != ''">product_name,</if>
+            <if test="unit != null and unit != ''">unit,</if>
+            <if test="taxRate != null">tax_rate,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productCode != null and productCode != ''">#{productCode},</if>
+            <if test="productName != null and productName != ''">#{productName},</if>
+            <if test="unit != null and unit != ''">#{unit},</if>
+            <if test="taxRate != null">#{taxRate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTProduct" parameterType="TProduct">
+        update t_product
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productCode != null and productCode != ''">product_code = #{productCode},</if>
+            <if test="productName != null and productName != ''">product_name = #{productName},</if>
+            <if test="unit != null and unit != ''">unit = #{unit},</if>
+            <if test="taxRate != null">tax_rate = #{taxRate},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTProductById" parameterType="Long">
+        delete from t_product where id = #{id}
+    </delete>
+
+    <delete id="deleteTProductByIds" parameterType="String">
+        delete from t_product where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -46,6 +46,16 @@ public class WorkLeaderOnDutyController extends BaseController {
     @Log(title = "领导带班信息（按日期记录各单位三个班次的带班领导及排班状态）", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody WorkLeaderOnDuty workLeaderOnDuty) {
+        WorkLeaderOnDuty duty=new WorkLeaderOnDuty();
+        duty.setDutyDate(workLeaderOnDuty.getDutyDate());
+        duty.setUnitCode(workLeaderOnDuty.getUnitCode());
+        List<WorkLeaderOnDuty> list = workLeaderOnDutyService.listWorkLeaderOnDuty(workLeaderOnDuty);
+        if (list.size() > 0) {
+            if(list.get(0).getStatus().equals("0")){
+                return error("请联系局里进行驳回");
+            }
+        }
+
         return toAjax(workLeaderOnDutyService.saveWorkLeaderOnDuty(workLeaderOnDuty));
     }
 
@@ -68,16 +78,26 @@ public class WorkLeaderOnDutyController extends BaseController {
             List<String> two=new ArrayList<>();
             List<String> three=new ArrayList<>();
             work.setUnitName(mining.getAreaName());
+            work.setUnitCode(mining.getAreaCode());
             for (int i = 1; i <= day; i++) {
                 String 日期 = DateUtils.returnDateRange(DateUtils.parseDate(月份+"-"+i));
-                WorkLeaderOnDuty 入井人员 = workLeaderOnDuties.stream().filter(item -> mining.getAreaName().equals(item.getUnit()))
+                WorkLeaderOnDuty 入井人员 = workLeaderOnDuties.stream().filter(item -> mining.getAreaCode().equals(item.getUnitCode()))
                         .filter(item -> {
                             String 人员值班日期 = DateUtils.returnDateRange(item.getDutyDate());
                             return 日期.equals(人员值班日期);
                         }).findFirst().orElse(new WorkLeaderOnDuty());
-                one.add(入井人员.getLeaderShift1());
-                two.add(入井人员.getLeaderShift2());
-                three.add(入井人员.getLeaderShift3());
+                if(入井人员!=null){
+
+                }
+                if(入井人员.getStatus()!=null&&入井人员.getStatus().equals("0")){
+                    one.add(入井人员.getLeaderShift1());
+                    two.add(入井人员.getLeaderShift2());
+                    three.add(入井人员.getLeaderShift3());
+                }else {
+                    one.add(null);
+                    two.add(null);
+                    three.add(null);
+                }
             }
 
             work.setOne(one);
@@ -86,6 +106,26 @@ public class WorkLeaderOnDutyController extends BaseController {
             矿场.add(work);
         }
         return AjaxResult.success(矿场);
+    }
+
+
+    /**
+     * 退回带班领导
+     */
+    @Log(title = "退回带班领导", businessType = BusinessType.UPDATE)
+    @PutMapping
+    public AjaxResult edit(@RequestBody WorkLeaderOnDuty workLeaderOnDuty) {
+        WorkLeaderOnDuty duty=new WorkLeaderOnDuty();
+        duty.setDutyDate(workLeaderOnDuty.getDutyDate());
+        duty.setUnitCode(workLeaderOnDuty.getUnitCode());
+        List<WorkLeaderOnDuty> list = workLeaderOnDutyService.listWorkLeaderOnDuty(workLeaderOnDuty);
+        if (list.size() > 0) {
+            if(list.get(0).getStatus().equals("0")){
+                list.get(0).setStatus("2");
+                return toAjax(workLeaderOnDutyService.updateWorkLeaderOnDuty(list.get(0)));
+            }
+        }
+        return toAjax(0 );
     }
 
 }

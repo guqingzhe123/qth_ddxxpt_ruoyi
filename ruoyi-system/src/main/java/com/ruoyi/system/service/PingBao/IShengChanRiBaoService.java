@@ -21,6 +21,7 @@ import com.ruoyi.system.mapper.BaoBiao.*;
 import com.ruoyi.system.mapper.*;
 import com.ruoyi.system.mapper.work.SafetyInfluencingFactorsMapper;
 import com.ruoyi.system.service.BaoBiao.IMiningAreaCategoryService;
+import com.ruoyi.system.service.IMineInfoService;
 import com.ruoyi.system.service.work.IWorkProductionDailyReportService;
 import com.ruoyi.system.service.work.IWorkProductionStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +64,8 @@ public class IShengChanRiBaoService {
     @Autowired
     private SafetyInfluencingFactorsMapper safetyInfluencingFactorsMapper;//公司各单位影响安全生产因素（原因）列表
 
-
+    @Resource
+    private IMineInfoService mineInfoService;//退回状态
 
     @Autowired
     private IWorkProductionStatusService workProductionStatusService;//子表 生产情况
@@ -630,7 +632,8 @@ public class IShengChanRiBaoService {
 
             SubMinePlanPO 原煤月计划内容 = 原煤月计划.stream().filter(item -> mining.getAreaName().equals(item.getUnitName())).findFirst().orElse(new SubMinePlanPO());
             int 当日日完成  = 日完成.stream().filter(item ->  mining.getAreaName().equals(item.getUnitName())).mapToInt(po -> po.getProductionData()).sum();
-            MineData 累计日完成 = 累计月完成.stream().filter(item -> mining.getAreaName().equals(item.getUnitName())).findFirst().orElse(new MineData());
+//            MineData 累计日完成 = 累计月完成.stream().filter(item -> mining.getAreaName().equals(item.getUnitName())).findFirst().orElse(new MineData());
+            int 当月完成  = 累计月完成.stream().filter(item ->  mining.getAreaName().equals(item.getUnitName())).mapToInt(po -> po.getProductionData()).sum();
 
 //            DestinationOfRawCoal 日销售 = 日去向.stream().filter(item -> mining.getAreaName().equals(item.getUnitName())).findFirst().orElse(new DestinationOfRawCoal());
 //            DestinationOfRawCoal 月销售 = 月去向.stream().filter(item -> mining.getAreaName().equals(item.getUnitName())).findFirst().orElse(new DestinationOfRawCoal());
@@ -648,7 +651,9 @@ public class IShengChanRiBaoService {
             公司.setMailySales(日销售);
             公司.setMonthlyPlanTotal(累计日计划 != null && 累计日计划.getProductionPlan() != null ? toInt(累计日计划.getProductionPlan()) : 0);
             公司.setMonthlyCompleteTarget(累计日计划 != null && 累计日计划.getProductionObjective() != null ? toInt(累计日计划.getProductionObjective()) : 0);
-            公司.setMonthlyCompleteTotal(累计日完成 != null && 累计日完成.getProductionData() != null ? toInt(累计日完成.getProductionData()) : 0);
+//            公司.setMonthlyCompleteTotal(累计日完成 != null && 累计日完成.getProductionData() != null ? toInt(累计日完成.getProductionData()) : 0);
+
+            公司.setMonthlyCompleteTotal(当月完成);
 //            公司.setMonthlyMailySales(月销售 != null && 月销售.getSalesVolume() != null ? toInt(月销售.getSalesVolume()) : 0);
             公司.setMonthlyMailySales(月销售);
             公司.setGroundStorage(矿起初库存 != null && 矿起初库存.getInitialInventoryOfThisMonth() != null ? toInt(矿起初库存.getInitialInventoryOfThisMonth()) : 0);
@@ -921,6 +926,23 @@ public class IShengChanRiBaoService {
         SafetyInfluencingFactors safety=new SafetyInfluencingFactors();
         safety.setRecordDate(statsDate);
         List<SafetyInfluencingFactors> safetyInfluencingFactors = safetyInfluencingFactorsMapper.selectSafetyInfluencingFactorsList(safety);
+
+
+
+
+
+        MineInfo mineInfo = new MineInfo();
+        mineInfo.setModuleName("公司各单位影响安全生产因素");
+        mineInfo.setStatDate(statsDate);
+        List<MineInfo> mineInfos = mineInfoService.listMineInfo(mineInfo);
+
+
+
+
+
+
+
+
         for (MiningAreaCategory  mining:miningAreaCategories) {
             SafetyInfluencingFactors matchingSafetyFactor = safetyInfluencingFactors.stream()
                 .filter(s -> s.getUnitCode().equals(mining.getAreaCode()) && s.getUnitName().equals(mining.getAreaName()) )
@@ -931,8 +953,21 @@ public class IShengChanRiBaoService {
                 matchingSafetyFactor.setUnitName(mining.getAreaName());
                 matchingSafetyFactor.setUnitCode(mining.getAreaCode());
                 matchingSafetyFactor.setRecordDate(statsDate);
+                list.add(matchingSafetyFactor);
             }
-            list.add(matchingSafetyFactor);
+            MineInfo mineInfo1 = mineInfos.stream()
+                    .filter(s -> s.getMineName().equals(mining.getAreaName()))
+                    .findFirst()
+                    .orElse(null);
+            if(mineInfo1 ==null){
+                list.add(matchingSafetyFactor);
+            }else {
+                matchingSafetyFactor = new SafetyInfluencingFactors();
+                matchingSafetyFactor.setUnitName(mining.getAreaName());
+                matchingSafetyFactor.setUnitCode(mining.getAreaCode());
+                matchingSafetyFactor.setRecordDate(statsDate);
+                list.add(matchingSafetyFactor);
+            }
         }
         return list;
     }

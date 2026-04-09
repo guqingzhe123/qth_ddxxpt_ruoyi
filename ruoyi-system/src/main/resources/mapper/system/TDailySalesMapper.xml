@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.TDailySalesMapper">
+    
+    <resultMap type="TDailySales" id="TDailySalesResult">
+        <result property="id"    column="id"    />
+        <result property="statDate"    column="stat_date"    />
+        <result property="productName"    column="product_name"    />
+        <result property="receiver"    column="receiver"    />
+        <result property="beginAmount"    column="begin_amount"    />
+        <result property="monthPlanQty"    column="month_plan_qty"    />
+        <result property="price"    column="price"    />
+        <result property="dailyShipQty"    column="daily_ship_qty"    />
+        <result property="dailyIncome"    column="daily_income"    />
+        <result property="monthTotalShipQty"    column="month_total_ship_qty"    />
+        <result property="monthTotalIncome"    column="month_total_income"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="state"    column="state"    />
+    </resultMap>
+
+    <sql id="selectTDailySalesVo">
+        select id, stat_date, product_name, receiver, begin_amount, month_plan_qty, price, daily_ship_qty, daily_income, month_total_ship_qty,
+               month_total_income,create_time, update_time,state from t_daily_sales
+    </sql>
+
+    <select id="selectTDailySalesList" parameterType="TDailySales" resultMap="TDailySalesResult">
+        <include refid="selectTDailySalesVo"/>
+        <where>  
+            <if test="statDate != null "> and stat_date = #{statDate}</if>
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+            <if test="receiver != null  and receiver != ''"> and receiver = #{receiver}</if>
+            <if test="beginAmount != null "> and begin_amount = #{beginAmount}</if>
+            <if test="monthPlanQty != null "> and month_plan_qty = #{monthPlanQty}</if>
+            <if test="price != null "> and price = #{price}</if>
+            <if test="dailyShipQty != null "> and daily_ship_qty = #{dailyShipQty}</if>
+            <if test="dailyIncome != null "> and daily_income = #{dailyIncome}</if>
+            <if test="monthTotalShipQty != null "> and month_total_ship_qty = #{monthTotalShipQty}</if>
+            <if test="monthTotalIncome != null "> and month_total_income = #{monthTotalIncome}</if>
+            <if test="state != null "> and state = #{state}</if>
+        </where>
+    </select>
+    <select id="selectTDailySalesListMonth" parameterType="TDailySales" resultMap="TDailySalesResult">
+        select sum(daily_income) as month_total_income, sum(daily_ship_qty) as month_total_ship_qty from t_daily_sales
+        <where>
+            <if test="statDate != null "> and Year(stat_date) = Year(#{statDate}) and Month(stat_date) = Month(#{statDate}) and stat_date &lt;= #{statDate}</if>
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+            <if test="receiver != null  and receiver != ''"> and receiver = #{receiver}</if>
+            <if test="beginAmount != null "> and begin_amount = #{beginAmount}</if>
+            <if test="monthPlanQty != null "> and month_plan_qty = #{monthPlanQty}</if>
+            <if test="price != null "> and price = #{price}</if>
+            <if test="dailyShipQty != null "> and daily_ship_qty = #{dailyShipQty}</if>
+            <if test="dailyIncome != null "> and daily_income = #{dailyIncome}</if>
+            <if test="monthTotalShipQty != null "> and month_total_ship_qty = #{monthTotalShipQty}</if>
+            <if test="monthTotalIncome != null "> and month_total_income = #{monthTotalIncome}</if>
+        </where>
+        group by product_name,receiver
+    </select>
+    
+    <select id="selectTDailySalesById" parameterType="Long" resultMap="TDailySalesResult">
+        <include refid="selectTDailySalesVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTDailySales" parameterType="TDailySales" useGeneratedKeys="true" keyProperty="id">
+        insert into t_daily_sales
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="statDate != null">stat_date,</if>
+            <if test="productName != null and productName != ''">product_name,</if>
+            <if test="receiver != null and receiver != ''">receiver,</if>
+            <if test="beginAmount != null">begin_amount,</if>
+            <if test="monthPlanQty != null">month_plan_qty,</if>
+            <if test="price != null">price,</if>
+            <if test="dailyShipQty != null">daily_ship_qty,</if>
+            <if test="dailyIncome != null">daily_income,</if>
+            <if test="monthTotalShipQty != null">month_total_ship_qty,</if>
+            <if test="monthTotalIncome != null">month_total_income,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="state != null">state,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="statDate != null">#{statDate},</if>
+            <if test="productName != null and productName != ''">#{productName},</if>
+            <if test="receiver != null and receiver != ''">#{receiver},</if>
+            <if test="beginAmount != null">#{beginAmount},</if>
+            <if test="monthPlanQty != null">#{monthPlanQty},</if>
+            <if test="price != null">#{price},</if>
+            <if test="dailyShipQty != null">#{dailyShipQty},</if>
+            <if test="dailyIncome != null">#{dailyIncome},</if>
+            <if test="monthTotalShipQty != null">#{monthTotalShipQty},</if>
+            <if test="monthTotalIncome != null">#{monthTotalIncome},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="state != null">#{state},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTDailySales" parameterType="TDailySales">
+        update t_daily_sales
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productName != null and productName != ''">product_name = #{productName},</if>
+            <if test="receiver != null and receiver != ''">receiver = #{receiver},</if>
+            <if test="beginAmount != null">begin_amount = #{beginAmount},</if>
+            <if test="monthPlanQty != null">month_plan_qty = #{monthPlanQty},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="dailyShipQty != null">daily_ship_qty = #{dailyShipQty},</if>
+            <if test="dailyIncome != null">daily_income = #{dailyIncome},</if>
+            <if test="monthTotalShipQty != null">month_total_ship_qty = #{monthTotalShipQty},</if>
+            <if test="monthTotalIncome != null">month_total_income = #{monthTotalIncome},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="state != null">state = #{state},</if>
+        </trim>
+        where stat_date = #{statDate}
+    </update>
+
+    <delete id="deleteTDailySalesById" parameterType="Long">
+        delete from t_daily_sales where id = #{id}
+    </delete>
+
+    <delete id="deleteTDailySalesByIds" parameterType="String">
+        delete from t_daily_sales where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteTDailySalesByStatDate" parameterType="TDailyProductionSalesStock">
+        delete from t_daily_sales where stat_date = #{statDate}
+    </delete>
+</mapper>

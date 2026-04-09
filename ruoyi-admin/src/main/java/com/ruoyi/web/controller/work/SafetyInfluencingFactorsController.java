@@ -7,11 +7,14 @@ import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.system.domain.MineInfo;
 import com.ruoyi.system.domain.work.SafetyInfluencingFactors;
+import com.ruoyi.system.service.IMineInfoService;
 import com.ruoyi.system.service.work.ISafetyInfluencingFactorsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
@@ -26,6 +29,9 @@ import java.util.List;
 public class SafetyInfluencingFactorsController extends BaseController {
     @Autowired
     private ISafetyInfluencingFactorsService safetyInfluencingFactorsService;
+
+    @Resource
+    private IMineInfoService mineInfoService;//退回状态
 
     /**
      * 查询公司各单位影响安全生产因素（原因）列表
@@ -66,7 +72,20 @@ public class SafetyInfluencingFactorsController extends BaseController {
         safety.setRecordDate(safetyInfluencingFactors.getRecordDate());
         List<SafetyInfluencingFactors> list = safetyInfluencingFactorsService.listSafetyInfluencingFactors(safety);
         if(list.size()>0){
-            return error("保存过数据");
+            MineInfo mineInfo = new MineInfo();
+            mineInfo.setModuleName("公司各单位影响安全生产因素");
+            mineInfo.setStatDate(list.get(0).getRecordDate());
+            mineInfo.setMineName(list.get(0).getUnitName());
+            mineInfo.setMineCode(list.get(0).getUnitCode());
+            List<MineInfo> mineInfos = mineInfoService.listMineInfo(mineInfo);
+            if(mineInfos.size()==0){
+                return AjaxResult.error("请联系局里进行驳回");
+            }
+            if(mineInfos.size()>=0){
+                mineInfoService.deleteMineInfoByDate(mineInfo);
+            }
+            safetyInfluencingFactors.setId(list.get(0).getId());
+            return toAjax(safetyInfluencingFactorsService.updateSafetyInfluencingFactors(safetyInfluencingFactors));
         }
         else {
             return toAjax(safetyInfluencingFactorsService.saveSafetyInfluencingFactors(safetyInfluencingFactors));
@@ -90,4 +109,27 @@ public class SafetyInfluencingFactorsController extends BaseController {
     public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(safetyInfluencingFactorsService.deleteSafetyInfluencingFactorsByIds(ids));
     }
+
+
+    /**
+     * 洗煤产品库存及自用
+     */
+    @GetMapping("/updateState")
+    public AjaxResult updateState(SafetyInfluencingFactors raw){
+        MineInfo mineInfo = new MineInfo();
+        mineInfo.setModuleName("公司各单位影响安全生产因素");
+        mineInfo.setStatDate(raw.getRecordDate());
+        mineInfo.setMineName(raw.getUnitName());
+        mineInfo.setMineCode(raw.getUnitCode());
+        List<MineInfo> mineInfos = mineInfoService.listMineInfo(mineInfo);
+        if(mineInfos.size()>0){
+            return AjaxResult.error("已经退回");
+        }else {
+            mineInfoService.saveMineInfo(mineInfo);
+            return AjaxResult.success("退回成功");
+        }
+    }
+
+
+
 }

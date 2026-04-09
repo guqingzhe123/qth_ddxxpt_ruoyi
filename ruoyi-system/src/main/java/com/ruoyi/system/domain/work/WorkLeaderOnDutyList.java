@@ -15,6 +15,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 public class WorkLeaderOnDutyList  {
     private String unitName;
+    private String unitCode;
     List<String> one;
     List<String> two;
     List<String> three;

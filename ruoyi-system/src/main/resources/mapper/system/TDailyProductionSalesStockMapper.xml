@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.TDailyProductionSalesStockMapper">
+    
+    <resultMap type="TDailyProductionSalesStock" id="TDailyProductionSalesStockResult">
+        <result property="id"    column="id"    />
+        <result property="statDate"    column="stat_date"    />
+        <result property="productName"    column="product_name"    />
+        <result property="beginQty"    column="begin_qty"    />
+        <result property="beginPriceTaxIn"    column="begin_price_tax_in"    />
+        <result property="beginPriceTaxEx"    column="begin_price_tax_ex"    />
+        <result property="beginAmountTaxEx"    column="begin_amount_tax_ex"    />
+        <result property="dailyProductionQty"    column="daily_production_qty"    />
+        <result property="dailySalesQty"    column="daily_sales_qty"    />
+        <result property="dailySalesPriceTaxIn"    column="daily_sales_price_tax_in"    />
+        <result property="dailySalesPriceTaxEx"    column="daily_sales_price_tax_ex"    />
+        <result property="dailySalesAmountTaxEx"    column="daily_sales_amount_tax_ex"    />
+        <result property="monthlyProductionQty"    column="monthly_production_qty"    />
+        <result property="monthlySalesQty"    column="monthly_sales_qty"    />
+        <result property="monthlySalesAmountTaxEx"    column="monthly_sales_amount_tax_ex"    />
+        <result property="monthlySalesAvgPriceTaxEx"    column="monthly_sales_avg_price_tax_ex"    />
+        <result property="endQty"    column="end_qty"    />
+        <result property="endPriceTaxEx"    column="end_price_tax_ex"    />
+        <result property="endAmountTaxEx"    column="end_amount_tax_ex"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="state"    column="state"    />
+    </resultMap>
+
+    <sql id="selectTDailyProductionSalesStockVo">
+        select id, stat_date, product_name, begin_qty, begin_price_tax_in, begin_price_tax_ex, begin_amount_tax_ex, daily_production_qty, daily_sales_qty,
+daily_sales_price_tax_in, daily_sales_price_tax_ex, daily_sales_amount_tax_ex, monthly_production_qty, monthly_sales_qty, monthly_sales_amount_tax_ex,
+monthly_sales_avg_price_tax_ex, end_qty, end_price_tax_ex, end_amount_tax_ex, tax_rate, create_time, update_time, state from t_daily_production_sales_stock
+    </sql>
+
+    <select id="selectTDailyProductionSalesStockList" parameterType="TDailyProductionSalesStock" resultMap="TDailyProductionSalesStockResult">
+        <include refid="selectTDailyProductionSalesStockVo"/>
+        <where>  
+            <if test="statDate != null "> and stat_date = #{statDate}</if>
+            <if test="productName != null  and productName != ''"> and product_name = #{productName}</if>
+            <if test="beginQty != null "> and begin_qty = #{beginQty}</if>
+            <if test="beginPriceTaxIn != null "> and begin_price_tax_in = #{beginPriceTaxIn}</if>
+            <if test="beginPriceTaxEx != null "> and begin_price_tax_ex = #{beginPriceTaxEx}</if>
+            <if test="beginAmountTaxEx != null "> and begin_amount_tax_ex = #{beginAmountTaxEx}</if>
+            <if test="dailyProductionQty != null "> and daily_production_qty = #{dailyProductionQty}</if>
+            <if test="dailySalesQty != null "> and daily_sales_qty = #{dailySalesQty}</if>
+            <if test="dailySalesPriceTaxIn != null "> and daily_sales_price_tax_in = #{dailySalesPriceTaxIn}</if>
+            <if test="dailySalesPriceTaxEx != null "> and daily_sales_price_tax_ex = #{dailySalesPriceTaxEx}</if>
+            <if test="dailySalesAmountTaxEx != null "> and daily_sales_amount_tax_ex = #{dailySalesAmountTaxEx}</if>
+            <if test="monthlyProductionQty != null "> and monthly_production_qty = #{monthlyProductionQty}</if>
+            <if test="monthlySalesQty != null "> and monthly_sales_qty = #{monthlySalesQty}</if>
+            <if test="monthlySalesAmountTaxEx != null "> and monthly_sales_amount_tax_ex = #{monthlySalesAmountTaxEx}</if>
+            <if test="monthlySalesAvgPriceTaxEx != null "> and monthly_sales_avg_price_tax_ex = #{monthlySalesAvgPriceTaxEx}</if>
+            <if test="endQty != null "> and end_qty = #{endQty}</if>
+            <if test="endPriceTaxEx != null "> and end_price_tax_ex = #{endPriceTaxEx}</if>
+            <if test="endAmountTaxEx != null "> and end_amount_tax_ex = #{endAmountTaxEx}</if>
+            <if test="taxRate != null "> and tax_rate = #{taxRate}</if>
+            <if test="state != null "> and state = #{state}</if>
+        </where>
+    </select>
+    <select id="selectTDailyProductionSalesStockMonthList" parameterType="TDailyProductionSalesStock" resultMap="TDailyProductionSalesStockResult">
+        select sum(daily_production_qty) as monthly_production_qty,sum(daily_sales_qty) as monthly_sales_qty,sum(daily_sales_amount_tax_ex) as monthly_sales_amount_tax_ex,
+               sum(daily_sales_amount_tax_ex)/sum(daily_sales_qty) as monthly_sales_avg_price_tax_ex from t_daily_production_sales_stock
+
+        <where>
+            <if test="statDate != null "> and Year(stat_date) = Year(#{statDate}) and Month(stat_date) = Month(#{statDate})  and stat_date  &lt;= #{statDate}</if>
+            <if test="productName != null  and productName != ''"> and product_name = #{productName}</if>
+            <if test="beginQty != null "> and begin_qty = #{beginQty}</if>
+            <if test="beginPriceTaxIn != null "> and begin_price_tax_in = #{beginPriceTaxIn}</if>
+            <if test="beginPriceTaxEx != null "> and begin_price_tax_ex = #{beginPriceTaxEx}</if>
+            <if test="beginAmountTaxEx != null "> and begin_amount_tax_ex = #{beginAmountTaxEx}</if>
+            <if test="dailyProductionQty != null "> and daily_production_qty = #{dailyProductionQty}</if>
+            <if test="dailySalesQty != null "> and daily_sales_qty = #{dailySalesQty}</if>
+            <if test="dailySalesPriceTaxIn != null "> and daily_sales_price_tax_in = #{dailySalesPriceTaxIn}</if>
+            <if test="dailySalesPriceTaxEx != null "> and daily_sales_price_tax_ex = #{dailySalesPriceTaxEx}</if>
+            <if test="dailySalesAmountTaxEx != null "> and daily_sales_amount_tax_ex = #{dailySalesAmountTaxEx}</if>
+            <if test="monthlyProductionQty != null "> and monthly_production_qty = #{monthlyProductionQty}</if>
+            <if test="monthlySalesQty != null "> and monthly_sales_qty = #{monthlySalesQty}</if>
+            <if test="monthlySalesAmountTaxEx != null "> and monthly_sales_amount_tax_ex = #{monthlySalesAmountTaxEx}</if>
+            <if test="monthlySalesAvgPriceTaxEx != null "> and monthly_sales_avg_price_tax_ex = #{monthlySalesAvgPriceTaxEx}</if>
+            <if test="endQty != null "> and end_qty = #{endQty}</if>
+            <if test="endPriceTaxEx != null "> and end_price_tax_ex = #{endPriceTaxEx}</if>
+            <if test="endAmountTaxEx != null "> and end_amount_tax_ex = #{endAmountTaxEx}</if>
+            <if test="taxRate != null "> and tax_rate = #{taxRate}</if>
+        </where>
+        group by product_name
+    </select>
+    
+    <select id="selectTDailyProductionSalesStockById" parameterType="Long" resultMap="TDailyProductionSalesStockResult">
+        <include refid="selectTDailyProductionSalesStockVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTDailyProductionSalesStock" parameterType="TDailyProductionSalesStock" useGeneratedKeys="true" keyProperty="id">
+        insert into t_daily_production_sales_stock
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="statDate != null">stat_date,</if>
+            <if test="productName != null and productName != ''">product_name,</if>
+            <if test="beginQty != null">begin_qty,</if>
+            <if test="beginPriceTaxIn != null">begin_price_tax_in,</if>
+            <if test="beginPriceTaxEx != null">begin_price_tax_ex,</if>
+            <if test="beginAmountTaxEx != null">begin_amount_tax_ex,</if>
+            <if test="dailyProductionQty != null">daily_production_qty,</if>
+            <if test="dailySalesQty != null">daily_sales_qty,</if>
+            <if test="dailySalesPriceTaxIn != null">daily_sales_price_tax_in,</if>
+            <if test="dailySalesPriceTaxEx != null">daily_sales_price_tax_ex,</if>
+            <if test="dailySalesAmountTaxEx != null">daily_sales_amount_tax_ex,</if>
+            <if test="monthlyProductionQty != null">monthly_production_qty,</if>
+            <if test="monthlySalesQty != null">monthly_sales_qty,</if>
+            <if test="monthlySalesAmountTaxEx != null">monthly_sales_amount_tax_ex,</if>
+            <if test="monthlySalesAvgPriceTaxEx != null">monthly_sales_avg_price_tax_ex,</if>
+            <if test="endQty != null">end_qty,</if>
+            <if test="endPriceTaxEx != null">end_price_tax_ex,</if>
+            <if test="endAmountTaxEx != null">end_amount_tax_ex,</if>
+            <if test="taxRate != null">tax_rate,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="state != null">state,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="statDate != null">#{statDate},</if>
+            <if test="productName != null and productName != ''">#{productName},</if>
+            <if test="beginQty != null">#{beginQty},</if>
+            <if test="beginPriceTaxIn != null">#{beginPriceTaxIn},</if>
+            <if test="beginPriceTaxEx != null">#{beginPriceTaxEx},</if>
+            <if test="beginAmountTaxEx != null">#{beginAmountTaxEx},</if>
+            <if test="dailyProductionQty != null">#{dailyProductionQty},</if>
+            <if test="dailySalesQty != null">#{dailySalesQty},</if>
+            <if test="dailySalesPriceTaxIn != null">#{dailySalesPriceTaxIn},</if>
+            <if test="dailySalesPriceTaxEx != null">#{dailySalesPriceTaxEx},</if>
+            <if test="dailySalesAmountTaxEx != null">#{dailySalesAmountTaxEx},</if>
+            <if test="monthlyProductionQty != null">#{monthlyProductionQty},</if>
+            <if test="monthlySalesQty != null">#{monthlySalesQty},</if>
+            <if test="monthlySalesAmountTaxEx != null">#{monthlySalesAmountTaxEx},</if>
+            <if test="monthlySalesAvgPriceTaxEx != null">#{monthlySalesAvgPriceTaxEx},</if>
+            <if test="endQty != null">#{endQty},</if>
+            <if test="endPriceTaxEx != null">#{endPriceTaxEx},</if>
+            <if test="endAmountTaxEx != null">#{endAmountTaxEx},</if>
+            <if test="taxRate != null">#{taxRate},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="state != null">#{state},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTDailyProductionSalesStock" parameterType="TDailyProductionSalesStock">
+        update t_daily_production_sales_stock
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productName != null and productName != ''">product_name = #{productName},</if>
+            <if test="beginQty != null">begin_qty = #{beginQty},</if>
+            <if test="beginPriceTaxIn != null">begin_price_tax_in = #{beginPriceTaxIn},</if>
+            <if test="beginPriceTaxEx != null">begin_price_tax_ex = #{beginPriceTaxEx},</if>
+            <if test="beginAmountTaxEx != null">begin_amount_tax_ex = #{beginAmountTaxEx},</if>
+            <if test="dailyProductionQty != null">daily_production_qty = #{dailyProductionQty},</if>
+            <if test="dailySalesQty != null">daily_sales_qty = #{dailySalesQty},</if>
+            <if test="dailySalesPriceTaxIn != null">daily_sales_price_tax_in = #{dailySalesPriceTaxIn},</if>
+            <if test="dailySalesPriceTaxEx != null">daily_sales_price_tax_ex = #{dailySalesPriceTaxEx},</if>
+            <if test="dailySalesAmountTaxEx != null">daily_sales_amount_tax_ex = #{dailySalesAmountTaxEx},</if>
+            <if test="monthlyProductionQty != null">monthly_production_qty = #{monthlyProductionQty},</if>
+            <if test="monthlySalesQty != null">monthly_sales_qty = #{monthlySalesQty},</if>
+            <if test="monthlySalesAmountTaxEx != null">monthly_sales_amount_tax_ex = #{monthlySalesAmountTaxEx},</if>
+            <if test="monthlySalesAvgPriceTaxEx != null">monthly_sales_avg_price_tax_ex = #{monthlySalesAvgPriceTaxEx},</if>
+            <if test="endQty != null">end_qty = #{endQty},</if>
+            <if test="endPriceTaxEx != null">end_price_tax_ex = #{endPriceTaxEx},</if>
+            <if test="endAmountTaxEx != null">end_amount_tax_ex = #{endAmountTaxEx},</if>
+            <if test="taxRate != null">tax_rate = #{taxRate},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="state != null">state = #{state},</if>
+        </trim>
+        where stat_date = #{statDate}
+    </update>
+
+    <delete id="deleteTDailyProductionSalesStockById" parameterType="Long">
+        delete from t_daily_production_sales_stock where id = #{id}
+    </delete>
+
+    <delete id="deleteTDailyProductionSalesStockByIds" parameterType="String">
+        delete from t_daily_production_sales_stock where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteTDailyProductionSalesStockByStatDate" parameterType="TDailyProductionSalesStock">
+        delete from t_daily_production_sales_stock where stat_date = #{statDate}
+    </delete>
+</mapper>

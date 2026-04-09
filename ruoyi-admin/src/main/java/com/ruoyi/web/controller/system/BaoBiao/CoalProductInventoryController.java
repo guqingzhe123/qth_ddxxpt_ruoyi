@@ -9,6 +9,7 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.system.domain.BaoBiao.FactoryArchive;
 import com.ruoyi.system.domain.BaoBiao.dto.cpi.SubCoalProductInventory;
+import com.ruoyi.system.domain.MineInfo;
 import com.ruoyi.system.domain.SysUserRole;
 import com.ruoyi.system.domain.UserMessage;
 import com.ruoyi.system.mapper.BaoBiao.SubCoalProductInventoryMapper;
@@ -18,6 +19,7 @@ import com.ruoyi.system.mapper.SysUserRoleMapper;
 import com.ruoyi.system.mapper.UserMessageMapper;
 import com.ruoyi.system.service.BaoBiao.ICoalProductInventoryService;
 import com.ruoyi.system.service.BaoBiao.IFactoryArchiveService;
+import com.ruoyi.system.service.IMineInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,16 +52,43 @@ public class CoalProductInventoryController extends BaseController {
     @Autowired
     private SubCoalProductInventoryMapper subCoalProductInventoryMapper;
 
+    @Resource
+    private IMineInfoService mineInfoService;//退回状态
+
     @Anonymous
     @Operation(summary = "新增洗煤产品库存及自用煤（入参含 data_JSON）")
     @PostMapping
     public AjaxResult add(@RequestBody List<SubCoalProductInventory> dto) {
+
+        if(dto.size()>0){
+            SubCoalProductInventory subc=new SubCoalProductInventory();
+            subc.setUnitCode(dto.get(0).getUnitCode());
+            subc.setRecordDate(dto.get(0).getRecordDate());
+            List<SubCoalProductInventory> subCoalProductInventories = subCoalProductInventoryMapper.selectSubCoalProductInventoryList(subc);
+            if(subCoalProductInventories.size()>0){
+                MineInfo mineInfo = new MineInfo();
+                mineInfo.setModuleName("洗煤产品库存及自用");
+                mineInfo.setStatDate(subCoalProductInventories.get(0).getRecordDate());
+                mineInfo.setMineName(subCoalProductInventories.get(0).getUnitName());
+                List<MineInfo> mineInfos = mineInfoService.listMineInfo(mineInfo);
+                if(mineInfos.size()==0){
+                    return AjaxResult.error("请联系局里进行驳回");
+                }
+                if(mineInfos.size()>=0){
+                    mineInfoService.deleteMineInfoByDate(mineInfo);
+                }
+            }
+        }
         SysRole 七煤集团权限 = sysRoleMapper.checkRoleNameUnique("七煤集团权限");
         List<SysUserRole> sysUserRoles = sysUserRoleMapper.selectRoleUserInfos(Arrays.asList(七煤集团权限.getRoleId()));
         for (SysUserRole userRole:sysUserRoles) {
             String message=dto.get(0).getUnitName()+"提交了洗煤产品库存及自用煤录入";
             messageMapper.insertUserMessage(new UserMessage(SecurityUtils.getUserId(),userRole.getUserId(),message,new Date()));
         }
+
+
+
+
         return AjaxResult.success(service.saveSubCoalProductInventory(dto));
     }
 
@@ -99,7 +128,10 @@ public class CoalProductInventoryController extends BaseController {
             }
             List<FactoryArchive> list1 = factoryArchiveService.list(factoryArchive);
             List<SubCoalProductInventory> month = service.selectProductMonth(query.getRecordDate());
-
+            MineInfo mineInfo = new MineInfo();
+            mineInfo.setModuleName("洗煤产品库存及自用");
+            mineInfo.setStatDate(query.getRecordDate());
+            List<MineInfo> mineInfos = mineInfoService.listMineInfo(mineInfo);
 
             List<SubCoalProductInventory> returnList=new ArrayList<>();
 
@@ -114,12 +146,24 @@ public class CoalProductInventoryController extends BaseController {
                         .findFirst()
                         .orElse(new SubCoalProductInventory());
 
+
+                MineInfo mineInfo1 = mineInfos.stream()
+                        .filter(s -> s.getMineName().equals(fact.getFactoryName()))
+                        .findFirst()
+                        .orElse(null);
+
                 SubCoalProductInventory subCoalProductInventory = new SubCoalProductInventory();
-                if(listMatch.getUnitCode()!=null){
-                    subCoalProductInventory = listMatch;
-                }else {
+
+                if(mineInfo1 != null){
                     subCoalProductInventory.setUnitCode(fact.getFactoryCode());
                     subCoalProductInventory.setUnitName(fact.getFactoryName());
+                }else {
+                    if(listMatch.getUnitCode()!=null){
+                        subCoalProductInventory = listMatch;
+                    }else {
+                        subCoalProductInventory.setUnitCode(fact.getFactoryCode());
+                        subCoalProductInventory.setUnitName(fact.getFactoryName());
+                    }
                 }
 
                 if(monthMatch.getUnitCode()!=null){
@@ -192,4 +236,27 @@ public class CoalProductInventoryController extends BaseController {
         }
         return getDataTable(list);
     }
+
+
+    /**
+     * 洗煤产品库存及自用
+     */
+    @GetMapping("/updateState")
+    public AjaxResult updateState(SubCoalProductInventory raw){
+        MineInfo mineInfo = new MineInfo();
+        mineInfo.setModuleName("洗煤产品库存及自用");
+        mineInfo.setMineName(raw.getUnitName());//那个洗煤厂退回
+        mineInfo.setStatus(2L);
+        mineInfo.setStatDate(raw.getRecordDate());
+        List<MineInfo> mineInfos = mineInfoService.listMineInfo(mineInfo);
+        if(mineInfos.size()>0){
+            return AjaxResult.error("已经退回");
+        }else {
+            mineInfoService.saveMineInfo(mineInfo);
+            return AjaxResult.success("退回成功");
+        }
+    }
+
+
+
 }

@@ -60,9 +60,10 @@ public class WorkLeaderOnDutyServiceImpl implements IWorkLeaderOnDutyService {
         onDuty.setUnit(workLeaderOnDuty.getUnit());
         onDuty.setDutyDate(workLeaderOnDuty.getDutyDate());
         onDuty.setUnitCode(workLeaderOnDuty.getUnitCode());
-        List<WorkLeaderOnDuty> workLeaderOnDuties = workLeaderOnDutyMapper.selectWorkLeaderOnDutyList(workLeaderOnDuty);
+        List<WorkLeaderOnDuty> workLeaderOnDuties = workLeaderOnDutyMapper.selectWorkLeaderOnDutyList(onDuty);
 
         if(workLeaderOnDuties.size()>0){
+            workLeaderOnDuty.setId(workLeaderOnDuties.get(0).getId());
             workLeaderOnDuty.setLeaderShift1(workLeaderOnDuty.getLeaderShift1());
             workLeaderOnDuty.setLeaderShift2(workLeaderOnDuty.getLeaderShift2());
             workLeaderOnDuty.setLeaderShift3(workLeaderOnDuty.getLeaderShift3());

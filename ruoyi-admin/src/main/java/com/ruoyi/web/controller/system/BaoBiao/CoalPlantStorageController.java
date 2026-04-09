@@ -6,7 +6,9 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.SecurityUtils;
-import com.ruoyi.system.domain.BaoBiao.dto.cps.*;
+import com.ruoyi.system.domain.BaoBiao.dto.cps.CpsCreateDTO;
+import com.ruoyi.system.domain.BaoBiao.dto.cps.CpsPageQueryDTO;
+import com.ruoyi.system.domain.BaoBiao.dto.cps.CpsUpdateDTO;
 import com.ruoyi.system.domain.BaoBiao.vo.cps.CpsVO;
 import com.ruoyi.system.domain.SysUserRole;
 import com.ruoyi.system.domain.UserMessage;
@@ -44,6 +46,9 @@ public class CoalPlantStorageController extends BaseController {
         dto.setUser_id(SecurityUtils.getUserId());
         dto.setMine_category("0");
         Long id = service.add(dto);
+        if(id==0l){
+            return AjaxResult.error("请联系局里进行驳回");
+        }
 
         SysRole 七煤集团权限 = sysRoleMapper.checkRoleNameUnique("七煤集团权限");
         List<SysUserRole> sysUserRoles = sysUserRoleMapper.selectRoleUserInfos(Arrays.asList(七煤集团权限.getRoleId()));
@@ -82,5 +87,21 @@ public class CoalPlantStorageController extends BaseController {
     public TableDataInfo page(CpsPageQueryDTO query) {
         List<CpsVO> list = service.page(query);
         return getDataTable(list);
+    }
+    @Anonymous
+    @Operation(summary = "分页列表（含 data_JSON；支持主表时间/子表日期过滤）")
+    @GetMapping("/allPage")
+    public TableDataInfo allPage(CpsPageQueryDTO query) {
+        List<CpsVO> list = service.pageALL(query);
+        return getDataTable(list);
+    }
+
+
+    /**
+     * 洗煤产品库存及自用
+     */
+    @GetMapping("/updateState")
+    public AjaxResult updateState(CpsCreateDTO dto){
+        return AjaxResult.success(service.updateState(dto));
     }
 }

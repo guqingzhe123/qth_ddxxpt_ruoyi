@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MineInfoMapper">
+
+    <resultMap type="MineInfo" id="MineInfoResult">
+        <result property="id"    column="id"    />
+        <result property="moduleName"    column="module_name"    />
+        <result property="status"    column="status"    />
+        <result property="mineName"    column="mine_name"    />
+        <result property="mineCode"    column="mine_code"    />
+        <result property="statDate"    column="statDate"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectMineInfoVo">
+        select id, module_name, status, mine_name, mine_code,statDate, create_time from mine_info
+    </sql>
+
+    <select id="selectMineInfoList" parameterType="MineInfo" resultMap="MineInfoResult">
+        <include refid="selectMineInfoVo"/>
+        <where>
+            <if test="moduleName != null  and moduleName != ''"> and module_name like concat('%', #{moduleName}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="mineName != null  and mineName != ''"> and mine_name like concat('%', #{mineName}, '%')</if>
+            <if test="mineCode != null  and mineCode != ''"> and mine_code = #{mineCode}</if>
+        </where>
+    </select>
+
+    <select id="selectMineInfoById" parameterType="Long" resultMap="MineInfoResult">
+        <include refid="selectMineInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertMineInfo" parameterType="MineInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into mine_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="moduleName != null and moduleName != ''">module_name,</if>
+            <if test="status != null">status,</if>
+            <if test="mineName != null and mineName != ''">mine_name,</if>
+            <if test="mineCode != null and mineCode != ''">mine_code,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="statDate != null">statDate,</if>
+
+
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="moduleName != null and moduleName != ''">#{moduleName},</if>
+            <if test="status != null">#{status},</if>
+            <if test="mineName != null and mineName != ''">#{mineName},</if>
+            <if test="mineCode != null and mineCode != ''">#{mineCode},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="statDate != null">#{statDate},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMineInfo" parameterType="MineInfo">
+        update mine_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="moduleName != null and moduleName != ''">module_name = #{moduleName},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="mineName != null and mineName != ''">mine_name = #{mineName},</if>
+            <if test="mineCode != null and mineCode != ''">mine_code = #{mineCode},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="statDate != null">statDate = #{statDate},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMineInfoById" parameterType="Long">
+        delete from mine_info where id = #{id}
+    </delete>
+
+    <delete id="deleteMineInfoByDate" parameterType="MineInfo">
+        delete from mine_info where mine_name = #{mineName} and statDate = #{statDate} and module_name = #{moduleName}
+    </delete>
+
+
+    <delete id="deleteMineInfoByIds" parameterType="String">
+        delete from mine_info where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
