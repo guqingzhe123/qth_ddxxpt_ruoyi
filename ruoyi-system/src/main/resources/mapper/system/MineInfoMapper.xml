@@ -25,6 +25,7 @@
             <if test="status != null "> and status = #{status}</if>
             <if test="mineName != null  and mineName != ''"> and mine_name like concat('%', #{mineName}, '%')</if>
             <if test="mineCode != null  and mineCode != ''"> and mine_code = #{mineCode}</if>
+            <if test="statDate != null "> and statDate = #{statDate}</if>
         </where>
     </select>
 
