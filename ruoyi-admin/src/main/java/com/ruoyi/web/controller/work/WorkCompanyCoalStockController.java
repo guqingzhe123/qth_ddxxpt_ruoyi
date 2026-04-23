@@ -97,7 +97,8 @@ public class WorkCompanyCoalStockController extends BaseController {
             }
 
             return getDataTable(AllList);
-        }else{ 
+        }
+        else{
             if(list.size()==0){
                 WorkCoalStockSalesStat workCoalStockSalesStat1 = new WorkCoalStockSalesStat();
 
@@ -255,14 +256,13 @@ public class WorkCompanyCoalStockController extends BaseController {
         return AjaxResult.success(stock);
     }
 
-    @PostMapping("/gasbureauList")  //局端获取
+    @PostMapping("/gasbureauList")  //煤气公司获取
     public AjaxResult gasbureauList(@RequestBody riBao tiaojian) {
         Date previousDay = getPreviousDay(tiaojian.getStatsDate());//上一天日期
         WorkCompanyCoalStock workStock = new WorkCompanyCoalStock();
         workStock.setRecordDate(tiaojian.getStatsDate());
         List<WorkCompanyCoalStock> list = workCompanyCoalStockService.listWorkCompanyCoalStock(workStock);
         if(list.size()==0){
-
             workStock.setRecordDate(getPreviousDay(tiaojian.getStatsDate()));
             List<WorkCompanyCoalStock>  listBefer = workCompanyCoalStockService.listWorkCompanyCoalStock(workStock);
             List<WorkCompanyCoalStock>  listBeferreturn = new ArrayList<>();
@@ -320,17 +320,30 @@ public class WorkCompanyCoalStockController extends BaseController {
         List<WorkCoalStockSalesStat> listCoalStockSalesStat = work.getListCoalStockSalesStat();
         try{
 
+
+
+
             if(listCompanyCoalStock.size()>0){
-                MineInfo mineInfo = new MineInfo();
-                mineInfo.setModuleName("煤气公司精煤库存");
-                mineInfo.setMineName("煤气公司精煤库存");
-                mineInfo.setStatDate(listCompanyCoalStock.get(0).getRecordDate());
-                List<MineInfo> mineInfos = mineInfoService.listMineInfo(mineInfo);
-                if(mineInfos.size()>0){
-                    mineInfoService.deleteMineInfoByDate(mineInfo);
-                }else {
-                    return AjaxResult.error("请联系局里进行退回");
+
+                WorkCompanyCoalStock workCompany = new WorkCompanyCoalStock();
+                workCompany.setRecordDate(listCompanyCoalStock.get(0).getRecordDate());
+                workCompany.setCoalGrade(listCompanyCoalStock.get(0).getCoalGrade());
+                List<WorkCompanyCoalStock> workCompanyCoalStocks = workCompanyCoalStockService.listWorkCompanyCoalStock(workCompany);
+
+                if(workCompanyCoalStocks.size()>0){
+                    MineInfo mineInfo = new MineInfo();
+                    mineInfo.setModuleName("煤气公司精煤库存");
+                    mineInfo.setMineName("煤气公司精煤库存");
+                    mineInfo.setStatDate(listCompanyCoalStock.get(0).getRecordDate());
+                    List<MineInfo> mineInfos = mineInfoService.listMineInfo(mineInfo);
+                    if(mineInfos.size()>0){
+                        mineInfoService.deleteMineInfoByDate(mineInfo);
+                    }else {
+                        return AjaxResult.error("请联系局里进行退回");
+                    }
                 }
+
+
             }
             for (WorkCompanyCoalStock workCompanyCoalStock : listCompanyCoalStock){
                 WorkCompanyCoalStock workCompany = new WorkCompanyCoalStock();

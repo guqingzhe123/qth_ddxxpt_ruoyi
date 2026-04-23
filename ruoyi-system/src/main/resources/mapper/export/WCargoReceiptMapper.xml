@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.export.WCargoReceiptMapper">
+    
+    <resultMap type="WCargoReceipt" id="WCargoReceiptResult">
+        <result property="id"    column="id"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="statsDate"    column="stats_date"    />
+        <result property="station"    column="station"    />
+        <result property="receivingUnit"    column="receiving_unit"    />
+        <result property="origin"    column="origin"    />
+        <result property="variety"    column="variety"    />
+        <result property="approvedTrain"    column="approved_train"    />
+        <result property="monthlyTotal"    column="monthly_total"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectWCargoReceiptVo">
+        select id, serial_number, stats_date, station, receiving_unit, origin, variety, approved_train, monthly_total, remark from w_cargo_receipt
+    </sql>
+
+    <select id="selectWCargoReceiptList" parameterType="WCargoReceipt" resultMap="WCargoReceiptResult">
+        <include refid="selectWCargoReceiptVo"/>
+        <where>  
+            <if test="serialNumber != null and serialNumber != ''"> and serial_number = #{serialNumber}</if>
+            <if test="statsDate != null "> and stats_date = #{statsDate}</if>
+            <if test="station != null  and station != ''"> and station = #{station}</if>
+            <if test="receivingUnit != null  and receivingUnit != ''"> and receiving_unit = #{receivingUnit}</if>
+            <if test="origin != null  and origin != ''"> and origin = #{origin}</if>
+            <if test="variety != null  and variety != ''"> and variety = #{variety}</if>
+            <if test="approvedTrain != null "> and approved_train = #{approvedTrain}</if>
+            <if test="monthlyTotal != null "> and monthly_total = #{monthlyTotal}</if>
+        </where>
+    </select>
+    
+    <select id="selectWCargoReceiptById" parameterType="String" resultMap="WCargoReceiptResult">
+        <include refid="selectWCargoReceiptVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWCargoReceipt" parameterType="WCargoReceipt" useGeneratedKeys="true" keyProperty="id">
+        insert into w_cargo_receipt
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="serialNumber != null and serialNumber != ''">serial_number,</if>
+            <if test="statsDate != null">stats_date,</if>
+            <if test="station != null and station != ''">station,</if>
+            <if test="receivingUnit != null and receivingUnit != ''">receiving_unit,</if>
+            <if test="origin != null">origin,</if>
+            <if test="variety != null and variety != ''">variety,</if>
+            <if test="approvedTrain != null">approved_train,</if>
+            <if test="monthlyTotal != null">monthly_total,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="serialNumber != null and serialNumber != ''">#{serialNumber},</if>
+            <if test="statsDate != null">#{statsDate},</if>
+            <if test="station != null and station != ''">#{station},</if>
+            <if test="receivingUnit != null and receivingUnit != ''">#{receivingUnit},</if>
+            <if test="origin != null">#{origin},</if>
+            <if test="variety != null and variety != ''">#{variety},</if>
+            <if test="approvedTrain != null">#{approvedTrain},</if>
+            <if test="monthlyTotal != null">#{monthlyTotal},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWCargoReceipt" parameterType="WCargoReceipt">
+        update w_cargo_receipt
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="serialNumber != null and serialNumber != ''">serial_number = #{serialNumber},</if>
+            <if test="statsDate != null">stats_date = #{statsDate},</if>
+            <if test="station != null and station != ''">station = #{station},</if>
+            <if test="receivingUnit != null and receivingUnit != ''">receiving_unit = #{receivingUnit},</if>
+            <if test="origin != null">origin = #{origin},</if>
+            <if test="variety != null and variety != ''">variety = #{variety},</if>
+            <if test="approvedTrain != null">approved_train = #{approvedTrain},</if>
+            <if test="monthlyTotal != null">monthly_total = #{monthlyTotal},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWCargoReceiptById" parameterType="String">
+        delete from w_cargo_receipt where id = #{id}
+    </delete>
+
+    <delete id="deleteWCargoReceiptByIds" parameterType="String">
+        delete from w_cargo_receipt where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

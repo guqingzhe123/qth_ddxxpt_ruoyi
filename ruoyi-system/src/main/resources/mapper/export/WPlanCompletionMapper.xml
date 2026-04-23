@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.export.WPlanCompletionMapper">
+    
+    <resultMap type="WPlanCompletion" id="WPlanCompletionResult">
+        <result property="id"    column="id"    />
+        <result property="productType"    column="product_type"    />
+        <result property="factoryMine"    column="factory_mine"    />
+        <result property="receiveUnit"    column="receive_unit"    />
+        <result property="monthPlan"    column="month_plan"    />
+        <result property="dailyPlan"    column="daily_plan"    />
+        <result property="dailyCompleted"    column="daily_completed"    />
+        <result property="totalCompleted"    column="total_completed"    />
+        <result property="remainingPlan"    column="remaining_plan"    />
+        <result property="tomorrowPlan"    column="tomorrow_plan"    />
+        <result property="salesUnit"    column="sales_unit"    />
+        <result property="statsDate"    column="stats_date"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectWPlanCompletionVo">
+        select id, product_type, factory_mine, receive_unit, month_plan, daily_plan, daily_completed, total_completed, remaining_plan, tomorrow_plan, sales_unit, stats_date, create_time, update_time from w_plan_completion
+    </sql>
+
+    <select id="selectWPlanCompletionList" parameterType="WPlanCompletion" resultMap="WPlanCompletionResult">
+        <include refid="selectWPlanCompletionVo"/>
+        <where>  
+            <if test="productType != null  and productType != ''"> and product_type = #{productType}</if>
+            <if test="factoryMine != null  and factoryMine != ''"> and factory_mine = #{factoryMine}</if>
+            <if test="receiveUnit != null  and receiveUnit != ''"> and receive_unit = #{receiveUnit}</if>
+            <if test="monthPlan != null "> and month_plan = #{monthPlan}</if>
+            <if test="dailyPlan != null "> and daily_plan = #{dailyPlan}</if>
+            <if test="dailyCompleted != null "> and daily_completed = #{dailyCompleted}</if>
+            <if test="totalCompleted != null "> and total_completed = #{totalCompleted}</if>
+            <if test="remainingPlan != null "> and remaining_plan = #{remainingPlan}</if>
+            <if test="tomorrowPlan != null "> and tomorrow_plan = #{tomorrowPlan}</if>
+            <if test="salesUnit != null  and salesUnit != ''"> and sales_unit = #{salesUnit}</if>
+            <if test="statsDate != null "> and stats_date = #{statsDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectWPlanCompletionById" parameterType="String" resultMap="WPlanCompletionResult">
+        <include refid="selectWPlanCompletionVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWPlanCompletion" parameterType="WPlanCompletion" useGeneratedKeys="true" keyProperty="id">
+        insert into w_plan_completion
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productType != null and productType != ''">product_type,</if>
+            <if test="factoryMine != null and factoryMine != ''">factory_mine,</if>
+            <if test="receiveUnit != null and receiveUnit != ''">receive_unit,</if>
+            <if test="monthPlan != null">month_plan,</if>
+            <if test="dailyPlan != null">daily_plan,</if>
+            <if test="dailyCompleted != null">daily_completed,</if>
+            <if test="totalCompleted != null">total_completed,</if>
+            <if test="remainingPlan != null">remaining_plan,</if>
+            <if test="tomorrowPlan != null">tomorrow_plan,</if>
+            <if test="salesUnit != null and salesUnit != ''">sales_unit,</if>
+            <if test="statsDate != null">stats_date,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productType != null and productType != ''">#{productType},</if>
+            <if test="factoryMine != null and factoryMine != ''">#{factoryMine},</if>
+            <if test="receiveUnit != null and receiveUnit != ''">#{receiveUnit},</if>
+            <if test="monthPlan != null">#{monthPlan},</if>
+            <if test="dailyPlan != null">#{dailyPlan},</if>
+            <if test="dailyCompleted != null">#{dailyCompleted},</if>
+            <if test="totalCompleted != null">#{totalCompleted},</if>
+            <if test="remainingPlan != null">#{remainingPlan},</if>
+            <if test="tomorrowPlan != null">#{tomorrowPlan},</if>
+            <if test="salesUnit != null and salesUnit != ''">#{salesUnit},</if>
+            <if test="statsDate != null">#{statsDate},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWPlanCompletion" parameterType="WPlanCompletion">
+        update w_plan_completion
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productType != null and productType != ''">product_type = #{productType},</if>
+            <if test="factoryMine != null and factoryMine != ''">factory_mine = #{factoryMine},</if>
+            <if test="receiveUnit != null and receiveUnit != ''">receive_unit = #{receiveUnit},</if>
+            <if test="monthPlan != null">month_plan = #{monthPlan},</if>
+            <if test="dailyPlan != null">daily_plan = #{dailyPlan},</if>
+            <if test="dailyCompleted != null">daily_completed = #{dailyCompleted},</if>
+            <if test="totalCompleted != null">total_completed = #{totalCompleted},</if>
+            <if test="remainingPlan != null">remaining_plan = #{remainingPlan},</if>
+            <if test="tomorrowPlan != null">tomorrow_plan = #{tomorrowPlan},</if>
+            <if test="salesUnit != null and salesUnit != ''">sales_unit = #{salesUnit},</if>
+            <if test="statsDate != null">stats_date = #{statsDate},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWPlanCompletionById" parameterType="String">
+        delete from w_plan_completion where id = #{id}
+    </delete>
+
+    <delete id="deleteWPlanCompletionByIds" parameterType="String">
+        delete from w_plan_completion where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

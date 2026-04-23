@@ -139,7 +139,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	<select id="selectUserByNickName" parameterType="java.lang.String" resultMap="SysUserResult">
 		<include refid="selectUserVo"/>
-		where u.nick_name = #{nickName} and u.del_flag = '0'
+		where u.nick_name = #{nickName} and u.del_flag = '0' limit 1
 	</select>
 
 	<select id="selectUserByUserName" parameterType="java.lang.String" resultMap="SysUserResult">

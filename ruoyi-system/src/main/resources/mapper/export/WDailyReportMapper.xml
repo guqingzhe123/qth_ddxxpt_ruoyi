@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.export.WDailyReportMapper">
+    
+    <resultMap type="WDailyReport" id="WDailyReportResult">
+        <result property="id"    column="id"    />
+        <result property="statsDate"    column="stats_date"    />
+        <result property="company"    column="company"    />
+        <result property="type"    column="type"    />
+        <result property="totalDaily"    column="total_daily"    />
+        <result property="totalAcc"    column="total_acc"    />
+        <result property="railDaily"    column="rail_daily"    />
+        <result property="railAcc"    column="rail_acc"    />
+        <result property="mineRailDaily"    column="mine_rail_daily"    />
+        <result property="mineRailAcc"    column="mine_rail_acc"    />
+        <result property="roadDaily"    column="road_daily"    />
+        <result property="roadAcc"    column="road_acc"    />
+        <result property="portDaily"    column="port_daily"    />
+        <result property="portAcc"    column="port_acc"    />
+        <result property="washDaily"    column="wash_daily"    />
+        <result property="washAcc"    column="wash_acc"    />
+        <result property="tomorrowAccept"    column="tomorrow_accept"    />
+        <result property="tomorrowCoalCar"    column="tomorrow_coal_car"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectWDailyReportVo">
+        select id, stats_date, company, type, total_daily, total_acc, rail_daily, rail_acc, mine_rail_daily, mine_rail_acc, road_daily, road_acc, port_daily, port_acc, wash_daily, wash_acc, tomorrow_accept, tomorrow_coal_car, create_time, update_time from w_daily_report
+    </sql>
+
+    <select id="selectWDailyReportList" parameterType="WDailyReport" resultMap="WDailyReportResult">
+        <include refid="selectWDailyReportVo"/>
+        <where>  
+            <if test="statsDate != null "> and stats_date = #{statsDate}</if>
+            <if test="company != null  and company != ''"> and company = #{company}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="totalDaily != null "> and total_daily = #{totalDaily}</if>
+            <if test="totalAcc != null "> and total_acc = #{totalAcc}</if>
+            <if test="railDaily != null "> and rail_daily = #{railDaily}</if>
+            <if test="railAcc != null "> and rail_acc = #{railAcc}</if>
+            <if test="mineRailDaily != null "> and mine_rail_daily = #{mineRailDaily}</if>
+            <if test="mineRailAcc != null "> and mine_rail_acc = #{mineRailAcc}</if>
+            <if test="roadDaily != null "> and road_daily = #{roadDaily}</if>
+            <if test="roadAcc != null "> and road_acc = #{roadAcc}</if>
+            <if test="portDaily != null "> and port_daily = #{portDaily}</if>
+            <if test="portAcc != null "> and port_acc = #{portAcc}</if>
+            <if test="washDaily != null "> and wash_daily = #{washDaily}</if>
+            <if test="washAcc != null "> and wash_acc = #{washAcc}</if>
+            <if test="tomorrowAccept != null "> and tomorrow_accept = #{tomorrowAccept}</if>
+            <if test="tomorrowCoalCar != null "> and tomorrow_coal_car = #{tomorrowCoalCar}</if>
+        </where>
+    </select>
+    
+    <select id="selectWDailyReportById" parameterType="Long" resultMap="WDailyReportResult">
+        <include refid="selectWDailyReportVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWDailyReport" parameterType="WDailyReport" useGeneratedKeys="true" keyProperty="id">
+        insert into w_daily_report
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="statsDate != null">stats_date,</if>
+            <if test="company != null and company != ''">company,</if>
+            <if test="type != null and type != ''">type,</if>
+            <if test="totalDaily != null">total_daily,</if>
+            <if test="totalAcc != null">total_acc,</if>
+            <if test="railDaily != null">rail_daily,</if>
+            <if test="railAcc != null">rail_acc,</if>
+            <if test="mineRailDaily != null">mine_rail_daily,</if>
+            <if test="mineRailAcc != null">mine_rail_acc,</if>
+            <if test="roadDaily != null">road_daily,</if>
+            <if test="roadAcc != null">road_acc,</if>
+            <if test="portDaily != null">port_daily,</if>
+            <if test="portAcc != null">port_acc,</if>
+            <if test="washDaily != null">wash_daily,</if>
+            <if test="washAcc != null">wash_acc,</if>
+            <if test="tomorrowAccept != null">tomorrow_accept,</if>
+            <if test="tomorrowCoalCar != null">tomorrow_coal_car,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="statsDate != null">#{statsDate},</if>
+            <if test="company != null and company != ''">#{company},</if>
+            <if test="type != null and type != ''">#{type},</if>
+            <if test="totalDaily != null">#{totalDaily},</if>
+            <if test="totalAcc != null">#{totalAcc},</if>
+            <if test="railDaily != null">#{railDaily},</if>
+            <if test="railAcc != null">#{railAcc},</if>
+            <if test="mineRailDaily != null">#{mineRailDaily},</if>
+            <if test="mineRailAcc != null">#{mineRailAcc},</if>
+            <if test="roadDaily != null">#{roadDaily},</if>
+            <if test="roadAcc != null">#{roadAcc},</if>
+            <if test="portDaily != null">#{portDaily},</if>
+            <if test="portAcc != null">#{portAcc},</if>
+            <if test="washDaily != null">#{washDaily},</if>
+            <if test="washAcc != null">#{washAcc},</if>
+            <if test="tomorrowAccept != null">#{tomorrowAccept},</if>
+            <if test="tomorrowCoalCar != null">#{tomorrowCoalCar},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWDailyReport" parameterType="WDailyReport">
+        update w_daily_report
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="statsDate != null">stats_date = #{statsDate},</if>
+            <if test="company != null and company != ''">company = #{company},</if>
+            <if test="type != null and type != ''">type = #{type},</if>
+            <if test="totalDaily != null">total_daily = #{totalDaily},</if>
+            <if test="totalAcc != null">total_acc = #{totalAcc},</if>
+            <if test="railDaily != null">rail_daily = #{railDaily},</if>
+            <if test="railAcc != null">rail_acc = #{railAcc},</if>
+            <if test="mineRailDaily != null">mine_rail_daily = #{mineRailDaily},</if>
+            <if test="mineRailAcc != null">mine_rail_acc = #{mineRailAcc},</if>
+            <if test="roadDaily != null">road_daily = #{roadDaily},</if>
+            <if test="roadAcc != null">road_acc = #{roadAcc},</if>
+            <if test="portDaily != null">port_daily = #{portDaily},</if>
+            <if test="portAcc != null">port_acc = #{portAcc},</if>
+            <if test="washDaily != null">wash_daily = #{washDaily},</if>
+            <if test="washAcc != null">wash_acc = #{washAcc},</if>
+            <if test="tomorrowAccept != null">tomorrow_accept = #{tomorrowAccept},</if>
+            <if test="tomorrowCoalCar != null">tomorrow_coal_car = #{tomorrowCoalCar},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWDailyReportById" parameterType="Long">
+        delete from w_daily_report where id = #{id}
+    </delete>
+
+    <delete id="deleteWDailyReportByIds" parameterType="String">
+        delete from w_daily_report where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

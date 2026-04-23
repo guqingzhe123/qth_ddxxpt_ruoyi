@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.export.WDataRecordMapper">
+    
+    <resultMap type="WDataRecord" id="WDataRecordResult">
+        <result property="id"    column="id"    />
+        <result property="statsDate"    column="stats_date"    />
+        <result property="name"    column="name"    />
+        <result property="data"    column="data"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectWDataRecordVo">
+        select id, stats_date, name, data, create_time, update_time from w_data_record
+    </sql>
+
+    <select id="selectWDataRecordList" parameterType="WDataRecord" resultMap="WDataRecordResult">
+        <include refid="selectWDataRecordVo"/>
+        <where>  
+            <if test="statsDate != null "> and stats_date = #{statsDate}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="data != null  and data != ''"> and data = #{data}</if>
+        </where>
+    </select>
+    
+    <select id="selectWDataRecordById" parameterType="String" resultMap="WDataRecordResult">
+        <include refid="selectWDataRecordVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWDataRecord" parameterType="WDataRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into w_data_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="statsDate != null">stats_date,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="data != null">data,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="statsDate != null">#{statsDate},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="data != null">#{data},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWDataRecord" parameterType="WDataRecord">
+        update w_data_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="statsDate != null">stats_date = #{statsDate},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="data != null">data = #{data},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWDataRecordById" parameterType="String">
+        delete from w_data_record where id = #{id}
+    </delete>
+
+    <delete id="deleteWDataRecordByIds" parameterType="String">
+        delete from w_data_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

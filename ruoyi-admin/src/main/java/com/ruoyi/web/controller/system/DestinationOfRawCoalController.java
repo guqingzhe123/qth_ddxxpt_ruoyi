@@ -61,7 +61,14 @@ public class DestinationOfRawCoalController extends BaseController {
     @Log(title = "原煤去向/各矿日实际产量录入", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody List<DestinationOfRawCoal> destinationOfRawCoal) {
-        return toAjax(destinationOfRawCoalService.saveDestinationOfRawCoal(destinationOfRawCoal));
+        int saved = destinationOfRawCoalService.saveDestinationOfRawCoal(destinationOfRawCoal);
+
+        if (saved==0){
+
+            return AjaxResult.error("请联系局里进行退回");
+        }
+
+        return toAjax(saved);
     }
 
     /**

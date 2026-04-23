@@ -89,6 +89,7 @@ public class WorkCoalWashingReportController extends BaseController {
     public AjaxResult Alllist(WorkCoalWashingReport workCoalWashingReport) {
         List<WorkCoalWashingReport> 当日 = workCoalWashingReportService.listWorkCoalWashingReport(workCoalWashingReport);
         List<WorkCoalWashingReport> 当月 = workCoalWashingReportService.WorkCoalWashingReportlist(workCoalWashingReport);
+        List<WorkCoalWashingReport> 当年 = workCoalWashingReportService.selectWorkCoalWashingReportYearList(workCoalWashingReport);
         WorkCoalWashingReportSub sub=new WorkCoalWashingReportSub();
         sub.setReportTime(workCoalWashingReport.getReportTime());
         WorkCoalWashingReportSub workCoalWashingReportSub = workCoalWashingReportSubService.WorkCoalWashingReportSub(sub);
@@ -103,9 +104,11 @@ public class WorkCoalWashingReportController extends BaseController {
         List<FactoryArchive> factoryArchives = factoryArchiveMapper.selectList(factoryArch);
         List<WorkCoalWashingReport> 当日数据=new ArrayList<>();
         List<WorkCoalWashingReport> 当月数据=new ArrayList<>();
+        List<WorkCoalWashingReport> 当年数据=new ArrayList<>();
         for (FactoryArchive fact : factoryArchives) {
             WorkCoalWashingReport workCoalWashingReport1 = 当日.stream().filter(item -> fact.getFactoryName().equals(item.getUnitName())).findFirst().orElse(new WorkCoalWashingReport());
             WorkCoalWashingReport workCoalWashingReport2 = 当月.stream().filter(item -> fact.getFactoryName().equals(item.getUnitName())).findFirst().orElse(new WorkCoalWashingReport());
+            WorkCoalWashingReport workCoalWashingReport3 = 当年.stream().filter(item -> fact.getFactoryName().equals(item.getUnitName())).findFirst().orElse(new WorkCoalWashingReport());
 
 
             if(workCoalWashingReport1.getUnitName() !=null){
@@ -134,7 +137,8 @@ public class WorkCoalWashingReportController extends BaseController {
                             .setScale(2, RoundingMode.HALF_UP));
                 }
                 当日数据.add(workCoalWashingReport1);
-            }else {
+            }
+            else {
                 WorkCoalWashingReport workCoalWashingReport1_1 = new WorkCoalWashingReport();
                 workCoalWashingReport1_1.setUnitName(fact.getFactoryName());
                 当日数据.add(workCoalWashingReport1_1);
@@ -165,14 +169,50 @@ public class WorkCoalWashingReportController extends BaseController {
                 }
 
                 当月数据.add(workCoalWashingReport2);
-            }else {
+            }
+            else {
                 WorkCoalWashingReport workCoalWashingReport2_1 = new WorkCoalWashingReport();
                 workCoalWashingReport2_1.setUnitName(fact.getFactoryName());
                 当月数据.add(workCoalWashingReport2_1);
             }
+
+            if(workCoalWashingReport3.getUnitName() !=null){
+                if (workCoalWashingReport3.getWashingInput() != null && workCoalWashingReport3.getWashingInput() > 0) {
+                    // 精煤产率：(精煤 / 洗入量) * 100，保留 2 位小数
+                    BigDecimal cleanCoal = workCoalWashingReport3.getCleanCoal() != null ? BigDecimal.valueOf(workCoalWashingReport3.getCleanCoal()) : BigDecimal.ZERO;
+                    BigDecimal washedLumpCoal = workCoalWashingReport3.getWashedLumpCoal() != null ? BigDecimal.valueOf(workCoalWashingReport3.getWashedLumpCoal()) : BigDecimal.ZERO;
+                    BigDecimal washedFineCoal = workCoalWashingReport3.getWashedFineCoal() != null ? BigDecimal.valueOf(workCoalWashingReport3.getWashedFineCoal()) : BigDecimal.ZERO;
+                    BigDecimal washingConsumption = workCoalWashingReport3.getWashingConsumption() != null ? BigDecimal.valueOf(workCoalWashingReport3.getWashingConsumption()) : BigDecimal.ZERO;
+                    BigDecimal washingInput = BigDecimal.valueOf(workCoalWashingReport3.getWashingInput());
+
+                    workCoalWashingReport3.setCleanCoalYield(cleanCoal
+                            .divide(washingInput, 6, RoundingMode.HALF_UP)
+                            .multiply(BigDecimal.valueOf(100))
+                            .setScale(2, RoundingMode.HALF_UP));
+                    // 综合产率：(精煤 + 洗块煤 + 洗末煤) / 洗入量 * 100，保留 2 位小数
+                    workCoalWashingReport3.setComprehensiveYield(cleanCoal.add(washedLumpCoal).add(washedFineCoal)
+                            .divide(washingInput, 6, RoundingMode.HALF_UP)
+                            .multiply(BigDecimal.valueOf(100))
+                            .setScale(2, RoundingMode.HALF_UP));
+                    // 洗耗率：(洗耗 / 洗入量) * 100，保留 2 位小数
+                    workCoalWashingReport3.setWashingConsumptionRate(washingConsumption
+                            .divide(washingInput, 6, RoundingMode.HALF_UP)
+                            .multiply(BigDecimal.valueOf(100))
+                            .setScale(2, RoundingMode.HALF_UP));
+                }
+
+                当年数据.add(workCoalWashingReport3);
+            }
+            else {
+                WorkCoalWashingReport workCoalWashingReport3_1 = new WorkCoalWashingReport();
+                workCoalWashingReport3_1.setUnitName(fact.getFactoryName());
+                当年数据.add(workCoalWashingReport3_1);
+            }
+
         }
         quankuang.setList(当日数据);
         quankuang.setMonthList(当月数据);
+        quankuang.setYearList(当年数据);
         if(workCoalWashingReportSub !=null){
             quankuang.setRemarks(workCoalWashingReportSub.getRemarks());
         }else{

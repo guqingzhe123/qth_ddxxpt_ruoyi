@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.export.WFreightPlanMapper">
+    
+    <resultMap type="WFreightPlan" id="WFreightPlanResult">
+        <result property="id"    column="id"    />
+        <result property="planNo"    column="plan_no"    />
+        <result property="arrivalStation"    column="arrival_station"    />
+        <result property="receiver"    column="receiver"    />
+        <result property="goodsType"    column="goods_type"    />
+        <result property="goodsLevel"    column="goods_level"    />
+        <result property="origin"    column="origin"    />
+        <result property="approvedCars"    column="approved_cars"    />
+        <result property="statsDate"    column="stats_date"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectWFreightPlanVo">
+        select id, plan_no, arrival_station, receiver, goods_type, goods_level, origin, approved_cars, stats_date, create_time, update_time from w_freight_plan
+    </sql>
+
+    <select id="selectWFreightPlanList" parameterType="WFreightPlan" resultMap="WFreightPlanResult">
+        <include refid="selectWFreightPlanVo"/>
+        <where>  
+            <if test="planNo != null  and planNo != ''"> and plan_no = #{planNo}</if>
+            <if test="arrivalStation != null  and arrivalStation != ''"> and arrival_station = #{arrivalStation}</if>
+            <if test="receiver != null  and receiver != ''"> and receiver = #{receiver}</if>
+            <if test="goodsType != null  and goodsType != ''"> and goods_type = #{goodsType}</if>
+            <if test="goodsLevel != null  and goodsLevel != ''"> and goods_level = #{goodsLevel}</if>
+            <if test="origin != null  and origin != ''"> and origin = #{origin}</if>
+            <if test="approvedCars != null "> and approved_cars = #{approvedCars}</if>
+            <if test="statsDate != null "> and stats_date = #{statsDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectWFreightPlanById" parameterType="String" resultMap="WFreightPlanResult">
+        <include refid="selectWFreightPlanVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWFreightPlan" parameterType="WFreightPlan" useGeneratedKeys="true" keyProperty="id">
+        insert into w_freight_plan
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="planNo != null and planNo != ''">plan_no,</if>
+            <if test="arrivalStation != null and arrivalStation != ''">arrival_station,</if>
+            <if test="receiver != null and receiver != ''">receiver,</if>
+            <if test="goodsType != null and goodsType != ''">goods_type,</if>
+            <if test="goodsLevel != null">goods_level,</if>
+            <if test="origin != null">origin,</if>
+            <if test="approvedCars != null">approved_cars,</if>
+            <if test="statsDate != null">stats_date,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="planNo != null and planNo != ''">#{planNo},</if>
+            <if test="arrivalStation != null and arrivalStation != ''">#{arrivalStation},</if>
+            <if test="receiver != null and receiver != ''">#{receiver},</if>
+            <if test="goodsType != null and goodsType != ''">#{goodsType},</if>
+            <if test="goodsLevel != null">#{goodsLevel},</if>
+            <if test="origin != null">#{origin},</if>
+            <if test="approvedCars != null">#{approvedCars},</if>
+            <if test="statsDate != null">#{statsDate},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWFreightPlan" parameterType="WFreightPlan">
+        update w_freight_plan
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="planNo != null and planNo != ''">plan_no = #{planNo},</if>
+            <if test="arrivalStation != null and arrivalStation != ''">arrival_station = #{arrivalStation},</if>
+            <if test="receiver != null and receiver != ''">receiver = #{receiver},</if>
+            <if test="goodsType != null and goodsType != ''">goods_type = #{goodsType},</if>
+            <if test="goodsLevel != null">goods_level = #{goodsLevel},</if>
+            <if test="origin != null">origin = #{origin},</if>
+            <if test="approvedCars != null">approved_cars = #{approvedCars},</if>
+            <if test="statsDate != null">stats_date = #{statsDate},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWFreightPlanById" parameterType="String">
+        delete from w_freight_plan where id = #{id}
+    </delete>
+
+    <delete id="deleteWFreightPlanByIds" parameterType="String">
+        delete from w_freight_plan where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

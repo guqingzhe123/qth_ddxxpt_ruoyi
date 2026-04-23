@@ -45,7 +45,7 @@ public class MiningAreaCategoryController extends BaseController {
 //            // 用【数据库列名】而不是 Java 字段名
 //            PageHelper.orderBy("production_date desc"); // 或者 "create_time desc"
 //        }
-
+        query.setIsSealed(0);
         List<MiningAreaCategory> list = miningAreaCategoryService.list(query);
         return getDataTable(list);
     }
@@ -70,11 +70,18 @@ public class MiningAreaCategoryController extends BaseController {
     @Operation(summary = "新增")
     @PostMapping
     public AjaxResult add(@RequestBody MiningAreaCategory entity) {
-        int add = miningAreaCategoryService.add(entity);
-        if (add==0){
+
+        MiningAreaCategory areaName = miningAreaCategoryService.getAreaName(entity.getAreaName());
+        MiningAreaCategory areaCode = miningAreaCategoryService.getAreaCode(entity.getAreaCode());
+        if (areaName !=null){
+            if(areaName.getLevel()==1){
+                AjaxResult.error("名称不能为矿名");
+            }
+        }
+        if (areaCode !=null){
             AjaxResult.error("采区编码重复");
         }
-        return AjaxResult.toAjax(add);
+        return AjaxResult.toAjax(miningAreaCategoryService.add(entity));
     }
 
     @Anonymous

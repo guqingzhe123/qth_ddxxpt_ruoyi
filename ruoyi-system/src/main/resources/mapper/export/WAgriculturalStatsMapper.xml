@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.export.WAgriculturalStatsMapper">
+    
+    <resultMap type="WAgriculturalStats" id="WAgriculturalStatsResult">
+        <result property="id"    column="id"    />
+        <result property="variety"    column="variety"    />
+        <result property="origin"    column="origin"    />
+        <result property="moistureCalorific"    column="moisture_calorific"    />
+        <result property="day2Quantity"    column="day2_quantity"    />
+        <result property="day2Price"    column="day2_price"    />
+        <result property="day2UnitPrice"    column="day2_unit_price"    />
+        <result property="day1Quantity"    column="day1_quantity"    />
+        <result property="day1Price"    column="day1_price"    />
+        <result property="day1Amount"    column="day1_amount"    />
+        <result property="totalQuantity"    column="total_quantity"    />
+        <result property="totalPrice"    column="total_price"    />
+        <result property="totalAmount"    column="total_amount"    />
+        <result property="statsDate"    column="stats_date"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectWAgriculturalStatsVo">
+        select id, variety, origin, moisture_calorific, day2_quantity, day2_price, day2_unit_price, day1_quantity, day1_price, day1_amount, total_quantity, total_price, total_amount, stats_date, create_time, update_time from w_agricultural_stats
+    </sql>
+
+    <select id="selectWAgriculturalStatsList" parameterType="WAgriculturalStats" resultMap="WAgriculturalStatsResult">
+        <include refid="selectWAgriculturalStatsVo"/>
+        <where>  
+            <if test="variety != null  and variety != ''"> and variety = #{variety}</if>
+            <if test="origin != null  and origin != ''"> and origin = #{origin}</if>
+            <if test="moistureCalorific != null  and moistureCalorific != ''"> and moisture_calorific = #{moistureCalorific}</if>
+            <if test="day2Quantity != null "> and day2_quantity = #{day2Quantity}</if>
+            <if test="day2Price != null "> and day2_price = #{day2Price}</if>
+            <if test="day2UnitPrice != null "> and day2_unit_price = #{day2UnitPrice}</if>
+            <if test="day1Quantity != null "> and day1_quantity = #{day1Quantity}</if>
+            <if test="day1Price != null "> and day1_price = #{day1Price}</if>
+            <if test="day1Amount != null "> and day1_amount = #{day1Amount}</if>
+            <if test="totalQuantity != null "> and total_quantity = #{totalQuantity}</if>
+            <if test="totalPrice != null "> and total_price = #{totalPrice}</if>
+            <if test="totalAmount != null "> and total_amount = #{totalAmount}</if>
+            <if test="statsDate != null "> and stats_date = #{statsDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectWAgriculturalStatsById" parameterType="String" resultMap="WAgriculturalStatsResult">
+        <include refid="selectWAgriculturalStatsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWAgriculturalStats" parameterType="WAgriculturalStats" useGeneratedKeys="true" keyProperty="id">
+        insert into w_agricultural_stats
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="variety != null and variety != ''">variety,</if>
+            <if test="origin != null and origin != ''">origin,</if>
+            <if test="moistureCalorific != null">moisture_calorific,</if>
+            <if test="day2Quantity != null">day2_quantity,</if>
+            <if test="day2Price != null">day2_price,</if>
+            <if test="day2UnitPrice != null">day2_unit_price,</if>
+            <if test="day1Quantity != null">day1_quantity,</if>
+            <if test="day1Price != null">day1_price,</if>
+            <if test="day1Amount != null">day1_amount,</if>
+            <if test="totalQuantity != null">total_quantity,</if>
+            <if test="totalPrice != null">total_price,</if>
+            <if test="totalAmount != null">total_amount,</if>
+            <if test="statsDate != null">stats_date,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="variety != null and variety != ''">#{variety},</if>
+            <if test="origin != null and origin != ''">#{origin},</if>
+            <if test="moistureCalorific != null">#{moistureCalorific},</if>
+            <if test="day2Quantity != null">#{day2Quantity},</if>
+            <if test="day2Price != null">#{day2Price},</if>
+            <if test="day2UnitPrice != null">#{day2UnitPrice},</if>
+            <if test="day1Quantity != null">#{day1Quantity},</if>
+            <if test="day1Price != null">#{day1Price},</if>
+            <if test="day1Amount != null">#{day1Amount},</if>
+            <if test="totalQuantity != null">#{totalQuantity},</if>
+            <if test="totalPrice != null">#{totalPrice},</if>
+            <if test="totalAmount != null">#{totalAmount},</if>
+            <if test="statsDate != null">#{statsDate},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWAgriculturalStats" parameterType="WAgriculturalStats">
+        update w_agricultural_stats
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="variety != null and variety != ''">variety = #{variety},</if>
+            <if test="origin != null and origin != ''">origin = #{origin},</if>
+            <if test="moistureCalorific != null">moisture_calorific = #{moistureCalorific},</if>
+            <if test="day2Quantity != null">day2_quantity = #{day2Quantity},</if>
+            <if test="day2Price != null">day2_price = #{day2Price},</if>
+            <if test="day2UnitPrice != null">day2_unit_price = #{day2UnitPrice},</if>
+            <if test="day1Quantity != null">day1_quantity = #{day1Quantity},</if>
+            <if test="day1Price != null">day1_price = #{day1Price},</if>
+            <if test="day1Amount != null">day1_amount = #{day1Amount},</if>
+            <if test="totalQuantity != null">total_quantity = #{totalQuantity},</if>
+            <if test="totalPrice != null">total_price = #{totalPrice},</if>
+            <if test="totalAmount != null">total_amount = #{totalAmount},</if>
+            <if test="statsDate != null">stats_date = #{statsDate},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWAgriculturalStatsById" parameterType="String">
+        delete from w_agricultural_stats where id = #{id}
+    </delete>
+
+    <delete id="deleteWAgriculturalStatsByIds" parameterType="String">
+        delete from w_agricultural_stats where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

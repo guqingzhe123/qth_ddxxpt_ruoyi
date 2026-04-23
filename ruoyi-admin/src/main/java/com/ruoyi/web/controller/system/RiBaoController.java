@@ -2111,6 +2111,7 @@ public class RiBaoController extends BaseController {
                 }
             }
         }
+        //        nested exception is org.apache.ibatis.exceptions.TooManyResultsException: Expected one result (or null) to be returned by selectOne(), but found: 2
         return success(bian);
     }
 

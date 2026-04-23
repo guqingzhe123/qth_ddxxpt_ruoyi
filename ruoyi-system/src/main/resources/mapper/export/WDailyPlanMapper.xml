@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.export.WDailyPlanMapper">
+    
+    <resultMap type="WDailyPlan" id="WDailyPlanResult">
+        <result property="id"    column="id"    />
+        <result property="factoryMine"    column="factory_mine"    />
+        <result property="coalLevel"    column="coal_level"    />
+        <result property="userUnit"    column="user_unit"    />
+        <result property="station"    column="station"    />
+        <result property="planCar"    column="plan_car"    />
+        <result property="planTon"    column="plan_ton"    />
+        <result property="todayLoadCar"    column="today_load_car"    />
+        <result property="todayLoadTon"    column="today_load_ton"    />
+        <result property="totalLoadCar"    column="total_load_car"    />
+        <result property="totalLoadTon"    column="total_load_ton"    />
+        <result property="remainPlanCar"    column="remain_plan_car"    />
+        <result property="remainPlanTon"    column="remain_plan_ton"    />
+        <result property="remainAvgDailyCar"    column="remain_avg_daily_car"    />
+        <result property="remainAvgDailyTon"    column="remain_avg_daily_ton"    />
+        <result property="completeRate"    column="complete_rate"    />
+        <result property="tomorrowAcceptCar"    column="tomorrow_accept_car"    />
+        <result property="statsDate"    column="stats_date"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectWDailyPlanVo">
+        select id, factory_mine, coal_level, user_unit, station, plan_car, plan_ton, today_load_car, today_load_ton, total_load_car, total_load_ton, remain_plan_car, remain_plan_ton, remain_avg_daily_car, remain_avg_daily_ton, complete_rate, tomorrow_accept_car, stats_date, create_time, update_time from w_daily_plan
+    </sql>
+
+    <select id="selectWDailyPlanList" parameterType="WDailyPlan" resultMap="WDailyPlanResult">
+        <include refid="selectWDailyPlanVo"/>
+        <where>  
+            <if test="factoryMine != null  and factoryMine != ''"> and factory_mine = #{factoryMine}</if>
+            <if test="coalLevel != null  and coalLevel != ''"> and coal_level = #{coalLevel}</if>
+            <if test="userUnit != null  and userUnit != ''"> and user_unit = #{userUnit}</if>
+            <if test="station != null  and station != ''"> and station = #{station}</if>
+            <if test="planCar != null "> and plan_car = #{planCar}</if>
+            <if test="planTon != null "> and plan_ton = #{planTon}</if>
+            <if test="todayLoadCar != null "> and today_load_car = #{todayLoadCar}</if>
+            <if test="todayLoadTon != null "> and today_load_ton = #{todayLoadTon}</if>
+            <if test="totalLoadCar != null "> and total_load_car = #{totalLoadCar}</if>
+            <if test="totalLoadTon != null "> and total_load_ton = #{totalLoadTon}</if>
+            <if test="remainPlanCar != null "> and remain_plan_car = #{remainPlanCar}</if>
+            <if test="remainPlanTon != null "> and remain_plan_ton = #{remainPlanTon}</if>
+            <if test="remainAvgDailyCar != null "> and remain_avg_daily_car = #{remainAvgDailyCar}</if>
+            <if test="remainAvgDailyTon != null "> and remain_avg_daily_ton = #{remainAvgDailyTon}</if>
+            <if test="completeRate != null "> and complete_rate = #{completeRate}</if>
+            <if test="tomorrowAcceptCar != null "> and tomorrow_accept_car = #{tomorrowAcceptCar}</if>
+            <if test="statsDate != null "> and stats_date = #{statsDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectWDailyPlanById" parameterType="String" resultMap="WDailyPlanResult">
+        <include refid="selectWDailyPlanVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWDailyPlan" parameterType="WDailyPlan" useGeneratedKeys="true" keyProperty="id">
+        insert into w_daily_plan
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="factoryMine != null and factoryMine != ''">factory_mine,</if>
+            <if test="coalLevel != null and coalLevel != ''">coal_level,</if>
+            <if test="userUnit != null and userUnit != ''">user_unit,</if>
+            <if test="station != null and station != ''">station,</if>
+            <if test="planCar != null">plan_car,</if>
+            <if test="planTon != null">plan_ton,</if>
+            <if test="todayLoadCar != null">today_load_car,</if>
+            <if test="todayLoadTon != null">today_load_ton,</if>
+            <if test="totalLoadCar != null">total_load_car,</if>
+            <if test="totalLoadTon != null">total_load_ton,</if>
+            <if test="remainPlanCar != null">remain_plan_car,</if>
+            <if test="remainPlanTon != null">remain_plan_ton,</if>
+            <if test="remainAvgDailyCar != null">remain_avg_daily_car,</if>
+            <if test="remainAvgDailyTon != null">remain_avg_daily_ton,</if>
+            <if test="completeRate != null">complete_rate,</if>
+            <if test="tomorrowAcceptCar != null">tomorrow_accept_car,</if>
+            <if test="statsDate != null">stats_date,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="factoryMine != null and factoryMine != ''">#{factoryMine},</if>
+            <if test="coalLevel != null and coalLevel != ''">#{coalLevel},</if>
+            <if test="userUnit != null and userUnit != ''">#{userUnit},</if>
+            <if test="station != null and station != ''">#{station},</if>
+            <if test="planCar != null">#{planCar},</if>
+            <if test="planTon != null">#{planTon},</if>
+            <if test="todayLoadCar != null">#{todayLoadCar},</if>
+            <if test="todayLoadTon != null">#{todayLoadTon},</if>
+            <if test="totalLoadCar != null">#{totalLoadCar},</if>
+            <if test="totalLoadTon != null">#{totalLoadTon},</if>
+            <if test="remainPlanCar != null">#{remainPlanCar},</if>
+            <if test="remainPlanTon != null">#{remainPlanTon},</if>
+            <if test="remainAvgDailyCar != null">#{remainAvgDailyCar},</if>
+            <if test="remainAvgDailyTon != null">#{remainAvgDailyTon},</if>
+            <if test="completeRate != null">#{completeRate},</if>
+            <if test="tomorrowAcceptCar != null">#{tomorrowAcceptCar},</if>
+            <if test="statsDate != null">#{statsDate},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWDailyPlan" parameterType="WDailyPlan">
+        update w_daily_plan
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="factoryMine != null and factoryMine != ''">factory_mine = #{factoryMine},</if>
+            <if test="coalLevel != null and coalLevel != ''">coal_level = #{coalLevel},</if>
+            <if test="userUnit != null and userUnit != ''">user_unit = #{userUnit},</if>
+            <if test="station != null and station != ''">station = #{station},</if>
+            <if test="planCar != null">plan_car = #{planCar},</if>
+            <if test="planTon != null">plan_ton = #{planTon},</if>
+            <if test="todayLoadCar != null">today_load_car = #{todayLoadCar},</if>
+            <if test="todayLoadTon != null">today_load_ton = #{todayLoadTon},</if>
+            <if test="totalLoadCar != null">total_load_car = #{totalLoadCar},</if>
+            <if test="totalLoadTon != null">total_load_ton = #{totalLoadTon},</if>
+            <if test="remainPlanCar != null">remain_plan_car = #{remainPlanCar},</if>
+            <if test="remainPlanTon != null">remain_plan_ton = #{remainPlanTon},</if>
+            <if test="remainAvgDailyCar != null">remain_avg_daily_car = #{remainAvgDailyCar},</if>
+            <if test="remainAvgDailyTon != null">remain_avg_daily_ton = #{remainAvgDailyTon},</if>
+            <if test="completeRate != null">complete_rate = #{completeRate},</if>
+            <if test="tomorrowAcceptCar != null">tomorrow_accept_car = #{tomorrowAcceptCar},</if>
+            <if test="statsDate != null">stats_date = #{statsDate},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWDailyPlanById" parameterType="String">
+        delete from w_daily_plan where id = #{id}
+    </delete>
+
+    <delete id="deleteWDailyPlanByIds" parameterType="String">
+        delete from w_daily_plan where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

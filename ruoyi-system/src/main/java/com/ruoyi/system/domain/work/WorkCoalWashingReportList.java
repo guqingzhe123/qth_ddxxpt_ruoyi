@@ -19,6 +19,7 @@ public class WorkCoalWashingReportList extends BaseEntity {
     private String remarks;
     List<WorkCoalWashingReport> list;
     List<WorkCoalWashingReport> monthList;
+    List<WorkCoalWashingReport> yearList;
 
 
 }

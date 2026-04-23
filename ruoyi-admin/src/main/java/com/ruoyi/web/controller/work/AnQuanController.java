@@ -184,16 +184,59 @@ public class AnQuanController extends BaseController {
                 workStatuses.add(workProductionStatus);
             }
 
-            FactoryArchive factoryArch = new FactoryArchive();
-            factoryArch.setIsSealed(0);
-            List<FactoryArchive> factoryArchives = factoryArchiveMapper.selectList(factoryArch);
-            for (FactoryArchive fact:factoryArchives) {
-                WorkProductionStatus workProductionStatus=new WorkProductionStatus();
-                workProductionStatus.setUnitCode(fact.getFactoryCode());
-                workProductionStatus.setUnit(fact.getFactoryName());
-                workStatuses.add(workProductionStatus);
+            if(anQuan.getUnitCode().equals(("101200"))){//胜利煤矿
+                FactoryArchive factoryArch = new FactoryArchive();
+                factoryArch.setIsSealed(0);
+                List<FactoryArchive> factoryArchives = factoryArchiveMapper.selectList(factoryArch);
+                for (FactoryArchive fact:factoryArchives) {
+                    WorkProductionStatus workProductionStatus=new WorkProductionStatus();
+                    workProductionStatus.setUnitCode(fact.getFactoryCode());
+                    workProductionStatus.setUnit("一井"+fact.getFactoryName());
+                    workStatuses.add(workProductionStatus);
+                }
+                for (FactoryArchive fact:factoryArchives) {
+                    WorkProductionStatus workProductionStatus=new WorkProductionStatus();
+                    workProductionStatus.setUnitCode(fact.getFactoryCode());
+                    workProductionStatus.setUnit("六井"+fact.getFactoryName());
+                    workStatuses.add(workProductionStatus);
+                }
+                anQuan.setProductionStatus(workStatuses);
+            } else if(anQuan.getUnitCode().equals(("101000"))){//向阳煤矿
+                FactoryArchive factoryArch = new FactoryArchive();
+                factoryArch.setIsSealed(0);
+                List<FactoryArchive> factoryArchives = factoryArchiveMapper.selectList(factoryArch);
+                for (FactoryArchive fact:factoryArchives) {
+                    WorkProductionStatus workProductionStatus=new WorkProductionStatus();
+                    workProductionStatus.setUnitCode(fact.getFactoryCode());
+                    workProductionStatus.setUnit("二井"+fact.getFactoryName());
+                    workStatuses.add(workProductionStatus);
+                }
+                for (FactoryArchive fact:factoryArchives) {
+                    WorkProductionStatus workProductionStatus=new WorkProductionStatus();
+                    workProductionStatus.setUnitCode(fact.getFactoryCode());
+                    workProductionStatus.setUnit("六井"+fact.getFactoryName());
+                    workStatuses.add(workProductionStatus);
+                }
+                anQuan.setProductionStatus(workStatuses);
+            }else {
+                FactoryArchive factoryArch = new FactoryArchive();
+                factoryArch.setIsSealed(0);
+                List<FactoryArchive> factoryArchives = factoryArchiveMapper.selectList(factoryArch);
+                for (FactoryArchive fact:factoryArchives) {
+                    WorkProductionStatus workProductionStatus=new WorkProductionStatus();
+                    workProductionStatus.setUnitCode(fact.getFactoryCode());
+                    workProductionStatus.setUnit(fact.getFactoryName());
+                    workStatuses.add(workProductionStatus);
+                }
+                anQuan.setProductionStatus(workStatuses);
             }
-           anQuan.setProductionStatus(workStatuses);
+
+            WorkProductionStatus workProductionStatus=new WorkProductionStatus();
+            workProductionStatus.setUnitCode("000000");
+            workProductionStatus.setUnit("其他");
+            workStatuses.add(workProductionStatus);
+            anQuan.setProductionStatus(workStatuses);
+
         }
 
         return success(anQuan);

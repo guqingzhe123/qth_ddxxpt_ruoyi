@@ -60,15 +60,24 @@ public class DestinationOfRawCoalServiceImpl implements IDestinationOfRawCoalSer
             for (DestinationOfRawCoal coal2:destinationOfRawCoal) {
                 DestinationOfRawCoal Coal = destinationOfRawCoals.stream().filter(item -> coal2.getUnitName().equals(item.getUnitName())).findFirst().orElse(new DestinationOfRawCoal());
                 if(Coal.getId() !=null){
-                    Coal.setSalesVolume(coal2.getSalesVolume());
-                    Coal.setRailwayTransportVolume(coal2.getRailwayTransportVolume());
-                    Coal.setWashPlantInbound(coal2.getWashPlantInbound());
-                    Coal.setSalesYardInbound(coal2.getSalesYardInbound());
-                    Coal.setGasCompanySupply(coal2.getGasCompanySupply());
-                    Coal.setSelfUse(coal2.getSelfUse());
-                    Coal.setOtherUse(coal2.getOtherUse());
-                    Coal.setInventory(coal2.getInventory());
-                    destinationOfRawCoalMapper.updateDestinationOfRawCoal(Coal);
+
+                    if(Coal.getIsDeleted()==2){
+                        Coal.setIsDeleted(0);
+                        Coal.setSalesVolume(coal2.getSalesVolume());
+                        Coal.setRailwayTransportVolume(coal2.getRailwayTransportVolume());
+                        Coal.setWashPlantInbound(coal2.getWashPlantInbound());
+                        Coal.setSalesYardInbound(coal2.getSalesYardInbound());
+                        Coal.setGasCompanySupply(coal2.getGasCompanySupply());
+                        Coal.setSelfUse(coal2.getSelfUse());
+                        Coal.setOtherUse(coal2.getOtherUse());
+                        Coal.setInventory(coal2.getInventory());
+                        destinationOfRawCoalMapper.updateDestinationOfRawCoal(Coal);
+                    }else {
+                        return 0;
+                    }
+
+
+
                 }else {
                     coal2.setCreateTime(DateUtils.getNowDate());
                     List<DestinationOfRawCoal> list = new ArrayList<>();

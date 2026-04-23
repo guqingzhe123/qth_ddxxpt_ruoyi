@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.export.WLoadingStatisticsMapper">
+    
+    <resultMap type="WLoadingStatistics" id="WLoadingStatisticsResult">
+        <result property="id"    column="id"    />
+        <result property="coalType"    column="coal_type"    />
+        <result property="salesMode"    column="sales_mode"    />
+        <result property="transportMode"    column="transport_mode"    />
+        <result property="factoryName"    column="factory_name"    />
+        <result property="coalLevel"    column="coal_level"    />
+        <result property="dailyApprovedCars"    column="daily_approved_cars"    />
+        <result property="dailyLoadedCars"    column="daily_loaded_cars"    />
+        <result property="dailyLoadedWeight"    column="daily_loaded_weight"    />
+        <result property="monthlyApprovedCars"    column="monthly_approved_cars"    />
+        <result property="monthlyLoadedCars"    column="monthly_loaded_cars"    />
+        <result property="monthlyLoadedWeight"    column="monthly_loaded_weight"    />
+        <result property="statsDate"    column="stats_date"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectWLoadingStatisticsVo">
+        select id, coal_type, sales_mode, transport_mode, factory_name, coal_level, daily_approved_cars, daily_loaded_cars, daily_loaded_weight, monthly_approved_cars, monthly_loaded_cars,
+               monthly_loaded_weight, stats_date, create_time, update_time from w_loading_statistics
+    </sql>
+
+    <select id="selectWLoadingStatisticsList" parameterType="WLoadingStatistics" resultMap="WLoadingStatisticsResult">
+        <include refid="selectWLoadingStatisticsVo"/>
+        <where>  
+            <if test="coalType != null  and coalType != ''"> and coal_type = #{coalType}</if>
+            <if test="salesMode != null  and salesMode != ''"> and sales_mode = #{salesMode}</if>
+            <if test="transportMode != null  and transportMode != ''"> and transport_mode = #{transportMode}</if>
+            <if test="factoryName != null  and factoryName != ''"> and factory_name like concat('%', #{factoryName}, '%')</if>
+            <if test="coalLevel != null  and coalLevel != ''"> and coal_level = #{coalLevel}</if>
+            <if test="dailyApprovedCars != null "> and daily_approved_cars = #{dailyApprovedCars}</if>
+            <if test="dailyLoadedCars != null "> and daily_loaded_cars = #{dailyLoadedCars}</if>
+            <if test="dailyLoadedWeight != null "> and daily_loaded_weight = #{dailyLoadedWeight}</if>
+            <if test="monthlyApprovedCars != null "> and monthly_approved_cars = #{monthlyApprovedCars}</if>
+            <if test="monthlyLoadedCars != null "> and monthly_loaded_cars = #{monthlyLoadedCars}</if>
+            <if test="monthlyLoadedWeight != null "> and monthly_loaded_weight = #{monthlyLoadedWeight}</if>
+            <if test="statsDate != null "> and stats_date = #{statsDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectWLoadingStatisticsById" parameterType="String" resultMap="WLoadingStatisticsResult">
+        <include refid="selectWLoadingStatisticsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWLoadingStatistics" parameterType="WLoadingStatistics" useGeneratedKeys="true" keyProperty="id">
+        insert into w_loading_statistics
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="coalType != null and coalType != ''">coal_type,</if>
+            <if test="salesMode != null and salesMode != ''">sales_mode,</if>
+            <if test="transportMode != null and transportMode != ''">transport_mode,</if>
+            <if test="factoryName != null">factory_name,</if>
+            <if test="coalLevel != null">coal_level,</if>
+            <if test="dailyApprovedCars != null">daily_approved_cars,</if>
+            <if test="dailyLoadedCars != null">daily_loaded_cars,</if>
+            <if test="dailyLoadedWeight != null">daily_loaded_weight,</if>
+            <if test="monthlyApprovedCars != null">monthly_approved_cars,</if>
+            <if test="monthlyLoadedCars != null">monthly_loaded_cars,</if>
+            <if test="monthlyLoadedWeight != null">monthly_loaded_weight,</if>
+            <if test="statsDate != null">stats_date,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="coalType != null and coalType != ''">#{coalType},</if>
+            <if test="salesMode != null and salesMode != ''">#{salesMode},</if>
+            <if test="transportMode != null and transportMode != ''">#{transportMode},</if>
+            <if test="factoryName != null">#{factoryName},</if>
+            <if test="coalLevel != null">#{coalLevel},</if>
+            <if test="dailyApprovedCars != null">#{dailyApprovedCars},</if>
+            <if test="dailyLoadedCars != null">#{dailyLoadedCars},</if>
+            <if test="dailyLoadedWeight != null">#{dailyLoadedWeight},</if>
+            <if test="monthlyApprovedCars != null">#{monthlyApprovedCars},</if>
+            <if test="monthlyLoadedCars != null">#{monthlyLoadedCars},</if>
+            <if test="monthlyLoadedWeight != null">#{monthlyLoadedWeight},</if>
+            <if test="statsDate != null">#{statsDate},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWLoadingStatistics" parameterType="WLoadingStatistics">
+        update w_loading_statistics
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="coalType != null and coalType != ''">coal_type = #{coalType},</if>
+            <if test="salesMode != null and salesMode != ''">sales_mode = #{salesMode},</if>
+            <if test="transportMode != null and transportMode != ''">transport_mode = #{transportMode},</if>
+            <if test="factoryName != null">factory_name = #{factoryName},</if>
+            <if test="coalLevel != null">coal_level = #{coalLevel},</if>
+            <if test="dailyApprovedCars != null">daily_approved_cars = #{dailyApprovedCars},</if>
+            <if test="dailyLoadedCars != null">daily_loaded_cars = #{dailyLoadedCars},</if>
+            <if test="dailyLoadedWeight != null">daily_loaded_weight = #{dailyLoadedWeight},</if>
+            <if test="monthlyApprovedCars != null">monthly_approved_cars = #{monthlyApprovedCars},</if>
+            <if test="monthlyLoadedCars != null">monthly_loaded_cars = #{monthlyLoadedCars},</if>
+            <if test="monthlyLoadedWeight != null">monthly_loaded_weight = #{monthlyLoadedWeight},</if>
+            <if test="statsDate != null">stats_date = #{statsDate},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWLoadingStatisticsById" parameterType="String">
+        delete from w_loading_statistics where id = #{id}
+    </delete>
+
+    <delete id="deleteWLoadingStatisticsByIds" parameterType="String">
+        delete from w_loading_statistics where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

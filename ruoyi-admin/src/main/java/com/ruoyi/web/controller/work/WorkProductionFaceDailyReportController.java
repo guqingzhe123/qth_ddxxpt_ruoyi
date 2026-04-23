@@ -88,7 +88,12 @@ public class WorkProductionFaceDailyReportController extends BaseController {
     @Log(title = "生产面日报", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody List<WorkProductionFaceDailyReport> workProductionFaceDailyReport) {
-        return toAjax(workProductionFaceDailyReportService.saveWorkProductionFaceDailyReport(workProductionFaceDailyReport));
+        int saved = workProductionFaceDailyReportService.saveWorkProductionFaceDailyReport(workProductionFaceDailyReport);
+        if (saved == 0) {
+            return error("请联系局里进行退回");
+        }
+
+        return toAjax(saved);
     }
 
     /**

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.export.WDispatchStatisticsMapper">
+    
+    <resultMap type="WDispatchStatistics" id="WDispatchStatisticsResult">
+        <result property="id"    column="id"    />
+        <result property="dataType"    column="data_type"    />
+        <result property="dispatchUnit"    column="dispatch_unit"    />
+        <result property="mineName"    column="mine_name"    />
+        <result property="dailyCarCount"    column="daily_car_count"    />
+        <result property="dailyNetWeight"    column="daily_net_weight"    />
+        <result property="dailyTaxPrice"    column="daily_tax_price"    />
+        <result property="dailyAmount"    column="daily_amount"    />
+        <result property="monthlyCarCount"    column="monthly_car_count"    />
+        <result property="monthlyNetWeight"    column="monthly_net_weight"    />
+        <result property="monthlyTaxPrice"    column="monthly_tax_price"    />
+        <result property="monthlyAmount"    column="monthly_amount"    />
+        <result property="yearlyCarCount"    column="yearly_car_count"    />
+        <result property="yearlyNetWeight"    column="yearly_net_weight"    />
+        <result property="yearlyTaxPrice"    column="yearly_tax_price"    />
+        <result property="yearlyAmount"    column="yearly_amount"    />
+        <result property="statsDate"    column="stats_date"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectWDispatchStatisticsVo">
+        select id, data_type, dispatch_unit, mine_name, daily_car_count, daily_net_weight, daily_tax_price, daily_amount, monthly_car_count, monthly_net_weight, monthly_tax_price, monthly_amount, yearly_car_count, yearly_net_weight, yearly_tax_price, yearly_amount, stats_date, create_time, update_time from w_dispatch_statistics
+    </sql>
+
+    <select id="selectWDispatchStatisticsList" parameterType="WDispatchStatistics" resultMap="WDispatchStatisticsResult">
+        <include refid="selectWDispatchStatisticsVo"/>
+        <where>  
+            <if test="dataType != null  and dataType != ''"> and data_type = #{dataType}</if>
+            <if test="dispatchUnit != null  and dispatchUnit != ''"> and dispatch_unit = #{dispatchUnit}</if>
+            <if test="mineName != null  and mineName != ''"> and mine_name like concat('%', #{mineName}, '%')</if>
+            <if test="dailyCarCount != null "> and daily_car_count = #{dailyCarCount}</if>
+            <if test="dailyNetWeight != null "> and daily_net_weight = #{dailyNetWeight}</if>
+            <if test="dailyTaxPrice != null "> and daily_tax_price = #{dailyTaxPrice}</if>
+            <if test="dailyAmount != null "> and daily_amount = #{dailyAmount}</if>
+            <if test="monthlyCarCount != null "> and monthly_car_count = #{monthlyCarCount}</if>
+            <if test="monthlyNetWeight != null "> and monthly_net_weight = #{monthlyNetWeight}</if>
+            <if test="monthlyTaxPrice != null "> and monthly_tax_price = #{monthlyTaxPrice}</if>
+            <if test="monthlyAmount != null "> and monthly_amount = #{monthlyAmount}</if>
+            <if test="yearlyCarCount != null "> and yearly_car_count = #{yearlyCarCount}</if>
+            <if test="yearlyNetWeight != null "> and yearly_net_weight = #{yearlyNetWeight}</if>
+            <if test="yearlyTaxPrice != null "> and yearly_tax_price = #{yearlyTaxPrice}</if>
+            <if test="yearlyAmount != null "> and yearly_amount = #{yearlyAmount}</if>
+            <if test="statsDate != null "> and stats_date = #{statsDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectWDispatchStatisticsById" parameterType="String" resultMap="WDispatchStatisticsResult">
+        <include refid="selectWDispatchStatisticsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWDispatchStatistics" parameterType="WDispatchStatistics" useGeneratedKeys="true" keyProperty="id">
+        insert into w_dispatch_statistics
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dataType != null and dataType != ''">data_type,</if>
+            <if test="dispatchUnit != null and dispatchUnit != ''">dispatch_unit,</if>
+            <if test="mineName != null and mineName != ''">mine_name,</if>
+            <if test="dailyCarCount != null">daily_car_count,</if>
+            <if test="dailyNetWeight != null">daily_net_weight,</if>
+            <if test="dailyTaxPrice != null">daily_tax_price,</if>
+            <if test="dailyAmount != null">daily_amount,</if>
+            <if test="monthlyCarCount != null">monthly_car_count,</if>
+            <if test="monthlyNetWeight != null">monthly_net_weight,</if>
+            <if test="monthlyTaxPrice != null">monthly_tax_price,</if>
+            <if test="monthlyAmount != null">monthly_amount,</if>
+            <if test="yearlyCarCount != null">yearly_car_count,</if>
+            <if test="yearlyNetWeight != null">yearly_net_weight,</if>
+            <if test="yearlyTaxPrice != null">yearly_tax_price,</if>
+            <if test="yearlyAmount != null">yearly_amount,</if>
+            <if test="statsDate != null">stats_date,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dataType != null and dataType != ''">#{dataType},</if>
+            <if test="dispatchUnit != null and dispatchUnit != ''">#{dispatchUnit},</if>
+            <if test="mineName != null and mineName != ''">#{mineName},</if>
+            <if test="dailyCarCount != null">#{dailyCarCount},</if>
+            <if test="dailyNetWeight != null">#{dailyNetWeight},</if>
+            <if test="dailyTaxPrice != null">#{dailyTaxPrice},</if>
+            <if test="dailyAmount != null">#{dailyAmount},</if>
+            <if test="monthlyCarCount != null">#{monthlyCarCount},</if>
+            <if test="monthlyNetWeight != null">#{monthlyNetWeight},</if>
+            <if test="monthlyTaxPrice != null">#{monthlyTaxPrice},</if>
+            <if test="monthlyAmount != null">#{monthlyAmount},</if>
+            <if test="yearlyCarCount != null">#{yearlyCarCount},</if>
+            <if test="yearlyNetWeight != null">#{yearlyNetWeight},</if>
+            <if test="yearlyTaxPrice != null">#{yearlyTaxPrice},</if>
+            <if test="yearlyAmount != null">#{yearlyAmount},</if>
+            <if test="statsDate != null">#{statsDate},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWDispatchStatistics" parameterType="WDispatchStatistics">
+        update w_dispatch_statistics
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dataType != null and dataType != ''">data_type = #{dataType},</if>
+            <if test="dispatchUnit != null and dispatchUnit != ''">dispatch_unit = #{dispatchUnit},</if>
+            <if test="mineName != null and mineName != ''">mine_name = #{mineName},</if>
+            <if test="dailyCarCount != null">daily_car_count = #{dailyCarCount},</if>
+            <if test="dailyNetWeight != null">daily_net_weight = #{dailyNetWeight},</if>
+            <if test="dailyTaxPrice != null">daily_tax_price = #{dailyTaxPrice},</if>
+            <if test="dailyAmount != null">daily_amount = #{dailyAmount},</if>
+            <if test="monthlyCarCount != null">monthly_car_count = #{monthlyCarCount},</if>
+            <if test="monthlyNetWeight != null">monthly_net_weight = #{monthlyNetWeight},</if>
+            <if test="monthlyTaxPrice != null">monthly_tax_price = #{monthlyTaxPrice},</if>
+            <if test="monthlyAmount != null">monthly_amount = #{monthlyAmount},</if>
+            <if test="yearlyCarCount != null">yearly_car_count = #{yearlyCarCount},</if>
+            <if test="yearlyNetWeight != null">yearly_net_weight = #{yearlyNetWeight},</if>
+            <if test="yearlyTaxPrice != null">yearly_tax_price = #{yearlyTaxPrice},</if>
+            <if test="yearlyAmount != null">yearly_amount = #{yearlyAmount},</if>
+            <if test="statsDate != null">stats_date = #{statsDate},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWDispatchStatisticsById" parameterType="String">
+        delete from w_dispatch_statistics where id = #{id}
+    </delete>
+
+    <delete id="deleteWDispatchStatisticsByIds" parameterType="String">
+        delete from w_dispatch_statistics where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

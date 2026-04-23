@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.export.WTransportStatsMapper">
+    
+    <resultMap type="WTransportStats" id="WTransportStatsResult">
+        <result property="id"    column="id"    />
+        <result property="origin"    column="origin"    />
+        <result property="statsDate"    column="stats_date"    />
+        <result property="totalDayVehicles"    column="total_day_vehicles"    />
+        <result property="totalDayTons"    column="total_day_tons"    />
+        <result property="totalMonthVehicles"    column="total_month_vehicles"    />
+        <result property="totalMonthTons"    column="total_month_tons"    />
+        <result property="roadDayVehicles"    column="road_day_vehicles"    />
+        <result property="roadDayTons"    column="road_day_tons"    />
+        <result property="roadMonthVehicles"    column="road_month_vehicles"    />
+        <result property="roadMonthTons"    column="road_month_tons"    />
+        <result property="mineDayVehicles"    column="mine_day_vehicles"    />
+        <result property="mineDayTons"    column="mine_day_tons"    />
+        <result property="mineMonthVehicles"    column="mine_month_vehicles"    />
+        <result property="mineMonthTons"    column="mine_month_tons"    />
+    </resultMap>
+
+    <sql id="selectWTransportStatsVo">
+        select id, origin, stats_date, total_day_vehicles, total_day_tons, total_month_vehicles, total_month_tons, road_day_vehicles, road_day_tons, road_month_vehicles, road_month_tons, mine_day_vehicles, mine_day_tons, mine_month_vehicles, mine_month_tons from w_transport_stats
+    </sql>
+
+    <select id="selectWTransportStatsList" parameterType="WTransportStats" resultMap="WTransportStatsResult">
+        <include refid="selectWTransportStatsVo"/>
+        <where>  
+            <if test="origin != null  and origin != ''"> and origin = #{origin}</if>
+            <if test="statsDate != null "> and stats_date = #{statsDate}</if>
+            <if test="totalDayVehicles != null "> and total_day_vehicles = #{totalDayVehicles}</if>
+            <if test="totalDayTons != null "> and total_day_tons = #{totalDayTons}</if>
+            <if test="totalMonthVehicles != null "> and total_month_vehicles = #{totalMonthVehicles}</if>
+            <if test="totalMonthTons != null "> and total_month_tons = #{totalMonthTons}</if>
+            <if test="roadDayVehicles != null "> and road_day_vehicles = #{roadDayVehicles}</if>
+            <if test="roadDayTons != null "> and road_day_tons = #{roadDayTons}</if>
+            <if test="roadMonthVehicles != null "> and road_month_vehicles = #{roadMonthVehicles}</if>
+            <if test="roadMonthTons != null "> and road_month_tons = #{roadMonthTons}</if>
+            <if test="mineDayVehicles != null "> and mine_day_vehicles = #{mineDayVehicles}</if>
+            <if test="mineDayTons != null "> and mine_day_tons = #{mineDayTons}</if>
+            <if test="mineMonthVehicles != null "> and mine_month_vehicles = #{mineMonthVehicles}</if>
+            <if test="mineMonthTons != null "> and mine_month_tons = #{mineMonthTons}</if>
+        </where>
+    </select>
+    
+    <select id="selectWTransportStatsById" parameterType="String" resultMap="WTransportStatsResult">
+        <include refid="selectWTransportStatsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWTransportStats" parameterType="WTransportStats" useGeneratedKeys="true" keyProperty="id">
+        insert into w_transport_stats
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="origin != null and origin != ''">origin,</if>
+            <if test="statsDate != null">stats_date,</if>
+            <if test="totalDayVehicles != null">total_day_vehicles,</if>
+            <if test="totalDayTons != null">total_day_tons,</if>
+            <if test="totalMonthVehicles != null">total_month_vehicles,</if>
+            <if test="totalMonthTons != null">total_month_tons,</if>
+            <if test="roadDayVehicles != null">road_day_vehicles,</if>
+            <if test="roadDayTons != null">road_day_tons,</if>
+            <if test="roadMonthVehicles != null">road_month_vehicles,</if>
+            <if test="roadMonthTons != null">road_month_tons,</if>
+            <if test="mineDayVehicles != null">mine_day_vehicles,</if>
+            <if test="mineDayTons != null">mine_day_tons,</if>
+            <if test="mineMonthVehicles != null">mine_month_vehicles,</if>
+            <if test="mineMonthTons != null">mine_month_tons,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="origin != null and origin != ''">#{origin},</if>
+            <if test="statsDate != null">#{statsDate},</if>
+            <if test="totalDayVehicles != null">#{totalDayVehicles},</if>
+            <if test="totalDayTons != null">#{totalDayTons},</if>
+            <if test="totalMonthVehicles != null">#{totalMonthVehicles},</if>
+            <if test="totalMonthTons != null">#{totalMonthTons},</if>
+            <if test="roadDayVehicles != null">#{roadDayVehicles},</if>
+            <if test="roadDayTons != null">#{roadDayTons},</if>
+            <if test="roadMonthVehicles != null">#{roadMonthVehicles},</if>
+            <if test="roadMonthTons != null">#{roadMonthTons},</if>
+            <if test="mineDayVehicles != null">#{mineDayVehicles},</if>
+            <if test="mineDayTons != null">#{mineDayTons},</if>
+            <if test="mineMonthVehicles != null">#{mineMonthVehicles},</if>
+            <if test="mineMonthTons != null">#{mineMonthTons},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWTransportStats" parameterType="WTransportStats">
+        update w_transport_stats
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="origin != null and origin != ''">origin = #{origin},</if>
+            <if test="statsDate != null">stats_date = #{statsDate},</if>
+            <if test="totalDayVehicles != null">total_day_vehicles = #{totalDayVehicles},</if>
+            <if test="totalDayTons != null">total_day_tons = #{totalDayTons},</if>
+            <if test="totalMonthVehicles != null">total_month_vehicles = #{totalMonthVehicles},</if>
+            <if test="totalMonthTons != null">total_month_tons = #{totalMonthTons},</if>
+            <if test="roadDayVehicles != null">road_day_vehicles = #{roadDayVehicles},</if>
+            <if test="roadDayTons != null">road_day_tons = #{roadDayTons},</if>
+            <if test="roadMonthVehicles != null">road_month_vehicles = #{roadMonthVehicles},</if>
+            <if test="roadMonthTons != null">road_month_tons = #{roadMonthTons},</if>
+            <if test="mineDayVehicles != null">mine_day_vehicles = #{mineDayVehicles},</if>
+            <if test="mineDayTons != null">mine_day_tons = #{mineDayTons},</if>
+            <if test="mineMonthVehicles != null">mine_month_vehicles = #{mineMonthVehicles},</if>
+            <if test="mineMonthTons != null">mine_month_tons = #{mineMonthTons},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWTransportStatsById" parameterType="String">
+        delete from w_transport_stats where id = #{id}
+    </delete>
+
+    <delete id="deleteWTransportStatsByIds" parameterType="String">
+        delete from w_transport_stats where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

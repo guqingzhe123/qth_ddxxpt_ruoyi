@@ -54,12 +54,6 @@ public class MiningAreaCategoryServiceImpl implements IMiningAreaCategoryService
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int add(MiningAreaCategory entity) {
-        MiningAreaCategory mining = new MiningAreaCategory();
-        mining.setAreaCode(entity.getAreaCode());
-        List<MiningAreaCategory> miningAreaCategories = miningAreaCategoryMapper.selectList(mining);
-        if(miningAreaCategories.size()>0){
-            return 0;
-        }
         return miningAreaCategoryMapper.insert(entity);
     }
 

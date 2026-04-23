@@ -75,10 +75,15 @@ public class WorkProductionFaceDailyReportServiceImpl implements IWorkProduction
                 queryParam.setTeamId(work.getTeamId());
                 List<WorkProductionFaceDailyReport> existingReports = workProductionFaceDailyReportMapper.selectWorkProductionFaceDailyReportList(queryParam);
                 if(existingReports.size()>0){
-                    work.setId(existingReports.get(0).getId());
-                    work.setStatus(0L);
-                    work.setCreateTime(DateUtils.getNowDate());
-                    workProductionFaceDailyReportMapper.updateWorkProductionFaceDailyReport(work);
+                    if(existingReports.get(0).getStatus()==2l){
+                        work.setId(existingReports.get(0).getId());
+                        work.setStatus(0L);
+                        work.setCreateTime(DateUtils.getNowDate());
+                        workProductionFaceDailyReportMapper.updateWorkProductionFaceDailyReport(work);
+                    }else {
+                        return 0;
+                    }
+
                 }else {
                     work.setStatus(0L);
                     work.setCreateTime(DateUtils.getNowDate());
